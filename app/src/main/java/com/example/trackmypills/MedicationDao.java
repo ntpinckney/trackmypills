@@ -27,4 +27,8 @@ public interface MedicationDao {
     // Shows all medication within the database. LiveData ensures it is updated in real-time
     @Query("SELECT * FROM medications")
     LiveData<List<Medication>> loadAllMedication();
+
+    // Gets a medication by its Id. Required for reminders
+    @Query("SELECT * FROM medications WHERE id = :medicationId LIMIT 1")
+    LiveData<Medication> getMedicationById(int medicationId);
 }

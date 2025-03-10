@@ -6,21 +6,21 @@ import androidx.room.TypeConverters;
 
 import java.time.LocalTime;
 
-@Entity(tableName = "medications") //Establishes RoomDB table
-@TypeConverters(Converters.class)
+@Entity(tableName = "medications") // Establishes RoomDB table
+@TypeConverters(Converters.class) // Establishes Converters for ReminderTime and AdminType
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
     private int id;
     private String name; // Name of medication
-    private int medAmt; // Maximum quantity of medication
-    private AdminType adminType; // Type of administration (pills, mL, puffs)
+    private int maxAmt; // Maximum quantity of medication
+    private AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
     private LocalTime startTime; // Starting time of medication
-    private ReminderTime reminderTime;
+    private ReminderTime reminderTime; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
 
     // Constructor
-    public Medication(String name, int medAmt, AdminType adminType, LocalTime startTime, ReminderTime reminderTime) {
+    public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, ReminderTime reminderTime) {
         this.name = name;
-        this.medAmt = medAmt;
+        this.maxAmt = maxAmt;
         this.adminType = adminType;
         this.startTime = startTime;
         this.reminderTime = reminderTime;
@@ -43,12 +43,12 @@ public class Medication {
         this.name = name;
     }
 
-    public int getMedAmt() {
-        return medAmt;
+    public int getMaxAmt() {
+        return maxAmt;
     }
 
-    public void setMedAmt(int medAmt) {
-        this.medAmt = medAmt;
+    public void setMaxAmt(int maxAmt) {
+        this.maxAmt = maxAmt;
     }
 
     public AdminType getAdminType() {
@@ -73,5 +73,22 @@ public class Medication {
 
     public void setReminderTime(ReminderTime reminderTime) {
         this.reminderTime = reminderTime;
+
+
+    }
+
+    public LocalTime getNextDosageTime() {
+        LocalTime now = LocalTime.now();
+        LocalTime nextDose = startTime;
+
+        for (int i = 0; i < maxAmt; i++) {
+            nextDose = nextDose.plusHours(reminderTime.getIntervalHours());
+            if (nextDose.isAfter(now)) {
+                return nextDose;
+            }
+        }
+        return startTime;
     }
 }
+
+

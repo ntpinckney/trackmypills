@@ -3,6 +3,7 @@ package com.example.trackmypills;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -37,5 +38,13 @@ public class MedicationRepository {
 
     public void delete(Medication medication){
         executorService.execute(() -> medicationDao.deleteMedication(medication));
+    }
+
+    public LiveData<Medication> getMedicationById(int medicationId) {
+        return medicationDao.getMedicationById(medicationId);
+    }
+
+    public LiveData getNextDosageTime(int medicationId) {
+        return Transformations.map(getNextDosageTime(medicationId), Medication::getNextDosageTime);
     }
 }

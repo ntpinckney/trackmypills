@@ -34,4 +34,8 @@ public class MedicationViewModel extends AndroidViewModel {
         repository.delete(medication);
     }
 
+    public LiveData getNextDosageTime(int medicationId) {
+        return repository.getNextDosageTime(medicationId);
+    }
+
 }
