@@ -9,14 +9,18 @@ public enum AdminType {
     CREAMS("cream(s)"),
     PATCHES("patch(es)");
 
-    private final String displayName;
+    private final String label;
 
-    AdminType(String displayName){
-        this.displayName = displayName;
+    AdminType(String label){
+        this.label = label;
     }
 
-    public String getDisplayName(){
-        return displayName;
+    public String getLabel(){
+        return label;
     }
 
+    @Override
+    public String toString() {
+        return label;
+    }
 }
