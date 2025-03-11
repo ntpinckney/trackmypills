@@ -1,8 +1,6 @@
 package com.example.trackmypills;
 
-import androidx.annotation.NonNull;
-
-public enum ReminderTime {
+public enum Frequency {
     TWO_HOURS(2, "Every 2 hours"),
     FOUR_HOURS(4, "Every 4 hours"),
     SIX_HOURS(6, "Every 6 hours"),
@@ -14,7 +12,7 @@ public enum ReminderTime {
     private final int intervalHours;
     private final String label;
 
-    ReminderTime(int intervalHours, String label){
+    Frequency(int intervalHours, String label){
         this.intervalHours = intervalHours;
         this.label = label;
     }

@@ -15,15 +15,15 @@ public class Medication {
     private int maxAmt; // Maximum quantity of medication
     private AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
     private LocalTime startTime; // Starting time of medication
-    private ReminderTime reminderTime; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
+    private Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
 
     // Constructor
-    public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, ReminderTime reminderTime) {
+    public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
         this.maxAmt = maxAmt;
         this.adminType = adminType;
         this.startTime = startTime;
-        this.reminderTime = reminderTime;
+        this.frequency = frequency;
     }
 
     // Getters and setters
@@ -67,22 +67,23 @@ public class Medication {
         this.startTime = startTime;
     }
 
-    public ReminderTime getReminderTime() {
-        return reminderTime;
+    public Frequency getReminderTime() {
+        return frequency;
     }
 
-    public void setReminderTime(ReminderTime reminderTime) {
-        this.reminderTime = reminderTime;
+    public void setReminderTime(Frequency frequency) {
+        this.frequency = frequency;
 
 
     }
 
+    // Calculates the next dosageTime from startTime
     public LocalTime getNextDosageTime() {
         LocalTime now = LocalTime.now();
         LocalTime nextDose = startTime;
 
         for (int i = 0; i < maxAmt; i++) {
-            nextDose = nextDose.plusHours(reminderTime.getIntervalHours());
+            nextDose = nextDose.plusHours(frequency.getIntervalHours());
             if (nextDose.isAfter(now)) {
                 return nextDose;
             }

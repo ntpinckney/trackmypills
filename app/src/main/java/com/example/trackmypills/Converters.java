@@ -18,13 +18,13 @@ public class Converters {
 
     // Converts ReminderTime to String
     @TypeConverter
-    public static String fromReminderTime(ReminderTime reminderTime){
-        return reminderTime == null ? null: reminderTime.name();
+    public static String fromReminderTime(Frequency frequency){
+        return frequency == null ? null: frequency.name();
     }
 
     // Converts String to ReminderTime
     @TypeConverter
-    public static  ReminderTime toReminderTime(String reminderTime){
-        return reminderTime == null ? null: ReminderTime.valueOf(reminderTime);
+    public static Frequency toReminderTime(String reminderTime){
+        return reminderTime == null ? null: Frequency.valueOf(reminderTime);
     }
 }

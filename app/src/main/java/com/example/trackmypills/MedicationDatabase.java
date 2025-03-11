@@ -9,20 +9,20 @@ import androidx.room.TypeConverters;
 
 @Database(entities = {Medication.class}, version = 1)
 @TypeConverters({Converters.class})
-public abstract class AppDatabase extends RoomDatabase {
+public abstract class MedicationDatabase extends RoomDatabase {
 
-    private static volatile AppDatabase INSTANCE;
+    private static volatile MedicationDatabase INSTANCE;
 
     public abstract MedicationDao medicationDao();
 
-    public static AppDatabase getInstance(Context context) {
+    public static MedicationDatabase getInstance(Context context) {
         if(INSTANCE == null) {
-            synchronized (AppDatabase.class){
+            synchronized (MedicationDatabase.class){
                 if (INSTANCE == null){
                     Room.databaseBuilder(
                             context.getApplicationContext(),
 
-                            AppDatabase.class,
+                            MedicationDatabase.class,
                             "medication_database").fallbackToDestructiveMigration().build();
                 }
             }

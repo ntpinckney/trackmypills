@@ -15,8 +15,8 @@ public class MedicationRepository {
     private LiveData<List<Medication>> allMedication;
 
     public MedicationRepository(Application application){
-        AppDatabase database =
-                AppDatabase.getInstance(application);
+        MedicationDatabase database =
+                MedicationDatabase.getInstance(application);
         medicationDao = database.medicationDao();
         executorService = Executors.newSingleThreadExecutor();
         allMedication =  medicationDao.loadAllMedication();
