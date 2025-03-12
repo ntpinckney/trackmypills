@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNewMed"
+        android:id="@+id/add_med_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="322dp"
@@ -18,13 +18,11 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/medList"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/medList"
-        android:layout_width="411dp"
+        android:id="@+id/med_list"
+        android:layout_width="0dp"
         android:layout_height="569dp"
         android:layout_marginTop="74dp"
         app:layout_constraintBottom_toBottomOf="parent"

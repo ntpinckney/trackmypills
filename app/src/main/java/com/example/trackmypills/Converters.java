@@ -2,7 +2,11 @@ package com.example.trackmypills;
 
 import androidx.room.TypeConverter;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class Converters {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
 
     //Converts AdminType to String
     @TypeConverter
@@ -16,15 +20,27 @@ public class Converters {
         return adminType == null ? null: AdminType.valueOf(adminType);
     }
 
-    // Converts ReminderTime to String
+    // Converts Frequency to String
     @TypeConverter
-    public static String fromReminderTime(Frequency frequency){
+    public static String fromFrequency(Frequency frequency){
         return frequency == null ? null: frequency.name();
     }
 
-    // Converts String to ReminderTime
+    // Converts String to Frequency
     @TypeConverter
-    public static Frequency toReminderTime(String reminderTime){
-        return reminderTime == null ? null: Frequency.valueOf(reminderTime);
+    public static Frequency toFrequency(String frequency){
+        return frequency == null ? null: Frequency.valueOf(frequency);
     }
+
+
+    @TypeConverter
+    public static LocalTime fromString(String value) {
+        return value == null ? null : LocalTime.parse(value, formatter);
+    }
+
+    @TypeConverter
+    public static String toString(LocalTime time){
+        return time == null ? null : time.format(formatter);
+    }
+
 }

@@ -38,7 +38,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.room.runtime)
     implementation(libs.firebase.messaging);
-    annotationProcessor(libs.room.runtime);
+    annotationProcessor(libs.room.complier);
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

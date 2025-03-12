@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public interface MedicationDao {
 
     // Inserts new medication into the database
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMedication(Medication medication);
 
     // Updates entries with new information
@@ -23,6 +24,8 @@ public interface MedicationDao {
     // Removes entries from database
     @Delete
     public void deleteMedication(Medication medication);
+
+    // Removes everything from database. DEBUGGING PURPOSES ONLY
 
     // Shows all medication within the database. LiveData ensures it is updated in real-time
     @Query("SELECT * FROM medications")

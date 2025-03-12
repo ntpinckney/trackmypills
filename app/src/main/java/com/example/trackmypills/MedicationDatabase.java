@@ -19,7 +19,7 @@ public abstract class MedicationDatabase extends RoomDatabase {
         if(INSTANCE == null) {
             synchronized (MedicationDatabase.class){
                 if (INSTANCE == null){
-                    Room.databaseBuilder(
+                    INSTANCE = Room.databaseBuilder(
                             context.getApplicationContext(),
 
                             MedicationDatabase.class,

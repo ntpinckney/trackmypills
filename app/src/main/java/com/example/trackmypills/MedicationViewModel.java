@@ -11,6 +11,7 @@ public class MedicationViewModel extends AndroidViewModel {
     private MedicationRepository repository;
     private LiveData<List<Medication>> allMedication;
 
+
     public MedicationViewModel(Application application) {
         super(application);
         repository = new MedicationRepository(application);

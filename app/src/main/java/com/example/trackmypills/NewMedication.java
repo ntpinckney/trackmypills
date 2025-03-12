@@ -1,5 +1,6 @@
 package com.example.trackmypills;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +23,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class NewMedication extends AppCompatActivity {
-    private EditText medNameInput, maxAmtInput, medTimeInput;
+    private EditText medNameInput, maxAmtInput;
+    private TextView medTimeInput;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
     private String selectedTime;
@@ -33,13 +36,13 @@ public class NewMedication extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_medication);
 
-        medNameInput = findViewById(R.id.medName);
-        maxAmtInput = findViewById(R.id.maxAmtNumber);
-        medTimeInput = findViewById(R.id.medTime);
+        medNameInput = findViewById(R.id.enter_med_name);
+        maxAmtInput = findViewById(R.id.max_amt_number);
+        medTimeInput = findViewById(R.id.med_time);
 
         //  Converts enum values into String values and establishes spinners
-        adminSpinner = findViewById(R.id.adminSpinner);
-        frequencySpinner = findViewById(R.id.freqSpinner);
+        adminSpinner = findViewById(R.id.admin_spinner);
+        frequencySpinner = findViewById(R.id.freq_spinner);
         Button confirmBtn = findViewById(R.id.confirmBtn);
 
         db = Room.databaseBuilder(getApplicationContext(),
@@ -70,10 +73,13 @@ public class NewMedication extends AppCompatActivity {
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, selectedHour, selectedMinute) -> {
-                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+            String amPM = (selectedHour >= 12) ? "AM" : "PM";
+            int hour12format = (selectedHour > 12) ? selectedHour - 12 :
+                    (selectedHour == 0) ? 12 : selectedHour;
+                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d %s", hour12format, selectedMinute, amPM);
                     medTimeInput.setText(selectedTime); // Set the selected time in the EditText
                 },
-                hour, minute, true); // true for 24-hour format, change to false for AM/PM
+                hour, minute, false);
         timePickerDialog.show();
     }
 
@@ -140,7 +146,9 @@ public class NewMedication extends AppCompatActivity {
                 // Returns to MainActivity after saving
                 Intent intent = new Intent(NewMedication.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+
+                setResult(Activity.RESULT_OK);
+
                 finish(); // Closes NewMedication Activity
             });
         }).start();

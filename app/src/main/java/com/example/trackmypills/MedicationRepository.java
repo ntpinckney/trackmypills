@@ -47,4 +47,5 @@ public class MedicationRepository {
     public LiveData getNextDosageTime(int medicationId) {
         return Transformations.map(getNextDosageTime(medicationId), Medication::getNextDosageTime);
     }
+
 }

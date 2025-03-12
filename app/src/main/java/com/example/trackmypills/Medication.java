@@ -1,5 +1,6 @@
 package com.example.trackmypills;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -10,14 +11,15 @@ import java.time.LocalTime;
 @TypeConverters(Converters.class) // Establishes Converters for ReminderTime and AdminType
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
-    private int id;
-    private String name; // Name of medication
-    private int maxAmt; // Maximum quantity of medication
-    private AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
-    private LocalTime startTime; // Starting time of medication
-    private Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
+    public int id;
+    public String name; // Name of medication
+    public int maxAmt; // Maximum doses
+    public int dosesTaken; // Tracks how many doses have been taken
+    public AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
+    public LocalTime startTime; // Starting time of medication
+    public Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
 
-    // Constructor
+
     public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
         this.maxAmt = maxAmt;
@@ -46,6 +48,13 @@ public class Medication {
     public int getMaxAmt() {
         return maxAmt;
     }
+    public int getDosesTaken() {
+        return dosesTaken;
+    }
+
+    public void setDosesTaken(int dosesTaken) {
+        this.dosesTaken = dosesTaken;
+    }
 
     public void setMaxAmt(int maxAmt) {
         this.maxAmt = maxAmt;
@@ -67,11 +76,11 @@ public class Medication {
         this.startTime = startTime;
     }
 
-    public Frequency getReminderTime() {
+    public Frequency getFrequency() {
         return frequency;
     }
 
-    public void setReminderTime(Frequency frequency) {
+    public void setFrequency(Frequency frequency) {
         this.frequency = frequency;
 
 
