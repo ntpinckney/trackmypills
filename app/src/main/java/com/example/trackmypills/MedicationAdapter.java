@@ -4,11 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.MedicationViewHolder> {
@@ -20,15 +21,15 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         void onMedicationClick(Medication medication);
     }
 
-    public MedicationAdapter(List<Medication> medications, OnMedicationClickListener listener,
-    MedicationDao medicationDao){
+    public MedicationAdapter(List<Medication> medications,
+                             MedicationDao medicationDao) {
         this.medications = medications;
         this.listener = listener;
         this.medicationDao = medicationDao;
     }
 
     public void setMedications(List<Medication> newMedications) {
-        if(newMedications != null){
+        if (newMedications != null) {
             this.medications = newMedications;
             notifyDataSetChanged();
         }
@@ -52,7 +53,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         return medications == null ? 0 : medications.size();
     }
 
-    static class MedicationViewHolder extends RecyclerView.ViewHolder {
+    class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medName, medTime, medDosage;
 
         public MedicationViewHolder(@NonNull View itemView) {
@@ -64,10 +65,21 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
         public void bind(Medication medication, OnMedicationClickListener listener) {
             medName.setText(medication.getName());
-            medTime.setText((medication.getNextDosageTime().toString()));
+
+            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("HH:mm")); // 24-hour format
+            medTime.setText(formattedTime);
             medDosage.setText(String.format("%d/%d taken", medication.getDosesTaken(), medication.getMaxAmt()));
 
-            itemView.setOnClickListener(v -> listener.onMedicationClick(medication));
-            }
+            itemView.setOnClickListener(v -> {
+                if (medication.getDosesTaken() < medication.getMaxAmt()) {
+                    medication.setDosesTaken(medication.getDosesTaken() + 1);
+                    medicationDao.updateMedication(medication);
+                    notifyItemChanged(getAdapterPosition()); // Refreshes the UI
+                } else {
+                    Toast.makeText(v.getContext(), "Max dose reached", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
+}

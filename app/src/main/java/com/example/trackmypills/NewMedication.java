@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class NewMedication extends AppCompatActivity {
     private EditText medNameInput, maxAmtInput;
-    private TextView medTimeInput;
+    private TextView medTimeView;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
     private String selectedTime;
@@ -38,7 +38,7 @@ public class NewMedication extends AppCompatActivity {
 
         medNameInput = findViewById(R.id.enter_med_name);
         maxAmtInput = findViewById(R.id.max_amt_number);
-        medTimeInput = findViewById(R.id.med_time);
+        medTimeView = findViewById(R.id.med_time);
 
         //  Converts enum values into String values and establishes spinners
         adminSpinner = findViewById(R.id.admin_spinner);
@@ -53,7 +53,7 @@ public class NewMedication extends AppCompatActivity {
         setupSpinners(); // Populates the spinners
 
         // Show TimePicker when clicking the EditText
-        medTimeInput.setOnClickListener(v -> showTimePickerDialog());
+        medTimeView.setOnClickListener(v -> showTimePickerDialog());
 
         // Handle Confirm button click
         confirmBtn.setOnClickListener(v -> saveMedication());
@@ -66,22 +66,21 @@ public class NewMedication extends AppCompatActivity {
         });
     }
 
-    private void showTimePickerDialog(){
+    private void showTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, selectedHour, selectedMinute) -> {
-            String amPM = (selectedHour >= 12) ? "AM" : "PM";
-            int hour12format = (selectedHour > 12) ? selectedHour - 12 :
-                    (selectedHour == 0) ? 12 : selectedHour;
-                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d %s", hour12format, selectedMinute, amPM);
-                    medTimeInput.setText(selectedTime); // Set the selected time in the EditText
+                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                    medTimeView.setText(selectedTime); // Updates UI
                 },
-                hour, minute, false);
+                hour, minute, true); // True for 24-hour format
         timePickerDialog.show();
     }
+
+
 
     private void setupSpinners(){
         String[] adminMethods = new String[AdminType.values().length];
@@ -123,7 +122,7 @@ public class NewMedication extends AppCompatActivity {
     private void saveMedication(){
         String medName = medNameInput.getText().toString();
         String maxAmtStr = maxAmtInput.getText().toString();
-        String medTime = medTimeInput.getText().toString();
+        String medTime = medTimeView.getText().toString();
 
         // Checks if input is valid
         if(medName.isEmpty() || maxAmtStr.isEmpty() || medTime.isEmpty()) {
