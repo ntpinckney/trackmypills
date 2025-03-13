@@ -1,5 +1,6 @@
 package com.example.trackmypills;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -12,14 +13,21 @@ import java.time.LocalTime;
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
     private int id;
+    @ColumnInfo(defaultValue = "medication_name")
     private String name; // Name of medication
+    @ColumnInfo(defaultValue = "max_amt")
     private int maxAmt; // Maximum doses
+    @ColumnInfo(defaultValue = "doses_taken")
     private int dosesTaken; // Tracks how many doses have been taken
+    @ColumnInfo(defaultValue = "admin_type")
     private
     AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
+    @ColumnInfo(defaultValue = "start_time")
     private LocalTime startTime; // Starting time of medication
+    @ColumnInfo(defaultValue = "frequency")
     private Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
-    private LocalDate lastResetDate;
+    @ColumnInfo(defaultValue = "last_reset_date")
+    private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
 
 
     public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
@@ -31,6 +39,7 @@ public class Medication {
     }
 
     // Getters and setters
+
     public int getId() {
         return id;
     }

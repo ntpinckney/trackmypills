@@ -43,6 +43,7 @@ public class NewMedication extends AppCompatActivity {
         //  Converts enum values into String values and establishes spinners
         adminSpinner = findViewById(R.id.admin_spinner);
         frequencySpinner = findViewById(R.id.freq_spinner);
+
         Button confirmBtn = findViewById(R.id.confirmBtn);
 
         db = Room.databaseBuilder(getApplicationContext(),
@@ -50,7 +51,9 @@ public class NewMedication extends AppCompatActivity {
                 .fallbackToDestructiveMigration()
                 .build();
 
-        setupSpinners(); // Populates the spinners
+        // Populates the spinners
+        SpinnerUtil.setUpSpinner(this, adminSpinner, AdminType.values());
+        SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
         // Show TimePicker when clicking the EditText
         medTimeView.setOnClickListener(v -> showTimePickerDialog());
@@ -80,43 +83,6 @@ public class NewMedication extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-
-
-    private void setupSpinners(){
-        String[] adminMethods = new String[AdminType.values().length];
-        for(int i = 0; i < AdminType.values().length; i++){
-            adminMethods[i] = AdminType.values()[i].getLabel();
-        }
-
-        // Creates an ArrayAdapter
-        ArrayAdapter<String> adminAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                adminMethods
-        );
-
-        adminAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Sets adapter
-        adminSpinner.setAdapter(adminAdapter);
-
-        // For Frequency
-        String[] frequencyTimes = new String[Frequency.values().length];
-        for(int i = 0; i < Frequency.values().length; i++){
-            frequencyTimes[i] = Frequency.values()[i].getLabel();
-        }
-
-
-        ArrayAdapter<String> freqAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                frequencyTimes
-        );
-
-        freqAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        frequencySpinner.setAdapter(freqAdapter);
-    }
 
 
     private void saveMedication(){

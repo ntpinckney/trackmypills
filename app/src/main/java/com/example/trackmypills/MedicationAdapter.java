@@ -1,5 +1,6 @@
 package com.example.trackmypills;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,12 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     public void onBindViewHolder(@NonNull MedicationViewHolder holder, int position) {
         Medication medication = medications.get(position);
         holder.bind(medication, listener);
+
+        holder.itemView.setOnClickListener(v-> {
+            Intent intent = new Intent(v.getContext(), EditMedication.class);
+            intent.putExtra("medication_id", medication.getId());
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
