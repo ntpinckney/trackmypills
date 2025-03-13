@@ -4,19 +4,22 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity(tableName = "medications") // Establishes RoomDB table
 @TypeConverters(Converters.class) // Establishes Converters for ReminderTime and AdminType
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
-    public int id;
-    public String name; // Name of medication
-    public int maxAmt; // Maximum doses
-    public int dosesTaken; // Tracks how many doses have been taken
-    public AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
-    public LocalTime startTime; // Starting time of medication
-    public Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
+    private int id;
+    private String name; // Name of medication
+    private int maxAmt; // Maximum doses
+    private int dosesTaken; // Tracks how many doses have been taken
+    private
+    AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
+    private LocalTime startTime; // Starting time of medication
+    private Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
+    private LocalDate lastResetDate;
 
 
     public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
@@ -81,8 +84,14 @@ public class Medication {
 
     public void setFrequency(Frequency frequency) {
         this.frequency = frequency;
+    }
 
+    public LocalDate getLastResetDate(){
+        return lastResetDate;
+    }
 
+    public  void setLastResetDate(LocalDate lastResetDate){
+        this.lastResetDate = lastResetDate;
     }
 
     // Calculates the next dosageTime from startTime

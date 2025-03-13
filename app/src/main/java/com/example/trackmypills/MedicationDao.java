@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -23,7 +24,7 @@ public interface MedicationDao {
 
     // Removes entries from database
     @Delete
-    public void deleteMedication(Medication medication);
+    void deleteMedication(Medication medication);
 
     // Removes everything from database. DEBUGGING PURPOSES ONLY
 
@@ -34,4 +35,8 @@ public interface MedicationDao {
     // Gets a medication by its Id. Required for reminders
     @Query("SELECT * FROM medications WHERE id = :medicationId LIMIT 1")
     LiveData<Medication> getMedicationById(int medicationId);
+
+    @Query("UPDATE medications SET dosesTaken = 0 WHERE lastResetDate < :currentDate")
+    void resetDoses(LocalDate currentDate);
+
 }

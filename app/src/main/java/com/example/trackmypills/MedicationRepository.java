@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +43,13 @@ public class MedicationRepository {
 
     public LiveData<Medication> getMedicationById(int medicationId) {
         return medicationDao.getMedicationById(medicationId);
+    }
+
+    public void resetDoses(){
+        executorService.execute(() -> {
+            LocalDate currentDate = LocalDate.now();
+            medicationDao.resetDoses(currentDate);
+        });
     }
 
     public LiveData getNextDosageTime(int medicationId) {

@@ -39,4 +39,8 @@ public class MedicationViewModel extends AndroidViewModel {
         return repository.getNextDosageTime(medicationId);
     }
 
+    public void resetDoses() {
+        repository.resetDoses();
+    }
+
 }

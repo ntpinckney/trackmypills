@@ -16,6 +16,7 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalTime;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
     }
     private void refreshMedicationList() {
             db.medicationDao().loadAllMedication().observe(this, medications -> {
+                if(medications != null) {
+                    for(Medication medication : medications) {
+                        if (LocalTime.now().isAfter(medication.getNextDosageTime())) {
+
+                            // Resets doseTaken to 0 is the next dosage time has passed
+                            medication.setDosesTaken(0);
+                            db.medicationDao().updateMedication(medication);
+                        }
+                    }
+                }
+
                 if (adapter == null) {
                     adapter = new MedicationAdapter(medications, db.medicationDao());
                     recyclerView.setAdapter(adapter);
