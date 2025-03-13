@@ -79,7 +79,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                     Toast.makeText(v.getContext(), "Max dose reached", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
     }
 }
