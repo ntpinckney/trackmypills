@@ -16,17 +16,15 @@ public interface MedicationDao {
 
     // Inserts new medication into the database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertMedication(Medication medication);
+    void insert(Medication medication);
 
     // Updates entries with new information
     @Update
-    public void updateMedication(Medication medication);
+    public void update(Medication medication);
 
     // Removes entries from database
     @Delete
-    void deleteMedication(Medication medication);
-
-    // Removes everything from database. DEBUGGING PURPOSES ONLY
+    void delete(Medication medication);
 
     // Shows all medication within the database. LiveData ensures it is updated in real-time
     @Query("SELECT * FROM medications")

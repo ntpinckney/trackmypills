@@ -1,10 +1,8 @@
 package com.example.trackmypills;
 
-import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -27,7 +25,7 @@ public class NewMedication extends AppCompatActivity {
     private TextView medTimeView;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
-    private String selectedTime;
+    private String selectedTime = LocalTime.now().toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,19 +101,20 @@ public class NewMedication extends AppCompatActivity {
 
         Medication medication = new Medication(medName, maxAmount, adminType, time, frequency);
 
+
         new Thread(() -> {
-            db.medicationDao().insertMedication(medication);
+            db.medicationDao().insert(medication);
             runOnUiThread(() -> {
                 Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
 
+                NotifUtil.scheduleNotification(this, medication); // Schedules notification after med is saved
+
                 // Returns to MainActivity after saving
                 Intent intent = new Intent(NewMedication.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                setResult(Activity.RESULT_OK);
-
+                startActivity(intent);
                 finish(); // Closes NewMedication Activity
             });
         }).start();
     }
+
 }

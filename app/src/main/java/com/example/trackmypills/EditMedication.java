@@ -19,7 +19,7 @@ import androidx.room.Room;
 import java.time.LocalTime;
 
 public class EditMedication extends AppCompatActivity {
-    private EditText nameInput, dosageInput;
+    private EditText nameInput, maxAmtInput;
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
     private Button saveButton, deleteButton;
@@ -34,7 +34,7 @@ public class EditMedication extends AppCompatActivity {
         setContentView(R.layout.activity_edit_medication);
 
         nameInput = findViewById(R.id.edit_med_name);
-        dosageInput = findViewById(R.id.edit_max_amt_number);
+        maxAmtInput = findViewById(R.id.edit_max_amt_number);
         adminSpinner = findViewById(R.id.edit_admin_spinner);
         frequencySpinner = findViewById(R.id.edit_freq_spinner);
         timeTextView = findViewById(R.id.edit_med_time);
@@ -44,7 +44,7 @@ public class EditMedication extends AppCompatActivity {
                 .allowMainThreadQueries()
                 .build();
 
-        // Gets the medication ID from Adapter
+        // Gets the medication ID from MainActivity's intent
         int medicationId = getIntent().getIntExtra("medication_id", -1);
 
         // Sets up spinners
@@ -53,10 +53,11 @@ public class EditMedication extends AppCompatActivity {
 
         // Updates information based on user entries and medication ID
         if (medicationId != -1) {
-            db.medicationDao().getMedicationById(medicationId).observe(this, medication -> {
-                if (medication != null) {
+            db.medicationDao().getMedicationById(medicationId).observe(this, fetchedMedication -> {
+                if (fetchedMedication != null) {
+                    medication = fetchedMedication;
                     nameInput.setText(medication.getName());
-                    dosageInput.setText(String.valueOf(medication.getMaxAmt()));
+                    maxAmtInput.setText(String.valueOf(medication.getMaxAmt()));
                     timeTextView.setText(medication.getNextDosageTime().toString());
 
                     SpinnerUtil.setSpinnerSelection(adminSpinner, medication.getAdminType().getLabel());
@@ -64,21 +65,36 @@ public class EditMedication extends AppCompatActivity {
                 }
             });
 
+
+            // Saves updated data
             saveButton.setOnClickListener(v -> {
                 if (medication != null) {
+
+                    // Displays current information before updates
                     medication.setName(nameInput.getText().toString());
-                    medication.setMaxAmt(Integer.parseInt(dosageInput.getText().toString()));
+                    medication.setMaxAmt(Integer.parseInt(maxAmtInput.getText().toString()));
+                    medication.setNextDosageTime(LocalTime.parse(timeTextView.getText().toString()));
+
+                    medication.setAdminType(AdminType.values()[adminSpinner.getSelectedItemPosition()]);
+                    medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
                     new Thread(() -> {
-                        db.medicationDao().updateMedication(medication);
+                        // Updates database based on new information
+                        db.medicationDao().update(medication);
 
                         runOnUiThread(() -> {
-                            Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show(); // 🔹 Added .show()
-                            finish();
+                            Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show();
+
+                            NotifUtil.scheduleNotification(this, medication); // Schedules notification after update
+
+                            setResult(RESULT_OK);
+
+                            finish(); // Closes activity and returns to MainActivity
                         });
                     }).start();
                 }
             });
+
 
             deleteButton.setOnClickListener(v -> {
                 if (medication != null) {
@@ -87,10 +103,13 @@ public class EditMedication extends AppCompatActivity {
                             .setMessage("Are you sure you want to delete this medication?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 new Thread(() -> {
-                                    db.medicationDao().deleteMedication(medication);
+                                    db.medicationDao().delete(medication);
                                     runOnUiThread(() -> {
                                         Toast.makeText(this, "Medication deleted",
                                                 Toast.LENGTH_SHORT).show();
+
+                                        NotifUtil.cancelNotification(this, medication);
+
                                         finish();
                                     });
                                 }).start();

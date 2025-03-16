@@ -1,9 +1,9 @@
 package com.example.trackmypills;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +18,13 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     private OnMedicationClickListener listener; // Callback for item clicks
     private static MedicationDao medicationDao;
 
+
     public interface OnMedicationClickListener {
         void onMedicationClick(Medication medication);
     }
 
     public MedicationAdapter(List<Medication> medications,
-                             MedicationDao medicationDao) {
+                             MedicationDao medicationDao, OnMedicationClickListener listener) {
         this.medications = medications;
         this.listener = listener;
         this.medicationDao = medicationDao;
@@ -46,13 +47,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     @Override
     public void onBindViewHolder(@NonNull MedicationViewHolder holder, int position) {
         Medication medication = medications.get(position);
-        holder.bind(medication, listener);
-
-        holder.itemView.setOnClickListener(v-> {
-            Intent intent = new Intent(v.getContext(), EditMedication.class);
-            intent.putExtra("medication_id", medication.getId());
-            v.getContext().startActivity(intent);
-        });
+        holder.bind(medication, listener); // Assigns binding logic to bind()
     }
 
     @Override
@@ -62,30 +57,39 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medName, medTime, medDosage;
+        Button editButton;
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
             medName = itemView.findViewById(R.id.med_name);
             medTime = itemView.findViewById(R.id.med_time);
             medDosage = itemView.findViewById(R.id.med_dosage);
+            editButton = itemView.findViewById(R.id.edit_button);
         }
 
         public void bind(Medication medication, OnMedicationClickListener listener) {
             medName.setText(medication.getName());
 
-            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("HH:mm")); // 24-hour format
+            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("HH:mm"));
             medTime.setText(formattedTime);
             medDosage.setText(String.format("%d/%d taken", medication.getDosesTaken(), medication.getMaxAmt()));
+
+            editButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onMedicationClick(medication);
+                }
+            });
 
             itemView.setOnClickListener(v -> {
                 if (medication.getDosesTaken() < medication.getMaxAmt()) {
                     medication.setDosesTaken(medication.getDosesTaken() + 1);
-                    medicationDao.updateMedication(medication);
-                    notifyItemChanged(getAdapterPosition()); // Refreshes the UI
+                    medicationDao.update(medication);
+                    notifyItemChanged(getAdapterPosition());
                 } else {
                     Toast.makeText(v.getContext(), "Max dose reached", Toast.LENGTH_SHORT).show();
                 }
             });
         }
+
     }
 }

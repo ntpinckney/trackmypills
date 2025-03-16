@@ -103,7 +103,16 @@ public class Medication {
         this.lastResetDate = lastResetDate;
     }
 
+    public LocalTime nextDosageTime;
+
+
     // Calculates the next dosageTime from startTime
+
+
+    public void setNextDosageTime(LocalTime nextDosageTime){
+        this.nextDosageTime = nextDosageTime;
+    }
+
     public LocalTime getNextDosageTime() {
         LocalTime now = LocalTime.now();
         LocalTime nextDose = startTime;
