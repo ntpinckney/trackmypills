@@ -117,7 +117,7 @@ public class NewMedication extends AppCompatActivity {
         String timeString = timeTextView.getText().toString().trim();
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
             LocalTime parsedTime = LocalTime.parse(timeString, formatter);
 
             LocalDateTime now = LocalDateTime.now();

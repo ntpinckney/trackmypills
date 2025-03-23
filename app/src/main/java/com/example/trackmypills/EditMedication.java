@@ -19,6 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 public class EditMedication extends AppCompatActivity {
     private EditText nameInput, maxAmtInput;
@@ -114,29 +117,22 @@ public class EditMedication extends AppCompatActivity {
                 }
             });
 
-            timeTextView.setOnClickListener(v -> {
-                LocalTime currentTime = medication.getNextDosageTime();
-                int hour = currentTime.getHour();
-                int minute = currentTime.getMinute();
+            saveButton.setOnClickListener(v -> {
+                String timeString = timeTextView.getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+                try {
+                    LocalTime newTime = LocalTime.parse(timeString, formatter);
+                    medication.setNextDosageTime(newTime);
+                    viewModel.update(medication);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(
-                        this,
-                        (view, selectedHour, selectedMinute) -> {
-                            // Converts to 12-hour format
-                            String amPm = (selectedHour >= 12) ? "PM" : "AM";
-                            int hour12 = (selectedHour == 0) ? 12 : (selectedHour > 12 ?
-                                    selectedHour - 12 : selectedHour);
-                            String formattedTime = String.format("%02d:%02d %s", hour12,
-                                    selectedMinute, amPm);
-
-                            // Uses formattedTime
-                            timeTextView.setText(formattedTime);
-
-                        },
-                        hour, minute, false // False turns this into 12-hour format instead of 24-hour format
-                );
-                timePickerDialog.show();
+                    Toast.makeText(EditMedication.this, "Medication updated!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } catch (DateTimeParseException e) {
+                    Toast.makeText(EditMedication.this, "Invalid or missing elements. Please try again.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             });
+
 
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

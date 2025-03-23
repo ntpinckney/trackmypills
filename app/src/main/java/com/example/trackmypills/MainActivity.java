@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    // Forces RecyclerView to reload the medication list via ViewModel
+    // Forces reload of medication list via ViewModel
     private void reload() {
         viewModel.getAllMedication().observe(this, medications -> {
             if (medications != null) {
