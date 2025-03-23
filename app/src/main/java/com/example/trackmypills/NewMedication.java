@@ -117,14 +117,14 @@ public class NewMedication extends AppCompatActivity {
         String timeString = timeTextView.getText().toString().trim();
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
             LocalTime parsedTime = LocalTime.parse(timeString, formatter);
 
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime scheduledDateTime = now.with(parsedTime);
 
             if(scheduledDateTime.isBefore(now)){
-                scheduledDateTime.plusDays(1);
+                scheduledDateTime = scheduledDateTime.plusDays(1);
             }
 
             LocalTime adjustedTime = scheduledDateTime.toLocalTime();

@@ -83,10 +83,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             LocalDateTime nextDosageDateTime = LocalDateTime.of(LocalDate.now(), nextDosageTime);
 
             if(nextDosageDateTime.isBefore(now)){
-                nextDosageDateTime.plusDays(1);
+                nextDosageDateTime = nextDosageDateTime.plusDays(1);
             }
 
-            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("hh:mm a"));
+            String formattedTime = (nextDosageTime != null) ?
+                    nextDosageTime.format(DateTimeFormatter.ofPattern("h:mm a")) : "N/A";
             medTime.setText(formattedTime);
 
             medDosage.setText(String.format("%d/%d %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
