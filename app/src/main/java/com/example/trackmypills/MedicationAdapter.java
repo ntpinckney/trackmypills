@@ -1,22 +1,28 @@
 package com.example.trackmypills;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.MedicationViewHolder> {
     private List<Medication> medications;
     private OnMedicationClickListener listener; // Callback for item clicks
-    private static MedicationDao medicationDao;
+
+    private static MedicationViewModel viewModel;
 
 
     public interface OnMedicationClickListener {
@@ -24,10 +30,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     }
 
     public MedicationAdapter(List<Medication> medications,
-                             MedicationDao medicationDao, OnMedicationClickListener listener) {
+                             MedicationViewModel viewModel, OnMedicationClickListener listener) {
         this.medications = medications;
         this.listener = listener;
-        this.medicationDao = medicationDao;
+        this.viewModel = viewModel;
     }
 
     public void setMedications(List<Medication> newMedications) {
@@ -57,7 +63,9 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medName, medTime, medDosage;
-        Button editButton;
+        ImageButton editButton;
+        ImageButton notifButton;
+
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,14 +73,56 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medTime = itemView.findViewById(R.id.med_time);
             medDosage = itemView.findViewById(R.id.med_dosage);
             editButton = itemView.findViewById(R.id.edit_button);
+            notifButton = itemView.findViewById(R.id.notif_button);
         }
 
         public void bind(Medication medication, OnMedicationClickListener listener) {
             medName.setText(medication.getName());
+            LocalDateTime now = LocalDateTime.now();
+            LocalTime nextDosageTime = medication.getNextDosageTime();
+            LocalDateTime nextDosageDateTime = LocalDateTime.of(LocalDate.now(), nextDosageTime);
 
-            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+            if(nextDosageDateTime.isBefore(now)){
+                nextDosageDateTime.plusDays(1);
+            }
+
+            String formattedTime = medication.getNextDosageTime().format(DateTimeFormatter.ofPattern("hh:mm a"));
             medTime.setText(formattedTime);
-            medDosage.setText(String.format("%d/%d taken", medication.getDosesTaken(), medication.getMaxAmt()));
+
+            medDosage.setText(String.format("%d/%d %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
+                medication.getAdminType().getLabel()));
+
+            //Loads notification state
+            boolean isNotificationsEnabled = medication.isNotificationsEnabled();
+
+            isNotificationsEnabled = !isNotificationsEnabled;
+
+            // Sets initial button based on state
+            notifButton.setImageResource(isNotificationsEnabled ? R.drawable.ic_notif_on : R.drawable.ic_notif_off);
+
+            // Handles notification button clicks
+            notifButton.setOnClickListener(v -> {
+                boolean newState = !medication.isNotificationsEnabled();
+                medication.setNotificationsEnabled(newState);
+
+                if (newState) {
+                    NotifUtil.scheduleNotification(v.getContext(), medication);
+                    notifButton.setImageResource(R.drawable.ic_notif_on);
+                } else {
+                    NotifUtil.cancelNotification(v.getContext(), medication);
+                    notifButton.setImageResource(R.drawable.ic_notif_off);
+                }
+
+
+                if(viewModel != null){
+                    viewModel.update(medication);
+                } else {
+                    Log.e("MedicationAdapter", "ViewModel is NULL! Check initialization.");
+                }
+
+                notifyItemChanged(getAdapterPosition());
+
+            });
 
             editButton.setOnClickListener(v -> {
                 if (listener != null) {
@@ -83,7 +133,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             itemView.setOnClickListener(v -> {
                 if (medication.getDosesTaken() < medication.getMaxAmt()) {
                     medication.setDosesTaken(medication.getDosesTaken() + 1);
-                    medicationDao.update(medication);
+                    viewModel.update(medication);
                     notifyItemChanged(getAdapterPosition());
                 } else {
                     Toast.makeText(v.getContext(), "Max dose reached", Toast.LENGTH_SHORT).show();

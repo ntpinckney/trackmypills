@@ -2,6 +2,7 @@ package com.example.trackmypills;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
 import java.time.LocalTime;
@@ -23,8 +25,10 @@ public class EditMedication extends AppCompatActivity {
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
     private Button saveButton, deleteButton;
-    private MedicationDatabase db;
+//    private MedicationDatabase db;
     private Medication medication;
+
+    private MedicationViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +44,9 @@ public class EditMedication extends AppCompatActivity {
         timeTextView = findViewById(R.id.edit_med_time);
         saveButton = findViewById(R.id.save_btn);
         deleteButton = findViewById(R.id.delete_btn);
-        db = Room.databaseBuilder(getApplicationContext(), MedicationDatabase.class, "medication_db")
-                .allowMainThreadQueries()
-                .build();
+//        db = Room.databaseBuilder(getApplicationContext(), MedicationDatabase.class, "medication_db")
+//                .fallbackToDestructiveMigration()
+//                .build();
 
         // Gets the medication ID from MainActivity's intent
         int medicationId = getIntent().getIntExtra("medication_id", -1);
@@ -51,9 +55,12 @@ public class EditMedication extends AppCompatActivity {
         SpinnerUtil.setUpSpinner(this, adminSpinner, AdminType.values());
         SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
+        // Establishes ViewModel
+        viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
+
         // Updates information based on user entries and medication ID
         if (medicationId != -1) {
-            db.medicationDao().getMedicationById(medicationId).observe(this, fetchedMedication -> {
+            viewModel.getMedicationById(medicationId).observe(this, fetchedMedication -> {
                 if (fetchedMedication != null) {
                     medication = fetchedMedication;
                     nameInput.setText(medication.getName());
@@ -70,7 +77,7 @@ public class EditMedication extends AppCompatActivity {
             saveButton.setOnClickListener(v -> {
                 if (medication != null) {
 
-                    // Displays current information before updates
+                    // Displays current information before updating
                     medication.setName(nameInput.getText().toString());
                     medication.setMaxAmt(Integer.parseInt(maxAmtInput.getText().toString()));
                     medication.setNextDosageTime(LocalTime.parse(timeTextView.getText().toString()));
@@ -78,23 +85,16 @@ public class EditMedication extends AppCompatActivity {
                     medication.setAdminType(AdminType.values()[adminSpinner.getSelectedItemPosition()]);
                     medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
-                    new Thread(() -> {
-                        // Updates database based on new information
-                        db.medicationDao().update(medication);
+                    // Updates database based on new information
+                    viewModel.update(medication);
+                    Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show();
 
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show();
-
-                            NotifUtil.scheduleNotification(this, medication); // Schedules notification after update
-
-                            setResult(RESULT_OK);
-
-                            finish(); // Closes activity and returns to MainActivity
-                        });
-                    }).start();
+                    NotifUtil.scheduleNotification(this, medication); // Schedules notification after update
+                    Intent intent = new Intent(EditMedication.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // Closes activity and returns to MainActivity
                 }
             });
-
 
             deleteButton.setOnClickListener(v -> {
                 if (medication != null) {
@@ -102,17 +102,12 @@ public class EditMedication extends AppCompatActivity {
                             .setTitle("Delete Medication")
                             .setMessage("Are you sure you want to delete this medication?")
                             .setPositiveButton("Yes", (dialog, which) -> {
-                                new Thread(() -> {
-                                    db.medicationDao().delete(medication);
-                                    runOnUiThread(() -> {
-                                        Toast.makeText(this, "Medication deleted",
-                                                Toast.LENGTH_SHORT).show();
-
-                                        NotifUtil.cancelNotification(this, medication);
-
-                                        finish();
-                                    });
-                                }).start();
+                                viewModel.delete(medication);
+                                Toast.makeText(EditMedication.this, "Medication deleted", Toast.LENGTH_SHORT).show();
+                                NotifUtil.cancelNotification(this, medication);
+                                Intent intent = new Intent(EditMedication.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
                             })
                             .setNegativeButton("No", null)
                             .show(); // Closes and returns to MainActivity
@@ -127,15 +122,18 @@ public class EditMedication extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         this,
                         (view, selectedHour, selectedMinute) -> {
+                            // Converts to 12-hour format
+                            String amPm = (selectedHour >= 12) ? "PM" : "AM";
+                            int hour12 = (selectedHour == 0) ? 12 : (selectedHour > 12 ?
+                                    selectedHour - 12 : selectedHour);
+                            String formattedTime = String.format("%02d:%02d %s", hour12,
+                                    selectedMinute, amPm);
 
-                            // Updates TextView
-                            LocalTime newTime = LocalTime.of(selectedHour, selectedMinute);
-
-                            //Stores the new time
-                            timeTextView.setText(newTime.toString());
+                            // Uses formattedTime
+                            timeTextView.setText(formattedTime);
 
                         },
-                        hour, minute, true
+                        hour, minute, false // False turns this into 12-hour format instead of 24-hour format
                 );
                 timePickerDialog.show();
             });

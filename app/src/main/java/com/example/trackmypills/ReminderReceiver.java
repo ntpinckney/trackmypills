@@ -1,11 +1,11 @@
 package com.example.trackmypills;
 
 import android.Manifest;
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -14,11 +14,13 @@ import androidx.core.app.NotificationManagerCompat;
 public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        String medicationName = intent.getStringExtra("med_name");
+        String medName = intent.getStringExtra("med_name");
+        Log.d("ReminderReceiver", "Received broadcast for medication:" + medName);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "med_channel")
+                .setSmallIcon(R.drawable.ic_notif_on)
                 .setContentTitle("Medication Reminder")
-                .setContentText("Time to take " + medicationName)
+                .setContentText("Time to take " + medName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setAutoCancel(true);

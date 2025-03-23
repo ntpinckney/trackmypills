@@ -3,6 +3,7 @@ package com.example.trackmypills;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -14,18 +15,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class NewMedication extends AppCompatActivity {
     private EditText medNameInput, maxAmtInput;
-    private TextView medTimeView;
+    private TextView timeTextView;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
     private String selectedTime = LocalTime.now().toString();
+    private MedicationViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +42,14 @@ public class NewMedication extends AppCompatActivity {
 
         medNameInput = findViewById(R.id.enter_med_name);
         maxAmtInput = findViewById(R.id.max_amt_number);
-        medTimeView = findViewById(R.id.med_time);
+        timeTextView = findViewById(R.id.med_time);
 
         //  Converts enum values into String values and establishes spinners
         adminSpinner = findViewById(R.id.admin_spinner);
         frequencySpinner = findViewById(R.id.freq_spinner);
+
+        // Establishes ViewModel
+        viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
 
         Button confirmBtn = findViewById(R.id.confirmBtn);
 
@@ -54,7 +63,7 @@ public class NewMedication extends AppCompatActivity {
         SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
         // Show TimePicker when clicking the EditText
-        medTimeView.setOnClickListener(v -> showTimePickerDialog());
+        timeTextView.setOnClickListener(v -> showTimePickerDialog());
 
         // Handle Confirm button click
         confirmBtn.setOnClickListener(v -> saveMedication());
@@ -74,47 +83,71 @@ public class NewMedication extends AppCompatActivity {
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, selectedHour, selectedMinute) -> {
-                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
-                    medTimeView.setText(selectedTime); // Updates UI
+
+                    // Converts to 12-hour format
+                    String amPm = (selectedHour >= 12) ? "PM" : "AM";
+                    int hour12 = (selectedHour == 0) ? 12 : (selectedHour > 12 ?
+                            selectedHour - 12 : selectedHour);
+                    String formattedTime = String.format("%02d:%02d %s", hour12,
+                            selectedMinute, amPm);
+
+                    timeTextView.setText(formattedTime); // Updates UI
                 },
-                hour, minute, true); // True for 24-hour format
+                hour, minute, false); // False for 12-hour format
         timePickerDialog.show();
     }
 
 
 
-    private void saveMedication(){
+    private void saveMedication() {
         String medName = medNameInput.getText().toString();
         String maxAmtStr = maxAmtInput.getText().toString();
-        String medTime = medTimeView.getText().toString();
+        String medTime = timeTextView.getText().toString();
 
         // Checks if input is valid
-        if(medName.isEmpty() || maxAmtStr.isEmpty() || medTime.isEmpty()) {
+        if (medName.isEmpty() || maxAmtStr.isEmpty() || medTime.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Sets the values based on user input
         int maxAmount = Integer.parseInt(maxAmtStr);
         AdminType adminType = AdminType.values()[adminSpinner.getSelectedItemPosition()];
         Frequency frequency = Frequency.values()[frequencySpinner.getSelectedItemPosition()];
-        LocalTime time = LocalTime.parse(medTime);
+        String timeString = timeTextView.getText().toString().trim();
 
-        Medication medication = new Medication(medName, maxAmount, adminType, time, frequency);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
+            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime scheduledDateTime = now.with(parsedTime);
+
+            if(scheduledDateTime.isBefore(now)){
+                scheduledDateTime.plusDays(1);
+            }
+
+            LocalTime adjustedTime = scheduledDateTime.toLocalTime();
+
+            Medication medication = new Medication(medName, maxAmount, adminType, parsedTime, frequency);
+            // Uses ViewModel to insert medication into database
+            viewModel.insert(medication);
+
+            Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
+            // Adds notification
+            NotifUtil.scheduleNotification(this, medication);
 
 
-        new Thread(() -> {
-            db.medicationDao().insert(medication);
-            runOnUiThread(() -> {
-                Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
+            // Returns to MainActivity once saved
+            Intent intent = new Intent(NewMedication.this, MainActivity.class);
+            startActivity(intent);
+            finish();
 
-                NotifUtil.scheduleNotification(this, medication); // Schedules notification after med is saved
+        } catch (DateTimeParseException e){
+            Log.e("NewMedication", "Invalid time format: " + timeString, e);
+            Toast.makeText(this,"Invalid time format! Please use hh:mm AM/PM.", Toast.LENGTH_SHORT).show();
+        }
 
-                // Returns to MainActivity after saving
-                Intent intent = new Intent(NewMedication.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Closes NewMedication Activity
-            });
-        }).start();
     }
 
 }

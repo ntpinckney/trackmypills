@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Medication.class}, version = 2)
+@Database(entities = {Medication.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MedicationDatabase extends RoomDatabase {
 

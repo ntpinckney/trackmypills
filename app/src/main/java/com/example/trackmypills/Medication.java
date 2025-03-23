@@ -28,6 +28,8 @@ public class Medication {
     private Frequency frequency; // Reminder time enums ("Every 2 hours," "Every 4 hours," etc.)
     @ColumnInfo(defaultValue = "last_reset_date")
     private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
+    @ColumnInfo(defaultValue = "notifications_enabled")
+    private boolean notificationsEnabled;
 
 
     public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
@@ -113,6 +115,14 @@ public class Medication {
         this.nextDosageTime = nextDosageTime;
     }
 
+    public boolean isNotificationsEnabled() {
+        return notificationsEnabled;
+    }
+
+    public void setNotificationsEnabled(boolean notificationsEnabled) {
+        this.notificationsEnabled = notificationsEnabled;
+    }
+
     public LocalTime getNextDosageTime() {
         LocalTime now = LocalTime.now();
         LocalTime nextDose = startTime;
@@ -125,6 +135,8 @@ public class Medication {
         }
         return startTime;
     }
+
+
 }
 
 

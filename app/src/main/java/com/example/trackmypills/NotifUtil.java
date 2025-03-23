@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,16 +21,18 @@ public class NotifUtil {
                 context,
                 medication.getId(),
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextDoseTime = LocalDateTime.of(LocalDate.now(), medication.getNextDosageTime());
-
+//        long triggerTime = System.currentTimeMillis() + 5000; // Testing purposes. Will send a notification in 5 seconds.
         long triggerTime = nextDoseTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
         if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+            Log.d("NotifUtil", "Notification scheduled for medication: " + medication.getName());
+        } else {
+            Log.e("NotifUtil", "AlarmManager is null!");
         }
 
     }
