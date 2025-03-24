@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -63,7 +64,7 @@ public class NewMedication extends AppCompatActivity {
         SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
         // Show TimePicker when clicking the EditText
-        timeTextView.setOnClickListener(v -> showTimePickerDialog());
+        timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
 
         // Handle Confirm button click
         confirmBtn.setOnClickListener(v -> saveMedication());
@@ -121,22 +122,25 @@ public class NewMedication extends AppCompatActivity {
             LocalTime parsedTime = LocalTime.parse(timeString, formatter);
 
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime scheduledDateTime = now.with(parsedTime);
+            LocalDate today = now.toLocalDate();
+
+            LocalDateTime scheduledDateTime = LocalDateTime.of(today, parsedTime);
 
             if(scheduledDateTime.isBefore(now)){
                 scheduledDateTime = scheduledDateTime.plusDays(1);
             }
 
-            LocalTime adjustedTime = scheduledDateTime.toLocalTime();
+            LocalTime adjustedDateTime = LocalTime.from(scheduledDateTime);
 
-            Medication medication = new Medication(medName, maxAmount, adminType, parsedTime, frequency);
+            Log.d("MedicationTime", "Parsed Time: " + parsedTime + ", Adjusted Time: " + adjustedDateTime);
+
+            Medication medication = new Medication(medName, maxAmount, adminType, adjustedDateTime, frequency);
             // Uses ViewModel to insert medication into database
             viewModel.insert(medication);
 
             Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
             // Adds notification
             NotifUtil.scheduleNotification(this, medication);
-
 
             // Returns to MainActivity once saved
             Intent intent = new Intent(NewMedication.this, MainActivity.class);
@@ -145,7 +149,7 @@ public class NewMedication extends AppCompatActivity {
 
         } catch (DateTimeParseException e){
             Log.e("NewMedication", "Invalid time format: " + timeString, e);
-            Toast.makeText(this,"Invalid time format! Please use hh:mm AM/PM.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();
         }
 
     }

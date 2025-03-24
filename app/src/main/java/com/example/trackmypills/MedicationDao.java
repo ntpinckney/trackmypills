@@ -1,12 +1,7 @@
 package com.example.trackmypills;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
+import androidx.room.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +15,7 @@ public interface MedicationDao {
 
     // Updates entries with new information
     @Update
-    public void update(Medication medication);
+    void update(Medication medication);
 
     // Removes entries from database
     @Delete

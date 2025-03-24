@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity(tableName = "medications") // Establishes RoomDB table
@@ -30,7 +31,7 @@ public class Medication {
     private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
     @ColumnInfo(defaultValue = "notifications_enabled")
     private boolean notificationsEnabled;
-
+//
 
     public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
@@ -61,6 +62,7 @@ public class Medication {
     public int getMaxAmt() {
         return maxAmt;
     }
+
     public int getDosesTaken() {
         return dosesTaken;
     }
@@ -97,21 +99,18 @@ public class Medication {
         this.frequency = frequency;
     }
 
-    public LocalDate getLastResetDate(){
+    public LocalDate getLastResetDate() {
         return lastResetDate;
     }
 
-    public  void setLastResetDate(LocalDate lastResetDate){
+    public void setLastResetDate(LocalDate lastResetDate) {
         this.lastResetDate = lastResetDate;
     }
 
-    public LocalTime nextDosageTime;
+    public LocalDateTime nextDosageTime;
 
 
-    // Calculates the next dosageTime from startTime
-
-
-    public void setNextDosageTime(LocalTime nextDosageTime){
+    public void setNextDosageTime(LocalDateTime nextDosageTime) {
         this.nextDosageTime = nextDosageTime;
     }
 
@@ -123,20 +122,12 @@ public class Medication {
         this.notificationsEnabled = notificationsEnabled;
     }
 
-    public LocalTime getNextDosageTime() {
-        LocalTime now = LocalTime.now();
-        LocalTime nextDose = startTime;
-
-        for (int i = 0; i < maxAmt; i++) {
-            nextDose = nextDose.plusHours(frequency.getIntervalHours());
-            if (nextDose.isAfter(now)) {
-                return nextDose;
-            }
+    public LocalDateTime getNextDosageTime() {
+        if (nextDosageTime == null) {
+            return LocalDateTime.of(LocalDate.now(), startTime);
         }
-        return startTime;
+        return nextDosageTime;
     }
-
-
 }
 
 

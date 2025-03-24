@@ -79,11 +79,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         public void bind(Medication medication, OnMedicationClickListener listener) {
             medName.setText(medication.getName());
             LocalDateTime now = LocalDateTime.now();
-            LocalTime nextDosageTime = medication.getNextDosageTime();
-            LocalDateTime nextDosageDateTime = LocalDateTime.of(LocalDate.now(), nextDosageTime);
+            LocalDateTime nextDosageTime = medication.getNextDosageTime();
 
-            if(nextDosageDateTime.isBefore(now)){
-                nextDosageDateTime = nextDosageDateTime.plusDays(1);
+            if(nextDosageTime.isBefore(now)){
+                nextDosageTime = nextDosageTime.plusDays(1);
             }
 
             String formattedTime = (nextDosageTime != null) ?

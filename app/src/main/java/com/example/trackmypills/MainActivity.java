@@ -25,6 +25,7 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -107,8 +108,10 @@ public class MainActivity extends AppCompatActivity {
     private void reload() {
         viewModel.getAllMedication().observe(this, medications -> {
             if (medications != null) {
+                LocalDateTime now = LocalDateTime.now(); // Gets full current date and time
+
                 for (Medication medication : medications) {
-                    if (LocalTime.now().isAfter(medication.getNextDosageTime())) {
+                    if (now.isAfter(medication.getNextDosageTime())) { // Compares LocalDateTime
                         medication.setDosesTaken(0);
 
                         // Updates in background thread
@@ -116,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                         executor.execute(() -> db.medicationDao().update(medication));
                     }
                 }
-                adapter.setMedications(medications);
-                adapter.notifyDataSetChanged();
             }
         });
     }

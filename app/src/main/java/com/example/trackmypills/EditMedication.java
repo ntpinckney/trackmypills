@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -28,7 +31,7 @@ public class EditMedication extends AppCompatActivity {
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
     private Button saveButton, deleteButton;
-//    private MedicationDatabase db;
+
     private Medication medication;
 
     private MedicationViewModel viewModel;
@@ -65,10 +68,12 @@ public class EditMedication extends AppCompatActivity {
         if (medicationId != -1) {
             viewModel.getMedicationById(medicationId).observe(this, fetchedMedication -> {
                 if (fetchedMedication != null) {
+                    Log.d("EditMedication", "Fetched time from DB: " + fetchedMedication.getNextDosageTime());
                     medication = fetchedMedication;
                     nameInput.setText(medication.getName());
                     maxAmtInput.setText(String.valueOf(medication.getMaxAmt()));
-                    timeTextView.setText(medication.getNextDosageTime().toString());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a ", Locale.US);
+                    timeTextView.setText(medication.getNextDosageTime().toLocalTime().format(formatter));
 
                     SpinnerUtil.setSpinnerSelection(adminSpinner, medication.getAdminType().getLabel());
                     SpinnerUtil.setSpinnerSelection(frequencySpinner, medication.getFrequency().getLabel());
@@ -79,25 +84,50 @@ public class EditMedication extends AppCompatActivity {
             // Saves updated data
             saveButton.setOnClickListener(v -> {
                 if (medication != null) {
-
-                    // Displays current information before updating
                     medication.setName(nameInput.getText().toString());
                     medication.setMaxAmt(Integer.parseInt(maxAmtInput.getText().toString()));
-                    medication.setNextDosageTime(LocalTime.parse(timeTextView.getText().toString()));
+
+                    // Logs the current time in the TextView
+                    String timeString = timeTextView.getText().toString().trim();
+                    Log.d("EditMedication", "Raw time from TextView: [" + timeString + "]");
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+                    try {
+                        if (!timeString.isEmpty()) {
+                            LocalTime newTime = LocalTime.parse(timeString, formatter);
+                            Log.d("EditMedication", "Parsed LocalTime: " + newTime);
+
+                            // Ensure the new time is different before updating
+                            LocalDateTime updatedTime = LocalDateTime.of(LocalDate.now(), newTime);
+                            Log.d("EditMedication", "Updating time to: " + updatedTime);
+
+                            medication.setNextDosageTime(updatedTime); // Ensure update happens
+                        } else {
+                            Log.e("EditMedication", "Time string was unexpectedly empty! Using existing time.");
+                        }
+                    } catch (DateTimeParseException e) {
+                        Log.e("EditMedication", "Error parsing time: " + timeString, e);
+                        Toast.makeText(EditMedication.this, "Invalid or missing time. Please try again.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     medication.setAdminType(AdminType.values()[adminSpinner.getSelectedItemPosition()]);
                     medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
-                    // Updates database based on new information
-                    viewModel.update(medication);
-                    Toast.makeText(this, "Medication updated", Toast.LENGTH_SHORT).show();
+                    Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
 
-                    NotifUtil.scheduleNotification(this, medication); // Schedules notification after update
+                    viewModel.update(medication);
+
+                    Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();
+
+                    NotifUtil.scheduleNotification(this, medication);
+
                     Intent intent = new Intent(EditMedication.this, MainActivity.class);
                     startActivity(intent);
-                    finish(); // Closes activity and returns to MainActivity
+                    finish();
                 }
             });
+
 
             deleteButton.setOnClickListener(v -> {
                 if (medication != null) {
@@ -117,22 +147,7 @@ public class EditMedication extends AppCompatActivity {
                 }
             });
 
-            saveButton.setOnClickListener(v -> {
-                String timeString = timeTextView.getText().toString();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
-                try {
-                    LocalTime newTime = LocalTime.parse(timeString, formatter);
-                    medication.setNextDosageTime(newTime);
-                    viewModel.update(medication);
-
-                    Toast.makeText(EditMedication.this, "Medication updated!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } catch (DateTimeParseException e) {
-                    Toast.makeText(EditMedication.this, "Invalid or missing elements. Please try again.", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            });
-
+            timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
 
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
