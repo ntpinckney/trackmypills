@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.ui.activities;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -21,12 +21,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
+import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.ui.adapter.MedicationAdapter;
+import com.example.trackmypills.data.database.MedicationDatabase;
+import com.example.trackmypills.viewmodel.MedicationViewModel;
+import com.example.trackmypills.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

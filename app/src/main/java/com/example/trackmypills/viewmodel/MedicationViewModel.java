@@ -1,9 +1,12 @@
-package com.example.trackmypills;
+package com.example.trackmypills.viewmodel;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.example.trackmypills.data.repository.MedicationRepository;
+import com.example.trackmypills.models.Medication;
 
 import java.util.List;
 

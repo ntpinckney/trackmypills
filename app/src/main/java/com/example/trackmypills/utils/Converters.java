@@ -1,6 +1,9 @@
-package com.example.trackmypills;
+package com.example.trackmypills.utils;
 
 import androidx.room.TypeConverter;
+
+import com.example.trackmypills.models.AdminType;
+import com.example.trackmypills.models.Frequency;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

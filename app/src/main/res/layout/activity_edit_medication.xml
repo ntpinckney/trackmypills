@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="32dp"
-        tools:context=".NewMedication">
+        tools:context=".ui.activities.NewMedication">
 
         <TextView
             android:id="@+id/edit_med_text"

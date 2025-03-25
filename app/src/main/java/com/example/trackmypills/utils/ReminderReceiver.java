@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.utils;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -10,6 +10,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.example.trackmypills.R;
 
 public class ReminderReceiver extends BroadcastReceiver {
     @Override

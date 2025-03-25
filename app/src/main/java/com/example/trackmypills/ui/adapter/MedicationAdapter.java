@@ -1,10 +1,9 @@
-package com.example.trackmypills;
+package com.example.trackmypills.ui.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,9 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.LocalDate;
+import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.viewmodel.MedicationViewModel;
+import com.example.trackmypills.R;
+import com.example.trackmypills.utils.NotifUtil;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 

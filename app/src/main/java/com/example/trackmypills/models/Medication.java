@@ -1,9 +1,11 @@
-package com.example.trackmypills;
+package com.example.trackmypills.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
+
+import com.example.trackmypills.utils.Converters;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

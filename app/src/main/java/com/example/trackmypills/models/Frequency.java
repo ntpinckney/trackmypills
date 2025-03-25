@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.models;
 
 public enum Frequency {
     TWO_HOURS(2, "Every 2 hours"),

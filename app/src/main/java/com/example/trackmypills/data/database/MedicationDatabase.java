@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.data.database;
 
 import android.content.Context;
 
@@ -6,6 +6,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.utils.Converters;
 
 @Database(entities = {Medication.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})

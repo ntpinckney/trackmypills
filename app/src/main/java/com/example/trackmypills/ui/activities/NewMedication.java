@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.ui.activities;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -17,6 +17,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
+
+import com.example.trackmypills.models.AdminType;
+import com.example.trackmypills.models.Frequency;
+import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.data.database.MedicationDatabase;
+import com.example.trackmypills.viewmodel.MedicationViewModel;
+import com.example.trackmypills.R;
+import com.example.trackmypills.utils.NotifUtil;
+import com.example.trackmypills.utils.SpinnerUtil;
+import com.example.trackmypills.utils.TimePickerUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

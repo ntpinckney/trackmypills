@@ -22,18 +22,18 @@
         >
 
         <receiver
-            android:name=".ReminderReceiver"
+            android:name=".utils.ReminderReceiver"
             android:exported="false"
             />
 
         <activity
-            android:name=".EditMedication"
+            android:name=".ui.activities.EditMedication"
             android:exported="false" />
         <activity
-            android:name=".NewMedication"
+            android:name=".ui.activities.NewMedication"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

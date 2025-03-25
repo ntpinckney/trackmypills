@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.models;
 
 public enum AdminType {
     PILLS("pill(s)"),

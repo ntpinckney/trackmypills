@@ -1,4 +1,4 @@
-package com.example.trackmypills;
+package com.example.trackmypills.utils;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
