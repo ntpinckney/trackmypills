@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
         />
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
 
     <application
         android:allowBackup="true"
@@ -23,17 +24,18 @@
 
         <receiver
             android:name=".utils.ReminderReceiver"
+            android:enabled="true"
             android:exported="false"
             />
 
         <activity
-            android:name=".ui.activities.EditMedication"
+            android:name=".ui.activity.EditMedication"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.NewMedication"
+            android:name=".ui.activity.NewMedication"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

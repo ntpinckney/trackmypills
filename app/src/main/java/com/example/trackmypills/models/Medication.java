@@ -12,16 +12,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity(tableName = "medications") // Establishes RoomDB table
-@TypeConverters(Converters.class) // Establishes Converters for ReminderTime and AdminType
+@TypeConverters(Converters.class) // Establishes Converters for ReminderTime, AdminType, and DateTime formats
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
     private int id;
     @ColumnInfo(defaultValue = "medication_name")
     private String name; // Name of medication
+
+    // Med quantity per dose
+    @ColumnInfo(defaultValue = "med_quantity")
+    private double medQuantity; //
     @ColumnInfo(defaultValue = "max_amt")
-    private int maxAmt; // Maximum doses
+    private double maxAmt; // Maximum doses // 15
     @ColumnInfo(defaultValue = "doses_taken")
-    private int dosesTaken; // Tracks how many doses have been taken
+    private double dosesTaken; // Tracks how many doses have been taken
     @ColumnInfo(defaultValue = "admin_type")
     private
     AdminType adminType; // Type of administration (pills, mL, puffs, etc.)
@@ -32,11 +36,12 @@ public class Medication {
     @ColumnInfo(defaultValue = "last_reset_date")
     private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
     @ColumnInfo(defaultValue = "notifications_enabled")
-    private boolean notificationsEnabled;
-//
+    private boolean notificationsEnabled; // Boolean to inform user
 
-    public Medication(String name, int maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
+
+    public Medication(String name, double medQuantity, double maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
+        this.medQuantity = medQuantity;
         this.maxAmt = maxAmt;
         this.adminType = adminType;
         this.startTime = startTime;
@@ -44,7 +49,6 @@ public class Medication {
     }
 
     // Getters and setters
-
     public int getId() {
         return id;
     }
@@ -61,21 +65,29 @@ public class Medication {
         this.name = name;
     }
 
-    public int getMaxAmt() {
+    public double getMaxAmt() {
         return maxAmt;
     }
+    public void setMaxAmt(double maxAmt) {
+        this.maxAmt = maxAmt;
+    }
 
-    public int getDosesTaken() {
+    public double getDosesTaken() {
         return dosesTaken;
     }
 
-    public void setDosesTaken(int dosesTaken) {
+    public void setDosesTaken(double dosesTaken) {
         this.dosesTaken = dosesTaken;
     }
 
-    public void setMaxAmt(int maxAmt) {
-        this.maxAmt = maxAmt;
+    public double getMedQuantity() {
+        return medQuantity;
     }
+
+    public void setMedQuantity(double medQuantity) {
+        this.medQuantity = medQuantity;
+    }
+
 
     public AdminType getAdminType() {
         return adminType;
@@ -131,5 +143,3 @@ public class Medication {
         return nextDosageTime;
     }
 }
-
-

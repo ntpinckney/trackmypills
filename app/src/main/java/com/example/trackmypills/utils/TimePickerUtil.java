@@ -7,6 +7,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class TimePickerUtil {
+
     public static void showTimePickerDialog(Context context, TextView textView) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -15,7 +16,7 @@ public class TimePickerUtil {
         TimePickerDialog timePickerDialog = new TimePickerDialog(context,
                 (view, selectedHour, selectedMinute) -> {
 
-                    // Converts to 12-hour format
+                    // Converts to 12-hour format and switches to AM or PM, depending on the hour
                     String amPm = (selectedHour >= 12) ? "PM" : "AM";
                     int hour12 = (selectedHour == 0) ? 12 : (selectedHour > 12 ?
                             selectedHour - 12 : selectedHour);

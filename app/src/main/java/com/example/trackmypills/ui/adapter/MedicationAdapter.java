@@ -1,12 +1,15 @@
 package com.example.trackmypills.ui.adapter;
 
+import static android.app.PendingIntent.getActivity;
+
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,7 +94,18 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                     nextDosageTime.format(DateTimeFormatter.ofPattern("h:mm a")) : "N/A";
             medTime.setText(formattedTime);
 
-            medDosage.setText(String.format("%d/%d %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
+            // Validates medQuantity and maxAmt before it sets the texts
+            if (medication.getMedQuantity() < 0.01){
+                medication.setMedQuantity(0.01); // Automatically sets it to 0.01 if number is less than 0.01
+            }
+
+            if(medication.getMaxAmt() < 0.01){
+                medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
+            }
+
+            // TODO: ENSURE medQuantity DOES NOT EXCEED maxAmt. WRITE A VALIDATION THAT DOES THIS
+
+            medDosage.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
                 medication.getAdminType().getLabel()));
 
             //Loads notification state
@@ -134,14 +148,30 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
             itemView.setOnClickListener(v -> {
                 if (medication.getDosesTaken() < medication.getMaxAmt()) {
-                    medication.setDosesTaken(medication.getDosesTaken() + 1);
+                    medication.setDosesTaken(medication.getMedQuantity());
                     viewModel.update(medication);
                     notifyItemChanged(getAdapterPosition());
                 } else {
-                    Toast.makeText(v.getContext(), "Max dose reached", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle("Max Dose Reached!")
+                            .setMessage("You have received the maximum dosage. Do you want to exceed it?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                // "Yes" allows user to exceed maximum dosage
+                                medication.setDosesTaken(medication.getMedQuantity());
+                                viewModel.update(medication);
+                                notifyItemChanged(getAdapterPosition());
+
+                                //Changes dose text to red once max dose is exceeded
+                                TextView dosesTextView = itemView.findViewById(R.id.med_dosage);
+                                dosesTextView.setTextColor(Color.RED);
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                // "No" does nothing
+                                dialog.dismiss();
+                            })
+                            .show();
                 }
             });
         }
-
     }
 }

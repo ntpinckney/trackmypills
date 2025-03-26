@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.trackmypills.R;
 
 public class ReminderReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String medName = intent.getStringExtra("med_name");

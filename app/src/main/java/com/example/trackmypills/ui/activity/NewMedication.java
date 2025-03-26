@@ -1,8 +1,9 @@
-package com.example.trackmypills.ui.activities;
+package com.example.trackmypills.ui.activity;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,11 +34,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class NewMedication extends AppCompatActivity {
-    private EditText medNameInput, maxAmtInput;
+    private EditText medNameInput, medQuantityInput, maxAmtInput;
     private TextView timeTextView;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
@@ -52,6 +52,7 @@ public class NewMedication extends AppCompatActivity {
         setContentView(R.layout.activity_new_medication);
 
         medNameInput = findViewById(R.id.enter_med_name);
+        medQuantityInput = findViewById(R.id.quantity_per_dose);
         maxAmtInput = findViewById(R.id.max_amt_number);
         timeTextView = findViewById(R.id.med_time);
 
@@ -59,10 +60,13 @@ public class NewMedication extends AppCompatActivity {
         adminSpinner = findViewById(R.id.admin_spinner);
         frequencySpinner = findViewById(R.id.freq_spinner);
 
+
+
+        Button confirmBtn = findViewById(R.id.confirmBtn);
+
         // Establishes ViewModel
         viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
 
-        Button confirmBtn = findViewById(R.id.confirmBtn);
 
         db = Room.databaseBuilder(getApplicationContext(),
                 MedicationDatabase.class, "medication_db")
@@ -87,42 +91,21 @@ public class NewMedication extends AppCompatActivity {
         });
     }
 
-    private void showTimePickerDialog() {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, selectedHour, selectedMinute) -> {
-
-                    // Converts to 12-hour format
-                    String amPm = (selectedHour >= 12) ? "PM" : "AM";
-                    int hour12 = (selectedHour == 0) ? 12 : (selectedHour > 12 ?
-                            selectedHour - 12 : selectedHour);
-                    String formattedTime = String.format("%02d:%02d %s", hour12,
-                            selectedMinute, amPm);
-
-                    timeTextView.setText(formattedTime); // Updates UI
-                },
-                hour, minute, false); // False for 12-hour format
-        timePickerDialog.show();
-    }
-
-
-
     private void saveMedication() {
-        String medName = medNameInput.getText().toString();
+        String medNameStr = medNameInput.getText().toString();
+        String medQuantityStr = medQuantityInput.getText().toString();
         String maxAmtStr = maxAmtInput.getText().toString();
-        String medTime = timeTextView.getText().toString();
+        String medTimeStr = timeTextView.getText().toString();
 
         // Checks if input is valid
-        if (medName.isEmpty() || maxAmtStr.isEmpty() || medTime.isEmpty()) {
+        if (medNameStr.isEmpty() || maxAmtStr.isEmpty() || medTimeStr.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Sets the values based on user input
-        int maxAmount = Integer.parseInt(maxAmtStr);
+        double medQuantity = Double.parseDouble(medQuantityStr);
+        double maxAmount = Double.parseDouble(maxAmtStr);
         AdminType adminType = AdminType.values()[adminSpinner.getSelectedItemPosition()];
         Frequency frequency = Frequency.values()[frequencySpinner.getSelectedItemPosition()];
         String timeString = timeTextView.getText().toString().trim();
@@ -144,7 +127,7 @@ public class NewMedication extends AppCompatActivity {
 
             Log.d("MedicationTime", "Parsed Time: " + parsedTime + ", Adjusted Time: " + adjustedDateTime);
 
-            Medication medication = new Medication(medName, maxAmount, adminType, adjustedDateTime, frequency);
+            Medication medication = new Medication(medNameStr, medQuantity, maxAmount, adminType, adjustedDateTime, frequency);
             // Uses ViewModel to insert medication into database
             viewModel.insert(medication);
 
@@ -161,7 +144,5 @@ public class NewMedication extends AppCompatActivity {
             Log.e("NewMedication", "Invalid time format: " + timeString, e);
             Toast.makeText(this,"Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();
         }
-
     }
-
 }

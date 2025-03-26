@@ -11,9 +11,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Converters {
+
+
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-
 
 
     //Converts AdminType to String
@@ -40,12 +41,13 @@ public class Converters {
         return frequency == null ? null: Frequency.valueOf(frequency);
     }
 
-
+    // Converts DateTime to String
     @TypeConverter
     public static String toStringDateTime(LocalDateTime dateTime){
         return dateTime == null ? null : dateTime.format(timeFormatter);
     }
 
+    //Converts String to DateTime
     @TypeConverter
     public static LocalDateTime fromStringDateTime(String value) {
         if (value == null) {
@@ -56,27 +58,28 @@ public class Converters {
         return LocalDateTime.of(LocalDate.now(), parsedTime);
     }
 
-
+    // Converts Time to String
     @TypeConverter
     public static String toStringTime(LocalTime time){
         return time == null ? null : time.format(timeFormatter);
     }
 
-
+    //Converts String to Time
     @TypeConverter
-    public static LocalTime fromStringTime(String value){
-        return value == null ? null : LocalTime.parse(value);
+    public static LocalTime fromStringTime(String value) {
+        return value == null ? null : LocalTime.parse(value, timeFormatter);
     }
 
+
+    // Converts Date to String
     @TypeConverter
     public static String toStringDate(LocalDate date){
         return date == null ? null : date.format(dateFormatter);
     }
 
+    // Converts String to Date
     @TypeConverter
     public static LocalDate fromStringDate(String value){
         return value == null ? null : LocalDate.parse(value);
     }
-
-
 }

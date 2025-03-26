@@ -12,61 +12,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="32dp"
-        tools:context=".ui.activities.NewMedication">
+        tools:context=".ui.activity.NewMedication">
 
-        <TextView
-            android:id="@+id/edit_med_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="56dp"
-            android:text="Edit medication"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/edit_med_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="381dp"
+            android:layout_height="51dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="20dp"
             android:ems="10"
+            android:hint="Edit medication name"
             android:inputType="text"
-            android:text="Medication name"
+            app:layout_constraintBottom_toTopOf="@+id/edit_quantity_per_dose"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_med_text" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/edit_max_amt_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <EditText
+            android:id="@+id/edit_quantity_per_dose"
+            android:layout_width="254dp"
+            android:layout_height="42dp"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="21dp"
-            android:text="Maximum amount"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="18dp"
+            android:ems="10"
+            android:hint="Quantity per dose (e.g. 2)"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_med_name" />
 
         <EditText
             android:id="@+id/edit_max_amt_number"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="254dp"
+            android:layout_height="42dp"
             android:layout_marginStart="18dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="18dp"
-            android:layout_marginTop="10dp"
             android:ems="10"
-            android:inputType="number"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="Max quantity per day (e.g. 8)"
+            android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_max_amt_text" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_quantity_per_dose" />
+
 
         <TextView
             android:id="@+id/adminTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="29dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
             android:text="Administration method"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_max_amt_number" />
@@ -76,18 +76,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/adminTextView" />
 
         <TextView
             android:id="@+id/frequency_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
             android:text="Frequency"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_admin_spinner" />
@@ -97,18 +98,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="19dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="19dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/frequency_text_view" />
 
         <TextView
             android:id="@+id/dose_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="21dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="32dp"
             android:text="Time of first dosage"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_freq_spinner" />
@@ -117,14 +119,14 @@
             android:id="@+id/edit_med_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="22dp"
-            android:text="Select time"
-            android:padding="10dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
             android:background="@android:drawable/editbox_background"
-            android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
+            android:padding="10dp"
+            android:text="Select time"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dose_text" />
 

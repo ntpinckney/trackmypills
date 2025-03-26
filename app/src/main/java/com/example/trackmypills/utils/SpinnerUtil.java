@@ -6,7 +6,7 @@ import android.widget.Spinner;
 
 public class SpinnerUtil {
 
-    public static  void setUpSpinner(Context context, Spinner spinner, Enum<?>[] values) {
+    public static void setUpSpinner(Context context, Spinner spinner, Enum<?>[] values) {
         String[] labels = new String[values.length];
         for(int i = 0; i < values.length; i++){
             labels[i] = values[i].toString();

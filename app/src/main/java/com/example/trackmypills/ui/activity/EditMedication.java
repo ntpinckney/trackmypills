@@ -1,4 +1,4 @@
-package com.example.trackmypills.ui.activities;
+package com.example.trackmypills.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -34,7 +34,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 public class EditMedication extends AppCompatActivity {
-    private EditText nameInput, maxAmtInput;
+    private EditText nameInput, medQuantityInput, maxAmtInput;
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
     private Button saveButton, deleteButton;
@@ -51,6 +51,7 @@ public class EditMedication extends AppCompatActivity {
         setContentView(R.layout.activity_edit_medication);
 
         nameInput = findViewById(R.id.edit_med_name);
+        medQuantityInput = findViewById(R.id.edit_quantity_per_dose);
         maxAmtInput = findViewById(R.id.edit_max_amt_number);
         adminSpinner = findViewById(R.id.edit_admin_spinner);
         frequencySpinner = findViewById(R.id.edit_freq_spinner);
@@ -78,6 +79,7 @@ public class EditMedication extends AppCompatActivity {
                     Log.d("EditMedication", "Fetched time from DB: " + fetchedMedication.getNextDosageTime());
                     medication = fetchedMedication;
                     nameInput.setText(medication.getName());
+                    medQuantityInput.setText(String.valueOf(medication.getMedQuantity()));
                     maxAmtInput.setText(String.valueOf(medication.getMaxAmt()));
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a ", Locale.US);
                     timeTextView.setText(medication.getNextDosageTime().toLocalTime().format(formatter));
@@ -92,11 +94,13 @@ public class EditMedication extends AppCompatActivity {
             saveButton.setOnClickListener(v -> {
                 if (medication != null) {
                     medication.setName(nameInput.getText().toString());
-                    medication.setMaxAmt(Integer.parseInt(maxAmtInput.getText().toString()));
+                    medication.setMedQuantity(Double.parseDouble(medQuantityInput.getText().toString()));
+                    medication.setMaxAmt(Double.parseDouble(maxAmtInput.getText().toString()));
 
                     // Logs the current time in the TextView
                     String timeString = timeTextView.getText().toString().trim();
-                    Log.d("EditMedication", "Raw time from TextView: [" + timeString + "]");
+                    // If you know, you know
+                    Log.d("EditMedication", "rAw TiMe from TextView: [" + timeString + "]");
 
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
                     try {
@@ -104,7 +108,7 @@ public class EditMedication extends AppCompatActivity {
                             LocalTime newTime = LocalTime.parse(timeString, formatter);
                             Log.d("EditMedication", "Parsed LocalTime: " + newTime);
 
-                            // Ensure the new time is different before updating
+                            // Ensures that the new time is different before updating
                             LocalDateTime updatedTime = LocalDateTime.of(LocalDate.now(), newTime);
                             Log.d("EditMedication", "Updating time to: " + updatedTime);
 
