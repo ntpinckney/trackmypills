@@ -38,7 +38,7 @@ public class Medication {
     @ColumnInfo(defaultValue = "last_reset_date")
     private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
     @ColumnInfo(defaultValue = "notifications_enabled")
-    private boolean notificationsEnabled; // Boolean to inform user
+    private boolean notificationsEnabled; // Boolean to check if notifications are enabled
 
 
     public Medication(String name, double medQuantity, double maxAmt, double totalMeds, AdminType adminType, LocalTime startTime, Frequency frequency) {

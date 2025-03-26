@@ -30,11 +30,4 @@ public interface MedicationDao {
     // Gets a medication by its Id. Required for reminders
     @Query("SELECT * FROM medications WHERE id = :medicationId LIMIT 1")
     LiveData<Medication> getMedicationById(int medicationId);
-
-    @Query("UPDATE medications SET dosesTaken = 0 WHERE lastResetDate < :currentDate")
-    void resetDoses(LocalDate currentDate);
-
-    @Query("UPDATE medications SET notificationsEnabled = :enabled WHERE id = :medId")
-    void updateNotificationState(int medId, boolean enabled);
-
 }
