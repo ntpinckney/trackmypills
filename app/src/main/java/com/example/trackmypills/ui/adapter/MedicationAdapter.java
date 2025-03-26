@@ -1,8 +1,8 @@
 package com.example.trackmypills.ui.adapter;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +28,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     private OnMedicationClickListener listener; // Callback for item clicks
 
     private static MedicationViewModel viewModel;
-
 
     public interface OnMedicationClickListener {
         void onMedicationClick(Medication medication);
@@ -94,14 +93,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                     nextDosageTime.format(DateTimeFormatter.ofPattern("h:mm a")) : "N/A";
             medTime.setText(formattedTime);
 
-            // Validates medQuantity and maxAmt before it sets the texts
-            if (medication.getMedQuantity() < 0.01){
-                medication.setMedQuantity(0.01); // Automatically sets it to 0.01 if number is less than 0.01
-            }
-
-            if(medication.getMaxAmt() < 0.01){
-                medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
-            }
 
             // TODO: ENSURE medQuantity DOES NOT EXCEED maxAmt. WRITE A VALIDATION THAT DOES THIS
 
@@ -140,35 +131,57 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
             });
 
+
             editButton.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onMedicationClick(medication);
                 }
             });
 
+            // Validates medQuantity and maxAmt before it sets the texts
+            if (medication.getMedQuantity() < 0.01){
+                medication.setMedQuantity(0.01); // Automatically sets it to 0.01 if number is less than 0.01
+            }
+
+            if(medication.getMaxAmt() < 0.01){
+                medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
+            }
+
             itemView.setOnClickListener(v -> {
-                if (medication.getDosesTaken() < medication.getMaxAmt()) {
-                    medication.setDosesTaken(medication.getMedQuantity());
+                SharedPreferences prefs = v.getContext().getSharedPreferences("ExceedPrefs", Context.MODE_PRIVATE);
+                boolean dontShowAgain = prefs.getBoolean("don't_show_exceed_dialog", false);
+
+                if (medication.getDosesTaken() < medication.getMaxAmt() || dontShowAgain) {
+                    medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
                     viewModel.update(medication);
                     notifyItemChanged(getAdapterPosition());
+
+                    if(medication.getDosesTaken() > medication.getMaxAmt()){
+                        //Changes dose text to red once max dose is exceeded
+                        TextView dosesTextView = itemView.findViewById(R.id.med_dosage);
+                        dosesTextView.setTextColor(Color.RED);
+                    }
+
                 } else {
                     new AlertDialog.Builder(v.getContext())
                             .setTitle("Max Dose Reached!")
-                            .setMessage("You have received the maximum dosage. Do you want to exceed it?")
+                            .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
                             .setPositiveButton("Yes", (dialog, which) -> {
-                                // "Yes" allows user to exceed maximum dosage
-                                medication.setDosesTaken(medication.getMedQuantity());
+                                // "Yes" allows user to exceed maximum dosage and warns them every time
+                                medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
                                 viewModel.update(medication);
                                 notifyItemChanged(getAdapterPosition());
 
-                                //Changes dose text to red once max dose is exceeded
-                                TextView dosesTextView = itemView.findViewById(R.id.med_dosage);
-                                dosesTextView.setTextColor(Color.RED);
                             })
                             .setNegativeButton("No", (dialog, which) -> {
                                 // "No" does nothing
                                 dialog.dismiss();
                             })
+                            .setNeutralButton("Don't Show Again", ((dialog, which) -> {
+                                // "Don't Show Again" prevents future pop-ups when exceeding dosage
+                                prefs.edit().putBoolean("don't_show_exceed_dialog", true).apply();
+                                dialog.dismiss();
+                            }))
                             .show();
                 }
             });

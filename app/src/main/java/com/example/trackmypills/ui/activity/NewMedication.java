@@ -1,5 +1,6 @@
 package com.example.trackmypills.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -128,18 +129,29 @@ public class NewMedication extends AppCompatActivity {
             Log.d("MedicationTime", "Parsed Time: " + parsedTime + ", Adjusted Time: " + adjustedDateTime);
 
             Medication medication = new Medication(medNameStr, medQuantity, maxAmount, adminType, adjustedDateTime, frequency);
-            // Uses ViewModel to insert medication into database
-            viewModel.insert(medication);
 
-            Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
-            // Adds notification
-            NotifUtil.scheduleNotification(this, medication);
+            // Prevents medQuantity from exceeding maxAmt
+            if(medication.getMedQuantity() > medication.getMaxAmt()){
+                new AlertDialog.Builder(this)
+                        .setTitle("Invalid dosage")
+                        .setMessage("The dose amount cannot be greater than the maximum amount.")
+                        .setPositiveButton("OK", (dialog, which) ->
+                                dialog.dismiss())
+                        .show();
+            } else {
+                // Uses ViewModel to insert medication into database
+                viewModel.insert(medication);
 
-            // Returns to MainActivity once saved
-            Intent intent = new Intent(NewMedication.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+                Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
 
+                // Adds notification
+                NotifUtil.scheduleNotification(this, medication);
+
+                // Returns to MainActivity once saved
+                Intent intent = new Intent(NewMedication.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         } catch (DateTimeParseException e){
             Log.e("NewMedication", "Invalid time format: " + timeString, e);
             Toast.makeText(this,"Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();

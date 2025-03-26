@@ -99,6 +99,7 @@ public class EditMedication extends AppCompatActivity {
 
                     // Logs the current time in the TextView
                     String timeString = timeTextView.getText().toString().trim();
+
                     // If you know, you know
                     Log.d("EditMedication", "rAw TiMe from TextView: [" + timeString + "]");
 
@@ -125,17 +126,29 @@ public class EditMedication extends AppCompatActivity {
                     medication.setAdminType(AdminType.values()[adminSpinner.getSelectedItemPosition()]);
                     medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
-                    Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
 
-                    viewModel.update(medication);
+                    // Prevents medQuantity from exceeding maxAmt
+                    if(medication.getMedQuantity() > medication.getMaxAmt()){
+                        new AlertDialog.Builder(this)
+                                .setTitle("Invalid dosage")
+                                .setMessage("The dose amount cannot be greater than the maximum amount.")
+                                .setPositiveButton("OK", (dialog, which) ->
+                                        dialog.dismiss())
+                                                .show();
+                        } else {
+                        Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
 
-                    Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();
+                        viewModel.update(medication);
 
-                    NotifUtil.scheduleNotification(this, medication);
+                        Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(EditMedication.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                        NotifUtil.scheduleNotification(this, medication);
+
+                        Intent intent = new Intent(EditMedication.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 }
             });
 

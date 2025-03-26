@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Shows user dialog and opens optimization permissions under settings
     public void showBatteryOptimizationDialog(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         boolean dontShowAgain = prefs.getBoolean("dont_show_battery_dialog", false);
