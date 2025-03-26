@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.trackmypills.models.AdminType;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.utils.InvalidDialogUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
 import com.example.trackmypills.utils.NotifUtil;
@@ -34,7 +35,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 public class EditMedication extends AppCompatActivity {
-    private EditText nameInput, medQuantityInput, maxAmtInput;
+    private EditText nameInput, medQuantityInput, maxAmtInput, totalMedInput;
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
     private Button saveButton, deleteButton;
@@ -53,6 +54,8 @@ public class EditMedication extends AppCompatActivity {
         nameInput = findViewById(R.id.edit_med_name);
         medQuantityInput = findViewById(R.id.edit_quantity_per_dose);
         maxAmtInput = findViewById(R.id.edit_max_amt_number);
+        totalMedInput = findViewById(R.id.edit_total_meds_number);
+
         adminSpinner = findViewById(R.id.edit_admin_spinner);
         frequencySpinner = findViewById(R.id.edit_freq_spinner);
         timeTextView = findViewById(R.id.edit_med_time);
@@ -81,6 +84,8 @@ public class EditMedication extends AppCompatActivity {
                     nameInput.setText(medication.getName());
                     medQuantityInput.setText(String.valueOf(medication.getMedQuantity()));
                     maxAmtInput.setText(String.valueOf(medication.getMaxAmt()));
+                    totalMedInput.setText(String.valueOf(medication.getTotalMeds()));
+
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a ", Locale.US);
                     timeTextView.setText(medication.getNextDosageTime().toLocalTime().format(formatter));
 
@@ -96,6 +101,7 @@ public class EditMedication extends AppCompatActivity {
                     medication.setName(nameInput.getText().toString());
                     medication.setMedQuantity(Double.parseDouble(medQuantityInput.getText().toString()));
                     medication.setMaxAmt(Double.parseDouble(maxAmtInput.getText().toString()));
+                    medication.setTotalMeds(Double.parseDouble(totalMedInput.getText().toString()));
 
                     // Logs the current time in the TextView
                     String timeString = timeTextView.getText().toString().trim();
@@ -127,14 +133,13 @@ public class EditMedication extends AppCompatActivity {
                     medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
 
-                    // Prevents medQuantity from exceeding maxAmt
-                    if(medication.getMedQuantity() > medication.getMaxAmt()){
-                        new AlertDialog.Builder(this)
-                                .setTitle("Invalid dosage")
-                                .setMessage("The dose amount cannot be greater than the maximum amount.")
-                                .setPositiveButton("OK", (dialog, which) ->
-                                        dialog.dismiss())
-                                                .show();
+                    // Prevents exceeding amounts
+                    boolean exceedsMaxAmount = medication.getMedQuantity() > medication.getMaxAmt();
+                    boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
+                            medication.getMaxAmt() > medication.getTotalMeds();
+
+                    if(exceedsMaxAmount || exceedsTotalMeds) {
+                        InvalidDialogUtil.showInvalidDosageDialog(this);
                         } else {
                         Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
 

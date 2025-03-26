@@ -17,8 +17,8 @@
 
         <EditText
             android:id="@+id/enter_med_name"
-            android:layout_width="381dp"
-            android:layout_height="51dp"
+            android:layout_width="251dp"
+            android:layout_height="43dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="65dp"
             android:ems="10"
@@ -36,7 +36,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="18dp"
             android:ems="10"
-            android:hint="Quantity per dose (e.g. 2)"
+            android:hint="Quantity per dose (e.g., 2)"
             android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -51,12 +51,27 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="18dp"
             android:ems="10"
-            android:hint="Max quantity per day (e.g. 8)"
+            android:hint="Max quantity per day (e.g., 8)"
             android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quantity_per_dose" />
+
+        <EditText
+            android:id="@+id/total_meds_number"
+            android:layout_width="273dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="18dp"
+            android:ems="10"
+            android:hint="Total amount of meds (e.g., 28)"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/max_amt_number" />
 
 
         <TextView
@@ -67,7 +82,7 @@
             android:layout_marginTop="24dp"
             android:text="Administration method"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/max_amt_number" />
+            app:layout_constraintTop_toBottomOf="@+id/total_meds_number" />
 
         <Spinner
             android:id="@+id/admin_spinner"

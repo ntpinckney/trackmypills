@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,7 +67,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     }
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
-        TextView medName, medTime, medDosage;
+        TextView medName, medTime, medDosage, totalMeds;
         ImageButton editButton;
         ImageButton notifButton;
 
@@ -76,6 +77,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medName = itemView.findViewById(R.id.med_name);
             medTime = itemView.findViewById(R.id.med_time);
             medDosage = itemView.findViewById(R.id.med_dosage);
+            totalMeds = itemView.findViewById(R.id.total_meds);
             editButton = itemView.findViewById(R.id.edit_button);
             notifButton = itemView.findViewById(R.id.notif_button);
         }
@@ -91,13 +93,14 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
             String formattedTime = (nextDosageTime != null) ?
                     nextDosageTime.format(DateTimeFormatter.ofPattern("h:mm a")) : "N/A";
-            medTime.setText(formattedTime);
 
-
-            // TODO: ENSURE medQuantity DOES NOT EXCEED maxAmt. WRITE A VALIDATION THAT DOES THIS
+            medTime.setText(String.format("Next reminder: %s", formattedTime));
 
             medDosage.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
                 medication.getAdminType().getLabel()));
+
+            totalMeds.setText(String.format("%.2f %s remaining", medication.getTotalMeds(),
+                    medication.getAdminType().getLabel()));
 
             //Loads notification state
             boolean isNotificationsEnabled = medication.isNotificationsEnabled();
@@ -151,24 +154,61 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 SharedPreferences prefs = v.getContext().getSharedPreferences("ExceedPrefs", Context.MODE_PRIVATE);
                 boolean dontShowAgain = prefs.getBoolean("don't_show_exceed_dialog", false);
 
-                if (medication.getDosesTaken() < medication.getMaxAmt() || dontShowAgain) {
+                /* If the doses taken is lower than the maximum amount, totalMeds isn't 0, or "Don't Show Again"
+                is selected, medQuantity increases dosesTaken
+                 */
+
+                boolean dosesTakenLessThanMaxAmt = medication.getDosesTaken() < medication.getMaxAmt();
+
+                boolean totalMedsGreaterThanZero = medication.getTotalMeds() > 0;
+
+                if (totalMedsGreaterThanZero && (dosesTakenLessThanMaxAmt || dontShowAgain)) {
                     medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
+
+                    // Ensures totalMeds never goes negative
+                    if (medication.getTotalMeds() >= medication.getMedQuantity()) {
+                        medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
+                    } else {
+                        medication.setTotalMeds(0);
+                        Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
+                    }
+
                     viewModel.update(medication);
                     notifyItemChanged(getAdapterPosition());
 
-                    if(medication.getDosesTaken() > medication.getMaxAmt()){
+                    if (medication.getDosesTaken() > medication.getMaxAmt()) {
                         //Changes dose text to red once max dose is exceeded
                         TextView dosesTextView = itemView.findViewById(R.id.med_dosage);
                         dosesTextView.setTextColor(Color.RED);
                     }
+                } else if (medication.getTotalMeds() == 0 ){
+
+                    // Blocks further dosage if there are no more meds left
+                    Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
 
                 } else {
                     new AlertDialog.Builder(v.getContext())
                             .setTitle("Max Dose Reached!")
                             .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
                             .setPositiveButton("Yes", (dialog, which) -> {
+
                                 // "Yes" allows user to exceed maximum dosage and warns them every time
                                 medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
+
+                                // Allows exceeding max dosage, but only if there are meds left
+                                if (totalMedsGreaterThanZero) {
+                                    medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
+
+                                    if (medication.getTotalMeds() >= medication.getMedQuantity()) {
+                                        medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
+                                    } else {
+                                        medication.setTotalMeds(0);
+                                        Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                    viewModel.update(medication);
+                                    notifyItemChanged(getAdapterPosition());
                                 viewModel.update(medication);
                                 notifyItemChanged(getAdapterPosition());
 

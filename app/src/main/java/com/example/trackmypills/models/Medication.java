@@ -21,9 +21,11 @@ public class Medication {
 
     // Med quantity per dose
     @ColumnInfo(defaultValue = "med_quantity")
-    private double medQuantity; //
+    private double medQuantity;
     @ColumnInfo(defaultValue = "max_amt")
-    private double maxAmt; // Maximum doses // 15
+    private double maxAmt; // Maximum doses per day
+    @ColumnInfo(defaultValue ="total_meds")
+    private double totalMeds;
     @ColumnInfo(defaultValue = "doses_taken")
     private double dosesTaken; // Tracks how many doses have been taken
     @ColumnInfo(defaultValue = "admin_type")
@@ -39,10 +41,11 @@ public class Medication {
     private boolean notificationsEnabled; // Boolean to inform user
 
 
-    public Medication(String name, double medQuantity, double maxAmt, AdminType adminType, LocalTime startTime, Frequency frequency) {
+    public Medication(String name, double medQuantity, double maxAmt, double totalMeds, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
         this.medQuantity = medQuantity;
         this.maxAmt = maxAmt;
+        this.totalMeds = totalMeds;
         this.adminType = adminType;
         this.startTime = startTime;
         this.frequency = frequency;
@@ -88,6 +91,12 @@ public class Medication {
         this.medQuantity = medQuantity;
     }
 
+    public double getTotalMeds() {
+        return totalMeds;
+    }
+    public void setTotalMeds(double totalMeds){
+        this.totalMeds = totalMeds;
+    }
 
     public AdminType getAdminType() {
         return adminType;

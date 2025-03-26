@@ -43,6 +43,12 @@
         android:textColor="#463239"/>
 
 
+    <TextView
+        android:id="@+id/total_meds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total" />
+
     <ImageButton
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"

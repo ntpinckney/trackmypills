@@ -1,10 +1,7 @@
 package com.example.trackmypills.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +21,7 @@ import com.example.trackmypills.models.AdminType;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.data.database.MedicationDatabase;
+import com.example.trackmypills.utils.InvalidDialogUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
 import com.example.trackmypills.utils.NotifUtil;
@@ -38,7 +36,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 public class NewMedication extends AppCompatActivity {
-    private EditText medNameInput, medQuantityInput, maxAmtInput;
+    private EditText medNameInput, medQuantityInput, maxAmtInput, totalMedsInput;
     private TextView timeTextView;
     private Spinner adminSpinner, frequencySpinner;
     private MedicationDatabase db;
@@ -52,9 +50,11 @@ public class NewMedication extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_medication);
 
+        // Puts user input into variables for data manipulation
         medNameInput = findViewById(R.id.enter_med_name);
         medQuantityInput = findViewById(R.id.quantity_per_dose);
         maxAmtInput = findViewById(R.id.max_amt_number);
+        totalMedsInput = findViewById(R.id.total_meds_number);
         timeTextView = findViewById(R.id.med_time);
 
         //  Converts enum values into String values and establishes spinners
@@ -96,6 +96,7 @@ public class NewMedication extends AppCompatActivity {
         String medNameStr = medNameInput.getText().toString();
         String medQuantityStr = medQuantityInput.getText().toString();
         String maxAmtStr = maxAmtInput.getText().toString();
+        String totalMedsStr = totalMedsInput.getText().toString();
         String medTimeStr = timeTextView.getText().toString();
 
         // Checks if input is valid
@@ -107,6 +108,7 @@ public class NewMedication extends AppCompatActivity {
         // Sets the values based on user input
         double medQuantity = Double.parseDouble(medQuantityStr);
         double maxAmount = Double.parseDouble(maxAmtStr);
+        double totalOfMeds = Double.parseDouble(totalMedsStr);
         AdminType adminType = AdminType.values()[adminSpinner.getSelectedItemPosition()];
         Frequency frequency = Frequency.values()[frequencySpinner.getSelectedItemPosition()];
         String timeString = timeTextView.getText().toString().trim();
@@ -128,16 +130,14 @@ public class NewMedication extends AppCompatActivity {
 
             Log.d("MedicationTime", "Parsed Time: " + parsedTime + ", Adjusted Time: " + adjustedDateTime);
 
-            Medication medication = new Medication(medNameStr, medQuantity, maxAmount, adminType, adjustedDateTime, frequency);
+            Medication medication = new Medication(medNameStr, medQuantity, maxAmount, totalOfMeds, adminType, adjustedDateTime, frequency);
+            boolean exceedsMaxAmount = medication.getMedQuantity() > medication.getMaxAmt();
+            boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
+                    medication.getMaxAmt() > medication.getTotalMeds();
 
             // Prevents medQuantity from exceeding maxAmt
-            if(medication.getMedQuantity() > medication.getMaxAmt()){
-                new AlertDialog.Builder(this)
-                        .setTitle("Invalid dosage")
-                        .setMessage("The dose amount cannot be greater than the maximum amount.")
-                        .setPositiveButton("OK", (dialog, which) ->
-                                dialog.dismiss())
-                        .show();
+            if(exceedsMaxAmount || exceedsTotalMeds){
+                InvalidDialogUtil.showInvalidDosageDialog(this);
             } else {
                 // Uses ViewModel to insert medication into database
                 viewModel.insert(medication);

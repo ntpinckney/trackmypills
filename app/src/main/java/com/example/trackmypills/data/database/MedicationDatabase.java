@@ -10,7 +10,7 @@ import androidx.room.TypeConverters;
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.utils.Converters;
 
-@Database(entities = {Medication.class}, version = 3, exportSchema = false)
+@Database(entities = {Medication.class}, version = 4, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class MedicationDatabase extends RoomDatabase {
 

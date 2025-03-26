@@ -60,6 +60,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_quantity_per_dose" />
 
+        <EditText
+            android:id="@+id/edit_total_meds_number"
+            android:layout_width="273dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="18dp"
+            android:ems="10"
+            android:hint="Total amount of meds (e.g., 28)"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_max_amt_number" />
+
 
         <TextView
             android:id="@+id/adminTextView"
@@ -69,7 +84,7 @@
             android:layout_marginTop="24dp"
             android:text="Administration method"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_max_amt_number" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_total_meds_number" />
 
         <Spinner
             android:id="@+id/edit_admin_spinner"
