@@ -38,7 +38,7 @@ public class EditMedication extends AppCompatActivity {
     private EditText nameInput, medQuantityInput, maxAmtInput, totalMedInput;
     private Spinner adminSpinner, frequencySpinner;
     private TextView timeTextView;
-    private Button saveButton, deleteButton;
+    private Button saveButton, cancelButton;
 
     private Medication medication;
 
@@ -60,10 +60,7 @@ public class EditMedication extends AppCompatActivity {
         frequencySpinner = findViewById(R.id.edit_freq_spinner);
         timeTextView = findViewById(R.id.edit_med_time);
         saveButton = findViewById(R.id.save_btn);
-        deleteButton = findViewById(R.id.delete_btn);
-//        db = Room.databaseBuilder(getApplicationContext(), MedicationDatabase.class, "medication_db")
-//                .fallbackToDestructiveMigration()
-//                .build();
+        cancelButton = findViewById(R.id.cancel_btn);
 
         // Gets the medication ID from MainActivity's intent
         int medicationId = getIntent().getIntExtra("medication_id", -1);
@@ -158,23 +155,11 @@ public class EditMedication extends AppCompatActivity {
             });
 
 
-            deleteButton.setOnClickListener(v -> {
-                if (medication != null) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Delete Medication")
-                            .setMessage("Are you sure you want to delete this medication?")
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                viewModel.delete(medication);
-                                Toast.makeText(EditMedication.this, "Medication deleted", Toast.LENGTH_SHORT).show();
-                                NotifUtil.cancelNotification(this, medication);
+            cancelButton.setOnClickListener(v -> {
                                 Intent intent = new Intent(EditMedication.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
-                            })
-                            .setNegativeButton("No", null)
-                            .show(); // Closes and returns to MainActivity
-                }
-            });
+                });
 
             timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
 

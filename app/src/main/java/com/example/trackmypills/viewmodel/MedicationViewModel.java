@@ -36,13 +36,7 @@ public class MedicationViewModel extends AndroidViewModel{
         repository.update(medication);
     }
 
-
     public void delete(Medication medication){
         repository.delete(medication);
     }
-
-
-
-
-
 }

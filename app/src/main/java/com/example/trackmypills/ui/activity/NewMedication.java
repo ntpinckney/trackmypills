@@ -39,9 +39,8 @@ public class NewMedication extends AppCompatActivity {
     private EditText medNameInput, medQuantityInput, maxAmtInput, totalMedsInput;
     private TextView timeTextView;
     private Spinner adminSpinner, frequencySpinner;
-    private MedicationDatabase db;
-    private String selectedTime = LocalTime.now().toString();
     private MedicationViewModel viewModel;
+    private Button saveBtn, cancelBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,28 +60,29 @@ public class NewMedication extends AppCompatActivity {
         adminSpinner = findViewById(R.id.admin_spinner);
         frequencySpinner = findViewById(R.id.freq_spinner);
 
-
-
-        Button confirmBtn = findViewById(R.id.confirmBtn);
+        saveBtn = findViewById(R.id.save_btn);
+        cancelBtn = findViewById(R.id.cancel_btn);
 
         // Establishes ViewModel
         viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
 
 
-        db = Room.databaseBuilder(getApplicationContext(),
-                MedicationDatabase.class, "medication_db")
-                .fallbackToDestructiveMigration()
-                .build();
-
         // Populates the spinners
         SpinnerUtil.setUpSpinner(this, adminSpinner, AdminType.values());
         SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
-        // Show TimePicker when clicking the EditText
+        // Shows TimePicker when clicking the EditText
         timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
 
-        // Handle Confirm button click
-        confirmBtn.setOnClickListener(v -> saveMedication());
+        // Handles save button click
+       saveBtn.setOnClickListener(v -> saveMedication());
+
+       // Handles cancel button click. Returns to MainActivity and makes no changes
+        cancelBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(NewMedication.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
