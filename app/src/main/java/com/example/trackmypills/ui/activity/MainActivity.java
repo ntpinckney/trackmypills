@@ -115,6 +115,21 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 101) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
+        } else if (requestCode == 102) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
+        }
+    }
+
     // Forces reload of medication list via ViewModel
     private void reload() {
         viewModel.getAllMedication().observe(this, medications -> {
@@ -136,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Establishes notifications
     public void showNotificationPermissionDialog(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12+ permissions
             if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
 
@@ -158,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             channel.setDescription(description);
             channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-            // Retrieve NotificationManager and create the channel
+            // Retrieves NotificationManager and creates the channel
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
@@ -170,40 +185,87 @@ public class MainActivity extends AppCompatActivity {
     // Shows user dialog and opens optimization permissions under settings
     public void showBatteryOptimizationDialog(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-        boolean dontShowAgain = prefs.getBoolean("dont_show_battery_dialog", false);
+        boolean dontShowAgain = prefs.getBoolean("dont_show_notification_dialog", false);
 
-        if (dontShowAgain || isBatteryOptimizationIgnored(context))
-            return; // Skip if already disabled
+        // Skips if the dialog shouldn't be shown again
+        if (dontShowAgain || isBatteryOptimizationIgnored(context)) {
+            return;
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Optimize Notifications");
-        builder.setMessage("To ensure timely reminders, please disable battery optimization for this app.");
+        // Checks if the app has notification permissions
+        boolean hasNotificationPermissions = ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED;
+        boolean hasExactAlarmPermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.SCHEDULE_EXACT_ALARM)
+                == PackageManager.PERMISSION_GRANTED;
 
-        builder.setPositiveButton("Go to Settings", (dialog, which) -> requestIgnoreBatteryOptimizations(context));
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("Don't Show Again", (dialog, which) -> {
-            prefs.edit().putBoolean("dont_show_battery_dialog", true).apply();
-            dialog.dismiss();
-        });
+        // If user is missing permissions, or battery dialog isn't disabled, show dialog
+        if (!hasNotificationPermissions || !hasExactAlarmPermission || !isBatteryOptimizationIgnored(context)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Optimize Notifications");
 
-        builder.show();
+            String message = "To ensure timely reminders and alarms, please:\n\n";
+            if (!hasNotificationPermissions) {
+                message += "Allow the app to send notifications.\n";
+            }
+            if (!hasExactAlarmPermission) {
+                message += "Allow the app to schedule exact alarms.\n";
+            }
+            if (!isBatteryOptimizationIgnored(context)) {
+                message += "Disable battery optimization for the app.\n";
+            }
+
+            builder.setMessage(message);
+
+            builder.setPositiveButton("Go to Settings", (dialog, which) -> {
+                if (!hasNotificationPermissions) {
+                    // Requests notification permission
+                    requestNotificationPermission(context);
+                }
+                if (!hasExactAlarmPermission) {
+                    // Requests exact alarm permission
+                    requestExactAlarmPermission(context);
+                }
+                if (!isBatteryOptimizationIgnored(context)) {
+                    // Requests ignoring battery optimizations
+                    requestIgnoreBatteryOptimizations(context);
+                }
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.setNeutralButton("Don't Show Again", (dialog, which) -> {
+                prefs.edit().putBoolean("dont_show_notification_dialog", true).apply();
+                dialog.dismiss();
+            });
+
+            builder.show();
+        }
     }
 
-    public boolean isBatteryOptimizationIgnored(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            return pm.isIgnoringBatteryOptimizations(context.getPackageName());
-        }
-        return true; // Will assume battery optimization isn't an issue on older devices
+    private void requestNotificationPermission(Context context) {
+        // Requests POST_NOTIFICATIONS permission
+        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+    }
+
+    private void requestExactAlarmPermission(Context context) {
+        // Requests SCHEDULE_EXACT_ALARM permission
+        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 102);
     }
 
     public void requestIgnoreBatteryOptimizations(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
             context.startActivity(intent);
 
-            // Wait a moment before asking for notification permission
+            // After the user disables battery optimization, request notification permissions
             new Handler().postDelayed(() -> showNotificationPermissionDialog(context), 2000);
         }
+    }
+
+    public boolean isBatteryOptimizationIgnored(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            return pm.isIgnoringBatteryOptimizations(context.getPackageName());
+        }
+        return true; //  Assumes battery optimization isn't an issue on older devices
     }
 }

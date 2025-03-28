@@ -6,15 +6,6 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageButton
-        android:id="@+id/notif_button"
-        android:src="@drawable/ic_notif_on"
-        android:contentDescription="Turn notifications on or off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:padding="8dp"
-        android:layout_gravity="end" />
 
     <TextView
         android:id="@+id/med_name"

@@ -73,7 +73,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medNameTextView, medTimeTextView, medDosageTextView, totalMedsTextView;
-        ImageButton notifButton, expandButton, takeButton, undoButton, editButton,
+        ImageButton expandButton, takeButton, undoButton, editButton,
         deleteButton;
         LinearLayout expandableView;
 
@@ -86,7 +86,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
             totalMedsTextView = itemView.findViewById(R.id.total_meds);
-            notifButton = itemView.findViewById(R.id.notif_button);
             expandButton = itemView.findViewById(R.id.expand_button);
 
             // Expandable view interface display
@@ -158,7 +157,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
                 } else {
                     new AlertDialog.Builder(v.getContext())
-                            .setTitle("Max Dose Reached!")
+                            .setTitle("Max Dose Reached")
                             .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
                             .setPositiveButton("Yes", (dialog, which) -> {
 
@@ -177,12 +176,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 notifyItemChanged(getAdapterPosition());
                             })
                             .setNegativeButton("No", (dialog, which) -> {
-
                                 // "No" does nothing
                                 dialog.dismiss();
                             })
                             .setNeutralButton("Don't Show Again", ((dialog, which) -> {
-
                                 // "Don't Show Again" prevents future pop-ups when exceeding dosage
                                 prefs.edit().putBoolean("don't_show_exceed_dialog", true).apply();
                                 dialog.dismiss();
@@ -191,7 +188,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 }
             });
 
-            double initialTotalMeds = medication.getTotalMeds(); //Establishes what the totalMeds are before listener
+            double initialTotalMeds = medication.getTotalMeds(); // Establishes what the totalMeds are before listener
 
             // Undoes medication taken in case of mistakes
             undoButton.setOnClickListener(v -> {
@@ -239,7 +236,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     new AlertDialog.Builder(v.getContext())
-                            .setTitle("Deleting medication")
+                            .setTitle("Delete Medication")
                             .setMessage(String.format("Are you sure you want to delete %s? " +
                                     "This cannot be undone.", medication.getName()))
                             .setPositiveButton("Yes", (dialog, which) -> {
@@ -250,7 +247,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 notifyItemRemoved(position); // Refreshes UI
                             })
                             .setNegativeButton("No", (dialog, which) ->
-                                    dialog.dismiss()) // Does nothing to data entry
+                                    dialog.dismiss()) // Does not delete
                             .show();
                 }
             });
@@ -269,36 +266,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             // Tells user how many pills in total they have left after taking dosage
             totalMedsTextView.setText(String.format("%.2f %s remaining", medication.getTotalMeds(),
                     medication.getAdminType().getLabel()));
-
-            // Loads notification state
-            boolean isNotificationsEnabled = medication.isNotificationsEnabled();
-
-            // Sets initial button based on state
-            notifButton.setImageResource(isNotificationsEnabled ? R.drawable.ic_notif_on : R.drawable.ic_notif_off);
-
-            // Handles notification button clicks
-            notifButton.setOnClickListener(v -> {
-                boolean newState = medication.isNotificationsEnabled();
-                medication.setNotificationsEnabled(newState);
-
-                if (newState) {
-                    NotifUtil.scheduleNotification(v.getContext(), medication);
-                    notifButton.setImageResource(R.drawable.ic_notif_on);
-                } else {
-                    NotifUtil.cancelNotification(v.getContext(), medication);
-                    notifButton.setImageResource(R.drawable.ic_notif_off);
-                }
-
-                // Updates medication if ViewModel is found
-                if(viewModel != null){
-                    viewModel.update(medication);
-                } else {
-                    Log.e("MedicationAdapter", "ViewModel is NULL! Check initialization.");
-                }
-
-                notifyItemChanged(getAdapterPosition());
-
-            });
 
         }
     }
