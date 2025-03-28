@@ -114,14 +114,16 @@ public class NewMedication extends AppCompatActivity {
         String timeString = timeTextView.getText().toString().trim();
 
         try {
+            // Formats time to h:mm a format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
-            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
+            LocalTime parsedTime = LocalTime.parse(timeString, formatter); // Parses time for database
 
-            LocalDateTime now = LocalDateTime.now();
-            LocalDate today = now.toLocalDate();
+            LocalDateTime now = LocalDateTime.now(); // Stores the user's current time
+            LocalDate today = now.toLocalDate(); // Stores the user's current date
 
             LocalDateTime scheduledDateTime = LocalDateTime.of(today, parsedTime);
 
+            // If the time has already passed, schedules time to the next day
             if(scheduledDateTime.isBefore(now)){
                 scheduledDateTime = scheduledDateTime.plusDays(1);
             }
@@ -135,7 +137,7 @@ public class NewMedication extends AppCompatActivity {
             boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
                     medication.getMaxAmt() > medication.getTotalMeds();
 
-            // Prevents medQuantity from exceeding maxAmt
+            // Prevents medQuantity from exceeding maxAmt/totalMeds
             if(exceedsMaxAmount || exceedsTotalMeds){
                 InvalidDialogUtil.showInvalidDosageDialog(this);
             } else {

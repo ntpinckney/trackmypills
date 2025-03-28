@@ -96,7 +96,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
 
-            //Expandable view
+            //Expandable view listener.
             expandButton.setOnClickListener(v -> {
                 isExpanded = !isExpanded;
                 expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
@@ -161,6 +161,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                             .setTitle("Max Dose Reached!")
                             .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
                             .setPositiveButton("Yes", (dialog, which) -> {
+
                                 // Allows exceeding max dosage, but only if there are meds left
                                 if (totalMedsGreaterThanZero) {
                                     medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
@@ -176,10 +177,12 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 notifyItemChanged(getAdapterPosition());
                             })
                             .setNegativeButton("No", (dialog, which) -> {
+
                                 // "No" does nothing
                                 dialog.dismiss();
                             })
                             .setNeutralButton("Don't Show Again", ((dialog, which) -> {
+
                                 // "Don't Show Again" prevents future pop-ups when exceeding dosage
                                 prefs.edit().putBoolean("don't_show_exceed_dialog", true).apply();
                                 dialog.dismiss();
@@ -194,7 +197,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             undoButton.setOnClickListener(v -> {
                 double dosesTaken = medication.getDosesTaken();
 
-                // Ensures there is one dose taken
+                // Ensures there is at least one dose taken
                 if (dosesTaken > 0) {
                     // Decrements dosesTaken by medQuantity
                     double newDosesTaken = dosesTaken - medication.getMedQuantity();
@@ -241,13 +244,13 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                     "This cannot be undone.", medication.getName()))
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Medication medToDelete = medications.get(position);
-                                medications.remove(position); // Removes from UI
+                                medications.remove(position); // Removes from list
                                 viewModel.delete(medToDelete); // Removes from database
-                                Toast.makeText(v.getContext(), String.format("%s deleted", medication.getName()), Toast.LENGTH_SHORT).show();
-                                notifyItemRemoved(position);
+                                Toast.makeText(v.getContext(), String.format("%s deleted", medToDelete.getName()), Toast.LENGTH_SHORT).show();
+                                notifyItemRemoved(position); // Refreshes UI
                             })
                             .setNegativeButton("No", (dialog, which) ->
-                                    dialog.dismiss())
+                                    dialog.dismiss()) // Does nothing to data entry
                             .show();
                 }
             });
