@@ -91,7 +91,6 @@ public class EditMedication extends AppCompatActivity {
                 }
             });
 
-
             // Saves updated data
             saveButton.setOnClickListener(v -> {
                 if (medication != null) {
@@ -129,7 +128,6 @@ public class EditMedication extends AppCompatActivity {
                     medication.setAdminType(AdminType.values()[adminSpinner.getSelectedItemPosition()]);
                     medication.setFrequency(Frequency.values()[frequencySpinner.getSelectedItemPosition()]);
 
-
                     // Prevents exceeding amounts
                     boolean exceedsMaxAmount = medication.getMedQuantity() > medication.getMaxAmt();
                     boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
@@ -153,7 +151,6 @@ public class EditMedication extends AppCompatActivity {
 
                 }
             });
-
 
             cancelButton.setOnClickListener(v -> {
                                 Intent intent = new Intent(EditMedication.this, MainActivity.class);

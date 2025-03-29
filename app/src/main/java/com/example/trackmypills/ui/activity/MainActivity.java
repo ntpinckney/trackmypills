@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-
         // Observes medication list
         viewModel.getAllMedication().observe(this, medications -> {
             if (medications != null) {

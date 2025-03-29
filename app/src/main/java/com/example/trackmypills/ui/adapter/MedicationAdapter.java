@@ -21,8 +21,6 @@ import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.activity.EditMedication;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
-import com.example.trackmypills.utils.NotifUtil;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -103,7 +101,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             });
         }
 
-
         public void bind(Medication medication, OnMedicationClickListener listener) {
             medNameTextView.setText(medication.getName());
             LocalDateTime now = LocalDateTime.now();
@@ -123,12 +120,9 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
             }
 
-
             takeButton.setOnClickListener(v -> {
                 SharedPreferences prefs = v.getContext().getSharedPreferences("ExceedPrefs", Context.MODE_PRIVATE);
                 boolean dontShowAgain = prefs.getBoolean("don't_show_exceed_dialog", false);
-
-
 
                 boolean dosesTakenLessThanMaxAmt = medication.getDosesTaken() < medication.getMaxAmt();
 
@@ -138,7 +132,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                          is selected, medQuantity increases dosesTaken */
                     if (totalMedsGreaterThanZero && (dosesTakenLessThanMaxAmt || dontShowAgain)) {
                         medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
-
                     // Ensures totalMedsTextView never goes negative
                     if (medication.getTotalMeds() >= medication.getMedQuantity()) {
                         medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
@@ -151,8 +144,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                     notifyItemChanged(getAdapterPosition());
 
                 } else if (medication.getTotalMeds() == 0 ){
-
-                    // Blocks further dosage if there are no more meds left
+                    // Blocks further dosage increments if there are no more meds left
                     Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -223,7 +215,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 }
             });
 
-
             // Takes user to edit page
             editButton.setOnClickListener(v-> {
                 Intent intent = new Intent(itemView.getContext(), EditMedication.class);
@@ -247,7 +238,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 notifyItemRemoved(position); // Refreshes UI
                             })
                             .setNegativeButton("No", (dialog, which) ->
-                                    dialog.dismiss()) // Does not delete
+                                    dialog.dismiss()) // Does not delete medication
                             .show();
                 }
             });
@@ -263,7 +254,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medDosageTextView.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
                 medication.getAdminType().getLabel()));
 
-            // Tells user how many pills in total they have left after taking dosage
+            // Tells user how many pills remain in total
             totalMedsTextView.setText(String.format("%.2f %s remaining", medication.getTotalMeds(),
                     medication.getAdminType().getLabel()));
 

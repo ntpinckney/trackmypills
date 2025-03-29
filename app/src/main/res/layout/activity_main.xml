@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient"
     tools:context=".ui.activity.MainActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,6 +16,8 @@
         android:layout_marginBottom="35dp"
         android:clickable="true"
         android:foregroundTint="@color/white"
+        app:backgroundTint="@color/add_button"
+        app:backgroundTintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
