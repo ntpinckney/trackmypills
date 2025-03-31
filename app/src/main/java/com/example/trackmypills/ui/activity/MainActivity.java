@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -84,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
+        int spacing = getResources().getDimensionPixelSize(R.dimen.medication_item_spacing);
+        recyclerView.addItemDecoration(new MedicationItemDecoration(spacing));
+
         // Observes medication list
         viewModel.getAllMedication().observe(this, medications -> {
             if (medications != null) {
@@ -107,6 +112,27 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    // For spacing between medication items
+    public static class MedicationItemDecoration extends RecyclerView.ItemDecoration {
+        private final int spacing;
+
+        public MedicationItemDecoration(int spacing) {
+            this.spacing = spacing;
+        }
+
+        @Override
+        public void getItemOffsets(
+                Rect outRect,
+                View view,
+                RecyclerView parent,
+                RecyclerView.State state) {
+            outRect.top = spacing;
+            outRect.bottom = spacing;
+            outRect.left = spacing;
+            outRect.right = spacing;
+        }
     }
 
     @Override
