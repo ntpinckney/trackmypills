@@ -15,10 +15,10 @@
         android:layout_marginStart="73dp"
         android:layout_marginEnd="74dp"
         android:layout_marginBottom="5dp"
+        android:fontFamily="@font/poppins"
         android:text="Track My Pills"
         android:textAlignment="center"
-        android:textSize="30sp"
-        android:fontFamily="@font/poppins"
+        android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/med_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -31,13 +31,13 @@
         android:layout_marginEnd="33dp"
         android:layout_marginBottom="35dp"
         android:clickable="true"
-        android:foregroundTint="@color/white"
         app:backgroundTint="@color/add_button"
-        app:backgroundTintMode="add"
         android:contentDescription="Add new medication button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white"
+        app:maxImageSize="32dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/med_list"
@@ -49,7 +49,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+       />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

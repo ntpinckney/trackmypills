@@ -23,7 +23,7 @@
         >
 
         <receiver
-            android:name=".utils.ReminderReceiver"
+            android:name=".util.ReminderReceiver"
             android:enabled="true"
             android:exported="false"
             />

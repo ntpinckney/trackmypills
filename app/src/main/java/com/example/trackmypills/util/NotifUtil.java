@@ -1,4 +1,4 @@
-package com.example.trackmypills.utils;
+package com.example.trackmypills.util;
 
 import android.Manifest;
 import android.app.Activity;

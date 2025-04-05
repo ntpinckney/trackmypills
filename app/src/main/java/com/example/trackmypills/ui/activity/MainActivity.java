@@ -21,6 +21,7 @@ import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.add_med_fab);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, NewMedication.class);
-            newMedicationLauncher.launch(intent); // Make sure this is initialized
+            newMedicationLauncher.launch(intent);
         });
 
 
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // For spacing between medication items
+    // For spacing between medication entries
     public static class MedicationItemDecoration extends RecyclerView.ItemDecoration {
         private final int spacing;
 
@@ -125,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void getItemOffsets(
                 Rect outRect,
-                View view,
-                RecyclerView parent,
-                RecyclerView.State state) {
+                @NonNull View view,
+                @NonNull RecyclerView parent,
+                @NonNull RecyclerView.State state) {
             outRect.top = spacing;
             outRect.bottom = spacing;
             outRect.left = spacing;
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Optimize Notifications");
 
-            String message = "To ensure timely reminders and alarms, please:\n\n";
+            String message = "To ensure timely reminders and alarms:\n\n";
             if (!hasNotificationPermissions) {
                 message += "Allow the app to send notifications.\n";
             }

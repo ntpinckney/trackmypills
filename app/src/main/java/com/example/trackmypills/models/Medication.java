@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.trackmypills.utils.Converters;
+import com.example.trackmypills.util.Converters;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
