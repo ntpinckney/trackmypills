@@ -1,101 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_rectangle"
-    android:orientation="vertical"
-    android:padding="6dp"
-    android:layout_weight="1">
-
-    <TextView
-        android:id="@+id/med_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Medication Name"
-        android:textColor="#463239"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_weight="0.3"/>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1" />
-
-    <TextView
-        android:id="@+id/med_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time"
-        android:textColor="@color/text"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/med_dosage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dosage"
-        android:textColor="@color/text"
-        android:textSize="14sp" />
-
-
-    <TextView
-        android:id="@+id/total_meds"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total" />
-
-    <ImageButton
-        android:id="@+id/expand_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@null"
-        android:contentDescription="View expandable options"
-        android:padding="8dp"
-        android:src="@drawable/ic_down" />
-
-    <!-- Expandable view -->
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <LinearLayout
-        android:id="@+id/expandable_view"
-        android:layout_width="match_parent"
+        android:id="@+id/medication_card"
+        android:layout_width="390dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:background="@drawable/rounded_rectangle"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/take_button"
+        <!-- Main view -->
+
+        <TextView
+            android:id="@+id/med_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/green"
-            android:contentDescription="Increase doses taken"
-            android:src="@drawable/ic_pill" />
+            android:layout_weight="0.3"
+            android:fontFamily="@font/lexend"
+            android:text="Medication Name"
+            android:textColor="@color/text"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/undo_button"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1" />
+
+        <TextView
+            android:id="@+id/med_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/red"
-            android:contentDescription="Decrease doses taken"
-            android:src="@drawable/ic_undo" />
+            android:fontFamily="@font/lexend"
+            android:text="Time"
+            android:textColor="@color/text"
+            android:textSize="20sp" />
 
-        <ImageButton
-            android:id="@+id/edit_button"
+        <TextView
+            android:id="@+id/med_dosage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/blue"
-            android:contentDescription="Edit medication"
-            android:src="@drawable/ic_edit" />
+            android:fontFamily="@font/lexend"
+            android:text="Dosage"
+            android:textColor="@color/text"
+            android:textSize="20dp" />
 
-        <ImageButton
-            android:id="@+id/delete_button"
+
+        <TextView
+            android:id="@+id/total_meds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/dark_red"
-            android:contentDescription="Delete medication"
-            android:src="@drawable/ic_delete" />
-        />
+            android:fontFamily="@font/lexend"
+            android:text="Total"
+            android:textColor="@color/text"
+            android:textSize="20dp"
+            />
+
+        <ImageButton
+            android:id="@+id/expand_button"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="end"
+            android:background="@null"
+            android:contentDescription="View expandable options"
+            android:padding="8dp"
+            android:src="@drawable/ic_down"
+            android:scaleType="fitCenter" />
+
+        <!-- Expandable view -->
+
+        <LinearLayout
+            android:id="@+id/expandable_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="Exapandable view"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/take_button"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="@color/green"
+                android:contentDescription="Increase doses taken"
+                android:src="@drawable/ic_pill"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/undo_button"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="@color/red"
+                android:contentDescription="Decrease doses taken"
+                android:src="@drawable/ic_undo"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="@color/blue"
+                android:contentDescription="Edit medication"
+                android:src="@drawable/ic_edit"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/delete_button"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="@color/dark_red"
+                android:contentDescription="Delete medication"
+                android:src="@drawable/ic_delete"
+                android:scaleType="fitCenter"/>
+            />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.trackmypills"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.trackmypills"
@@ -37,9 +37,10 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.room.runtime)
-    implementation(libs.firebase.messaging);
-    annotationProcessor(libs.room.complier);
+    implementation(libs.firebase.messaging)
+    annotationProcessor(libs.room.complier)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("androidx.core:core-ktx:1.15.0")
 }

@@ -15,18 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.room.Room;
 
 import com.example.trackmypills.models.AdminType;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
-import com.example.trackmypills.data.database.MedicationDatabase;
-import com.example.trackmypills.utils.InvalidDialogUtil;
+import com.example.trackmypills.util.InvalidDialogUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
-import com.example.trackmypills.utils.NotifUtil;
-import com.example.trackmypills.utils.SpinnerUtil;
-import com.example.trackmypills.utils.TimePickerUtil;
+import com.example.trackmypills.util.NotifUtil;
+import com.example.trackmypills.util.SpinnerUtil;
+import com.example.trackmypills.util.TimePickerUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

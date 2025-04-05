@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@drawable/gradient">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -24,6 +25,9 @@
             android:ems="10"
             android:hint="Enter medication name"
             android:inputType="text"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,6 +42,9 @@
             android:ems="10"
             android:hint="Quantity per dose (e.g., 2)"
             android:inputType="numberDecimal"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +60,9 @@
             android:ems="10"
             android:hint="Max quantity per day (e.g., 8)"
             android:inputType="numberDecimal"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +78,9 @@
             android:ems="10"
             android:hint="Total amount of meds (e.g., 28)"
             android:inputType="numberDecimal"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +94,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
             android:text="Administration method"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/total_meds_number" />
 
@@ -103,6 +119,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:text="Frequency"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/admin_spinner" />
 
@@ -113,6 +132,9 @@
             android:layout_marginStart="19dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="19dp"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,6 +147,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="32dp"
             android:text="Time of first dosage"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/freq_spinner" />
 
@@ -139,7 +164,9 @@
             android:focusable="true"
             android:padding="10dp"
             android:text="Select time"
-            android:textSize="16sp"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dose_text" />
 
@@ -152,6 +179,12 @@
             android:layout_marginTop="34dp"
             android:padding="16dp"
             android:text="Save"
+            android:fontFamily="@font/lexend"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/add_button"
+            android:elevation="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cancel_btn"
             app:layout_constraintTop_toBottomOf="@id/med_time" />
@@ -165,8 +198,28 @@
             android:layout_marginTop="34dp"
             android:padding="16dp"
             android:text="Cancel"
+            android:fontFamily="@font/lexend"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/red"
+            android:elevation="6dp"
             app:layout_constraintStart_toEndOf="@id/save_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/med_time"/>
+
+        <TextView
+            android:id="@+id/new_medication_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="155dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="155dp"
+            android:fontFamily="@font/poppins"
+            android:text="New Medication"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

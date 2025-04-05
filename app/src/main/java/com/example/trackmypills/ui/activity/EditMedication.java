@@ -1,6 +1,5 @@
 package com.example.trackmypills.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +19,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.trackmypills.models.AdminType;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
-import com.example.trackmypills.utils.InvalidDialogUtil;
+import com.example.trackmypills.util.InvalidDialogUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
-import com.example.trackmypills.utils.NotifUtil;
-import com.example.trackmypills.utils.SpinnerUtil;
-import com.example.trackmypills.utils.TimePickerUtil;
+import com.example.trackmypills.util.NotifUtil;
+import com.example.trackmypills.util.SpinnerUtil;
+import com.example.trackmypills.util.TimePickerUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
