@@ -40,6 +40,10 @@ public class Medication {
     @ColumnInfo(defaultValue = "notifications_enabled")
     private boolean notificationsEnabled; // Boolean to check if notifications are enabled
 
+    // Empty constructor
+    public Medication() {
+
+    }
 
     public Medication(String name, double medQuantity, double maxAmt, double totalMeds, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
@@ -50,6 +54,8 @@ public class Medication {
         this.startTime = startTime;
         this.frequency = frequency;
     }
+
+
 
     // Getters and setters
     public int getId() {

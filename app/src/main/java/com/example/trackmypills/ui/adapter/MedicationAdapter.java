@@ -295,7 +295,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     private void updateNextDosageTime(Medication medication) {
         // Gets maximum doses from medication
         double maxDoses = medication.getMaxAmt();
-        // Gets doses taken fro medication
+        // Gets doses taken from medication
         double dosesTaken = medication.getDosesTaken();
         // Gets current date and time
         LocalDateTime now = LocalDateTime.now();
@@ -315,7 +315,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         // Finds the next time while doses taken is less than max doses
         while(!nextTime.isAfter(now)) {
             // Adds time between doses
-            nextTime = nextTime.plusHours(medication.getFrequency().getIntervalHours());
+            nextTime = nextTime.plusHours((long) medication.getFrequency().getIntervalHours());
         }
 
         // Updates nextDosageTime

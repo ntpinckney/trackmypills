@@ -4,6 +4,7 @@ public enum AdminType {
     PILLS("pill(s)"),
     CAPSULES("capsule(s)"),
     ML("mL"),
+    MG("mg"),
     TSP("tsp(s)"),
     INHALERS("puff(s)"),
     CREAMS("cream(s)"),

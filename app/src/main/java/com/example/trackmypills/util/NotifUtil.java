@@ -44,13 +44,13 @@ public class NotifUtil {
         Intent intent = new Intent(context, ReminderReceiver.class);
         intent.putExtra("med_name", medication.getName());
 
-        int intervalHours = medication.getFrequency().getIntervalHours();
+        double intervalHours = medication.getFrequency().getIntervalHours();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime firstDoseTime = medication.getNextDosageTime();
 
         // Allows application to schedule multiple notifications per interval
         for (int i = 0; i < 24 / intervalHours; i++) {
-            LocalDateTime nextDoseTime = firstDoseTime.plusHours(i * intervalHours);
+            LocalDateTime nextDoseTime = firstDoseTime.plusHours((long) (i * intervalHours));
 
             // Makes sure notifications are only scheduled for the future and skips past times
             if (nextDoseTime.isBefore(now)) {
