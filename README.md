@@ -54,5 +54,4 @@ This is where I'll add screenshots once the app is done!
 This project is licensed under the [MIT License](LICENSE).
 
 
-‼️Note: This project is open-source and may be cloned for learning or inspiration. Please credit the original author if used in other projects.
-
+‼️ Note: This project is open-source and can be cloned for learning or inspiration. If you use or modify the code in other projects, please credit the original author.
