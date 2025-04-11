@@ -29,6 +29,8 @@ Since TrackMyPills is not on Google's Play Store, you'll need to install it manu
 2. Enable "Install from unknown sources" in your device settings.
 3. Open the APK and install.
 
+Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for more detail instrucutons.
+
 ## 🧬 Cloning the Repository
 ```bash
 #git clone https://github.com/yourusername/TrackMyPills.git
