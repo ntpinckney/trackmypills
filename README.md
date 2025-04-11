@@ -41,13 +41,13 @@ This is where I'll add screenshots once the app is done!
 
 ## 🛠️ Tools of the Trade
 
-- 🤖**Android Studio** – Primary IDE for Android development
-- ☕**Java** – Main programming language used
-- 📝**XML** – For defining UI layouts and resources
-- 🎨**Figma** – UI/UX planning and prototyping
-- 🪟**Windows 11** – Development environment
-- 🐙**Git/GitHub** – Version control and project hosting
-- 📱**Android Emulator** – Device testing during development
+- 🤖 **Android Studio** – Primary IDE for Android development
+- ☕ **Java** – Main programming language used
+- 📝 **XML** – For defining UI layouts and resources
+- 🎨 **Figma** – UI/UX planning and prototyping
+- 🪟 **Windows 11** – Development environment
+- 🐙 **Git/GitHub** – Version control and project hosting
+- 📱 **Android Emulator** – Device testing during development
 
 ## 📄 License
 
