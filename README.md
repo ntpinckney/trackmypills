@@ -18,7 +18,7 @@ TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether
 
 ## 🎥 Demo Video
 
-[See it in action](#)!
+[See it in action](#)! (Embed the video)
 
 ## 📥 Manual Installation (APK)
 
