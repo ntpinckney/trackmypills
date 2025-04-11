@@ -46,7 +46,7 @@ This is where I'll add screenshots once the app is done!
 - ☕ **Java** – Main programming language used
 - 🎨**Figma** – UI/UX planning and prototyping
 - 🪟 **Windows 11** – Development environment
-- 🐙**Git/GitHub** - Version control and project hosting
+- 🐙**Git/GitHub** – Version control and project hosting
 - 📱 **Android Emulator** - Device testing during development
 
 ## 📄 License
