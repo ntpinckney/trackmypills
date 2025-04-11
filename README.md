@@ -4,7 +4,7 @@ A no-frills medication tracking app for Android that helps users stay on schedul
 
 ## 📱 Overview
 
-TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether you're managing a complex medication schedule or just need reminders to take a daily vitamin, this app makes it simple. With features like dosage tracking, reminders based on custom intervals, pill count monitoring, users can stay on top of their health without any unnecessary clutter.
+TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether you're managing a complex medication schedule or just need reminders to take a daily vitamin, this app makes it simple. With features like dosage tracking, reminders based on custom intervals, and quantity monitoring users can stay on top of their health without any unnecessary clutter.
 
 ## ✨ Features
 - Add, edit, or delete medications
