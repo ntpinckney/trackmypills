@@ -16,10 +16,12 @@
         android:layout_marginEnd="74dp"
         android:layout_marginBottom="5dp"
         android:fontFamily="@font/poppins"
-        android:text="Track My Pills"
+        android:text="TrackMyPills"
         android:textAlignment="center"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/med_list"
+        android:textColor="@color/dark_purple"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -39,6 +41,7 @@
         app:tint="@color/white"
         app:maxImageSize="32dp" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/med_list"
         android:layout_width="0dp"
@@ -49,8 +52,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-       />
+        app:layout_constraintVertical_bias="0.0" />
 
+
+    <Switch
+        android:id="@+id/ld_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="105dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/lexend"
+        android:text="Light/Dark Mode"
+        android:textColor="@color/text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_med_fab"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/med_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

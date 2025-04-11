@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.activity.EditMedication;
+import com.example.trackmypills.util.NotifUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
 import java.time.LocalDateTime;
@@ -207,6 +208,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 Medication medToDelete = medications.get(position);
                                 medications.remove(position); // Removes from list
                                 viewModel.delete(medToDelete); // Removes from database
+                                NotifUtil.cancelNotification(v.getContext(), medToDelete); // Cancels notifications
                                 Toast.makeText(v.getContext(), String.format("%s deleted", medToDelete.getName()), Toast.LENGTH_SHORT).show();
                                 notifyItemRemoved(position); // Refreshes UI
                             })
@@ -276,7 +278,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                         }
                         updateNextDosageTime(medication);
                         viewModel.update(medication);
-                        notifyItemChanged(getAdapterPosition());
+                        notifyDataSetChanged();
                     })
                     .setNegativeButton("No", (dialog, which) -> {
                         // "No" does nothing

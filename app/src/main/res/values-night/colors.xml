@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFF</color>
+    <color name="white">#FF000000</color>
+    <color name="text">#7a93ac</color>
+    <color name="add_button">#CAE4FF</color>
+    <color name="medication_block">#26144777</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="blue">#3F51B5</color>
+    <color name="dark_red">#6B1F19</color>
+    <color name="dark_purple">#92BCEA</color>
+</resources>

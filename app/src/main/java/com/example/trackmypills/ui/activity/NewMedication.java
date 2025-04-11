@@ -143,7 +143,6 @@ public class NewMedication extends AppCompatActivity {
                 viewModel.insert(medication);
 
                 Toast.makeText(NewMedication.this, "Medication saved!", Toast.LENGTH_SHORT).show();
-
                 // Adds notification
                 NotifUtil.scheduleNotification(this, medication);
 

@@ -18,7 +18,7 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String medName = intent.getStringExtra("med_name");
-        Log.d("ReminderReceiver", "Received broadcast for medication:" + medName);
+        Log.d("ReminderReceiver", "Received broadcast for medication: " + medName);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "med_channel")
                 .setSmallIcon(R.drawable.ic_notif_on)
@@ -29,10 +29,11 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        int uniqueId = (int) System.currentTimeMillis();
 
         if(ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED) {
-            notificationManagerCompat.notify(1, builder.build());
+            notificationManagerCompat.notify(uniqueId, builder.build());
         }
     }
 }

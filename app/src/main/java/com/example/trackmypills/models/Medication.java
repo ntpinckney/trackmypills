@@ -24,7 +24,7 @@ public class Medication {
     private double medQuantity;
     @ColumnInfo(defaultValue = "max_amt")
     private double maxAmt; // Maximum doses per day
-    @ColumnInfo(defaultValue ="total_meds")
+    @ColumnInfo(defaultValue = "total_meds")
     private double totalMeds;
     @ColumnInfo(defaultValue = "doses_taken")
     private double dosesTaken; // Tracks how many doses have been taken
@@ -39,6 +39,8 @@ public class Medication {
     private LocalDate lastResetDate; // Used to reset the date, which also resets the medicine counter
     @ColumnInfo(defaultValue = "notifications_enabled")
     private boolean notificationsEnabled; // Boolean to check if notifications are enabled
+    @ColumnInfo(defaultValue = "next_dosage_time")
+    private LocalDateTime nextDosageTime; // Tracks next dosage time
 
     // Empty constructor
     public Medication() {
@@ -54,7 +56,6 @@ public class Medication {
         this.startTime = startTime;
         this.frequency = frequency;
     }
-
 
 
     // Getters and setters
@@ -77,6 +78,7 @@ public class Medication {
     public double getMaxAmt() {
         return maxAmt;
     }
+
     public void setMaxAmt(double maxAmt) {
         this.maxAmt = maxAmt;
     }
@@ -100,7 +102,8 @@ public class Medication {
     public double getTotalMeds() {
         return totalMeds;
     }
-    public void setTotalMeds(double totalMeds){
+
+    public void setTotalMeds(double totalMeds) {
         this.totalMeds = totalMeds;
     }
 
@@ -136,12 +139,6 @@ public class Medication {
         this.lastResetDate = lastResetDate;
     }
 
-    public LocalDateTime nextDosageTime;
-
-
-    public void setNextDosageTime(LocalDateTime nextDosageTime) {
-        this.nextDosageTime = nextDosageTime;
-    }
 
     public boolean isNotificationsEnabled() {
         return notificationsEnabled;
@@ -152,9 +149,24 @@ public class Medication {
     }
 
     public LocalDateTime getNextDosageTime() {
-        if (nextDosageTime == null) {
-            return LocalDateTime.of(LocalDate.now(), startTime);
+        if (nextDosageTime != null) {
+            return nextDosageTime;
         }
-        return nextDosageTime;
+
+        LocalDateTime startDateTime = LocalDateTime.of(LocalDate.now(), startTime);
+        double intervalHours = frequency.getIntervalHours();
+        LocalDateTime now = LocalDateTime.now();
+
+        // Converts fractional hours into minutes
+        long intervalMinutes = (long) (intervalHours * 60);
+
+        while (startDateTime.isBefore(now)) {
+            startDateTime = startDateTime.plusHours(intervalMinutes);
+        }
+
+        return startDateTime;
+    }
+    public void setNextDosageTime(LocalDateTime nextDosageTime) {
+        this.nextDosageTime = nextDosageTime;
     }
 }
