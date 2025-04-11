@@ -7,7 +7,6 @@ A no-frills medication tracking app for Android that helps users stay on schedul
 TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether you're managing a complex medication schedule or just need reminders to take a daily vitamin, this app makes it simple. With features like dosage tracking, reminders based on custom intervals, pill count monitoring, users can stay on top of their health without any unnecessary clutter.
 
 ## ✨ Features
-
 - Add, edit, or delete medications
 - Track doses taken and remaining count — both for daily maximums and total supply
 - Supports fractional doses (e.g., 0.5 or 1.5 pills)
@@ -42,12 +41,13 @@ This is where I'll add screenshots once the app is done!
 
 ## 🛠️ Tools of the Trade
 
-- 🤖 **Android Studio** – Primary IDE for Android development
-- ☕ **Java** – Main programming language used
+- 🤖**Android Studio** – Primary IDE for Android development
+- ☕**Java** – Main programming language used
 - 🎨**Figma** – UI/UX planning and prototyping
-- 🪟 **Windows 11** – Development environment
+- 📝**XML** – For defining UI layouts and resources
+- 🪟**Windows 11** – Development environment
 - 🐙**Git/GitHub** – Version control and project hosting
-- 📱 **Android Emulator** - Device testing during development
+- 📱**Android Emulator** – Device testing during development
 
 ## 📄 License
 
