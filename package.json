@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@capacitor/splash-screen": "^7.0.1"
+  }
+}
