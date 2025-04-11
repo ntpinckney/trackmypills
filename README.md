@@ -1,4 +1,4 @@
-# TrackMyPills
+# 💊 TrackMyPills
 
 A no-frills medication tracking app for Android 12+ that helps users stay on schedule with their dosages.
 
