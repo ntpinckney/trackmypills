@@ -32,7 +32,7 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for mo
 
 ## 🧬 Cloning the Repository
 ```bash
-#git clone https://github.com/yourusername/TrackMyPills.git
+#git clone https://github.com/yourusername/trackmypills.git
 ```
 
 ## 📷 Screenshots
