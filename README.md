@@ -49,6 +49,10 @@ This is where I'll add screenshots once the app is done!
 - 🐙**Git/GitHub** - Version control and project hosting
 - 📱 **Android Emulator** - Device testing during development
 
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
 
 ‼️Note: This project is open-source and may be cloned for learning or inspiration. Please credit the original author if used in other projects.
 
