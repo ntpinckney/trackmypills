@@ -18,14 +18,12 @@ public class Medication {
     private int id;
     @ColumnInfo(defaultValue = "medication_name")
     private String name; // Name of medication
-
-    // Med quantity per dose
     @ColumnInfo(defaultValue = "med_quantity")
-    private double medQuantity;
+    private double medQuantity; // Quantity per dose
     @ColumnInfo(defaultValue = "max_amt")
     private double maxAmt; // Maximum doses per day
     @ColumnInfo(defaultValue = "total_meds")
-    private double totalMeds;
+    private double totalMeds; // Total doses to be taken
     @ColumnInfo(defaultValue = "doses_taken")
     private double dosesTaken; // Tracks how many doses have been taken
     @ColumnInfo(defaultValue = "admin_type")
@@ -47,6 +45,7 @@ public class Medication {
 
     }
 
+    // Default constructor
     public Medication(String name, double medQuantity, double maxAmt, double totalMeds, AdminType adminType, LocalTime startTime, Frequency frequency) {
         this.name = name;
         this.medQuantity = medQuantity;
@@ -56,7 +55,6 @@ public class Medication {
         this.startTime = startTime;
         this.frequency = frequency;
     }
-
 
     // Getters and setters
     public int getId() {
@@ -138,7 +136,6 @@ public class Medication {
     public void setLastResetDate(LocalDate lastResetDate) {
         this.lastResetDate = lastResetDate;
     }
-
 
     public boolean isNotificationsEnabled() {
         return notificationsEnabled;

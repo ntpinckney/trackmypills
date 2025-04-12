@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MedicationViewModel viewModel;
     private MedicationAdapter adapter;
-    private Switch ldSwitch;
 
     private final ActivityResultLauncher<Intent> newMedicationLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -77,32 +76,52 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        int savedTheme = sharedPreferences.getInt("theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedTheme);
+
         setContentView(R.layout.activity_main);
+
+
 
         createNotificationChannel();
         showNotificationPermissionDialog(this);
 
+        Switch ldSwitch;
 
         ldSwitch = findViewById(R.id.ld_switch);
 
+        int currentNightMode = AppCompatDelegate.getDefaultNightMode();
+        // Automatically sets switch to dark mode if enabled
+        ldSwitch.setChecked(currentNightMode == AppCompatDelegate.MODE_NIGHT_YES);
+
+        // Switches to light/dark mode, depending on the position of the toggle
         ldSwitch.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            SharedPreferences sharedPrefs = getSharedPreferences("settings", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPrefs.edit();
                                             if (ldSwitch.isChecked()) {
-                                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Sets the theme
+                                                editor.putInt("theme", AppCompatDelegate.MODE_NIGHT_YES); // Saves the theme
                                             } else {
                                                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                                editor.putInt("theme", AppCompatDelegate.MODE_NIGHT_NO);
                                             }
+                                            editor.apply(); // Saves changes
                                         }
                                     }
         );
+
+        // Initializes recyclerView
         recyclerView = findViewById(R.id.med_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initializes ViewModel
         viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
 
-        // Initializes Adapter
+        // Initializes adapter
         adapter = new MedicationAdapter(new ArrayList<>(), viewModel, medication -> {
             Intent intent = new Intent(MainActivity.this, EditMedication.class);
             intent.putExtra("medication_id", medication.getId());
@@ -111,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
+        // Sets spacing between medication entries
         int spacing = getResources().getDimensionPixelSize(R.dimen.medication_item_spacing);
         recyclerView.addItemDecoration(new MedicationItemDecoration(spacing));
 
@@ -141,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
     // For spacing between medication entries
     public static class MedicationItemDecoration extends RecyclerView.ItemDecoration {
         private final int spacing;
-
         public MedicationItemDecoration(int spacing) {
             this.spacing = spacing;
         }
@@ -173,20 +192,20 @@ public class MainActivity extends AppCompatActivity {
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 101) { // Notification permission
+        if (requestCode == 101) { // Notification permissions
             requestingNotification = false;
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 proceedToNextPermissionStep();
             } else {
                 Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == 102) { // Exact alarm permission (custom request code)
+        } else if (requestCode == 102) { // Exact alarm permissions
             requestingExactAlarm = false;
             // SCHEDULE_EXACT_ALARM is special; might not be granted directly from dialog
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 if (alarmManager.canScheduleExactAlarms()) {
-                    proceedToNextPermissionStep();
+                    proceedToNextPermissionStep(); // Proceeds to next step
                 } else {
                     Toast.makeText(this, "Exact alarm permission denied.", Toast.LENGTH_SHORT).show();
                 }
@@ -195,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void proceedToNextPermissionStep() {
+        // Checks for notification permission
         if (!hasNotificationPermission() && !requestingNotification) {
             requestingNotification = true;
             ActivityCompat.requestPermissions(this,
@@ -202,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Checks for exact alarm permission
         if (!hasExactAlarmPermission() && !requestingExactAlarm) {
             requestingExactAlarm = true;
             Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
@@ -213,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Checks for battery optimization
         if (!isBatteryOptimizationIgnored(this) && !requestingBatteryOpt) {
             requestingBatteryOpt = true;
             Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
@@ -244,14 +266,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     // Establishes notifications
     public void showNotificationPermissionDialog(Context context) {
         // Delays a bit to allow user to grant permissions
         new Handler().postDelayed(this::proceedToNextPermissionStep, 700);
     }
 
-
+    // Creates notification channel
     public void createNotificationChannel() {
         // Android 8+ permissions and notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -281,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if the app has necessary permissions
+        // Checks if the app has necessary permissions
         boolean hasNotificationPermissions = ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED;
         boolean hasExactAlarmPermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.SCHEDULE_EXACT_ALARM)
@@ -316,29 +337,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.show();
-    }
-
-    private void requestNotificationPermission(Context context) {
-        // Request Notification permission (Android 12+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions((Activity) context,
-                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-        }
-    }
-
-    private void requestExactAlarmPermission(Context context) {
-        // Request Exact Alarm permission (Android 12+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions((Activity) context,
-                    new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 102);
-        }
-    }
-
-    private void requestIgnoreBatteryOptimizations(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-            context.startActivity(intent);
-        }
     }
 
     private boolean isBatteryOptimizationIgnored(Context context) {
