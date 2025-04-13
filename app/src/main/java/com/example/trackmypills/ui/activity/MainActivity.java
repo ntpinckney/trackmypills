@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
         showNotificationPermissionDialog(this);
 
-        Switch ldSwitch;
+        Switch ldSwitch; // Toggle for light/dark mode
 
         ldSwitch = findViewById(R.id.ld_switch);
 
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == 102) { // Exact alarm permissions
             requestingExactAlarm = false;
-            // SCHEDULE_EXACT_ALARM is special; might not be granted directly from dialog
+            // SCHEDULE_EXACT_ALARM is special. Might not be granted directly from dialog
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 if (alarmManager.canScheduleExactAlarms()) {
@@ -245,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "All permissions handled!", Toast.LENGTH_SHORT).show();
     }
 
-
     // Forces reload of medication list via ViewModel
     private void reload() {
         viewModel.getAllMedication().observe(this, medications -> {
@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     // Establishes notifications
     public void showNotificationPermissionDialog(Context context) {
         // Delays a bit to allow user to grant permissions
@@ -355,7 +356,6 @@ public class MainActivity extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             return alarmManager != null && alarmManager.canScheduleExactAlarms();
         }
-        return true; // Assume granted on older versions
+        return true; // Assumes it is granted on older versions
     }
-
 }

@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +25,7 @@ import com.example.trackmypills.R;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.MedicationViewHolder> {
@@ -36,6 +35,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     private MedicationViewModel viewModel;
 
     private Context context;
+    private static final int MAX_TIMES = 4; // Maximum number of scheduled times to display
+
 
     public interface OnMedicationClickListener {
         void onMedicationClick(Medication medication);
@@ -96,6 +97,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             undoButton = itemView.findViewById(R.id.undo_button);
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
+
         }
 
         public void bind(Medication medication, OnMedicationClickListener listener) {
@@ -137,11 +139,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             });
 
             // Validates medQuantity and maxAmt before it sets the texts
-            if (medication.getMedQuantity() < 0.01){
+            if (medication.getMedQuantity() < 0.01) {
                 medication.setMedQuantity(0.01); // Automatically sets it to 0.01 if number is less than 0.01
             }
 
-            if(medication.getMaxAmt() < 0.01){
+            if(medication.getMaxAmt() < 0.01) {
                 medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
             }
 
@@ -196,7 +198,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 itemView.getContext().startActivity(intent);
             });
 
-            //Deletes entries
+            // Deletes entries
             deleteButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -218,15 +220,22 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 }
             });
 
-            // Updates nextDosageTime for display
-            nextDosageTime = medication.getNextDosageTime();
+            // Gets up to four upcoming times
+            List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, MAX_TIMES);
 
             // Formats time
-            String formattedTime = (nextDosageTime != null) ?
-                    nextDosageTime.format(DateTimeFormatter.ofPattern("h:mm a")) : "N/A";
+            if(upcomingTimes.isEmpty()){
+                medTimeTextView.setText("No more reminders today.");
+            } else {
+                StringBuilder timeDisplay = new StringBuilder("Upcoming reminders:\n");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+                for (LocalDateTime time : upcomingTimes) {
+                    timeDisplay.append(time.format(formatter)).append(" ");
+                }
+                // Tells user when the next reminders are
+                medTimeTextView.setText(timeDisplay.toString().trim());
+            }
 
-            // Tells user what the next reminder is
-            medTimeTextView.setText(String.format("Next reminder: %s", formattedTime));
 
             // Informs users how many doses have been taken
             medDosageTextView.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
@@ -276,7 +285,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                                 Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
                             }
                         }
-                        updateNextDosageTime(medication);
+                        getUpcomingTimes(medication, MAX_TIMES);
                         viewModel.update(medication);
                         notifyDataSetChanged();
                     })
@@ -294,34 +303,27 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         }
     }
 
-    private void updateNextDosageTime(Medication medication) {
-        // Gets maximum doses from medication
+    // ALWAYS USE MAX_TIMES for maxTimes OR VALUES MAY NOT DISPLAY CORRECTLY IN APP
+    private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
+        List<LocalDateTime> upcomingTimes = new ArrayList<>();
+
         double maxDoses = medication.getMaxAmt();
-        // Gets doses taken from medication
         double dosesTaken = medication.getDosesTaken();
-        // Gets current date and time
+        double intervalHours = medication.getFrequency().getIntervalHours();
+
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextTime = LocalDateTime.of(now.toLocalDate(), medication.getStartTime());
 
-        // Gets initial dose time and creates new LocalDateTime with initial time
-        LocalTime startTime = medication.getStartTime();
-        LocalDateTime nextTime = LocalDateTime.of(now.toLocalDate(), startTime);
-
-        // Compares does with maximum doses. If equal or greater sets time to tomorrow
-        if(dosesTaken >= maxDoses){
-            // Sets the next dose time to tomorrow
-            nextTime = nextTime.plusDays(1);
-            medication.setNextDosageTime(nextTime);
-            return;
-        };
-
-        // Finds the next time while doses taken is less than max doses
-        while(!nextTime.isAfter(now)) {
-            // Adds time between doses
-            nextTime = nextTime.plusHours((long) medication.getFrequency().getIntervalHours());
+        // Skips to the next valid time
+        while (!nextTime.isAfter(now)) {
+            nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
         }
 
-        // Updates nextDosageTime
-        medication.setNextDosageTime(nextTime);
+        // Adds upcoming times while not exceeding max doses or max times
+        while (upcomingTimes.size() < maxTimes && dosesTaken < maxDoses) {
+            upcomingTimes.add(nextTime);
+            nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
         }
-
+        return upcomingTimes;
     }
+}
