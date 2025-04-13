@@ -229,9 +229,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             } else {
                 StringBuilder timeDisplay = new StringBuilder("Upcoming reminders:\n");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+
                 for (LocalDateTime time : upcomingTimes) {
                     timeDisplay.append(time.format(formatter)).append(" ");
                 }
+
                 // Tells user when the next reminders are
                 medTimeTextView.setText(timeDisplay.toString().trim());
             }
