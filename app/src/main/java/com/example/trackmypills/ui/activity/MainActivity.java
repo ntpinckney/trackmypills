@@ -212,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean allPermissionsHandledToastShown = false;
+
     private void proceedToNextPermissionStep() {
         // Checks for notification permission
         if (!hasNotificationPermission() && !requestingNotification) {
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
             intent.setData(Uri.parse("package:" + getPackageName()));
             startActivity(intent);
 
-            // Add a small delay before checking again
+            // Adds a small delay before checking again
             new Handler().postDelayed(this::proceedToNextPermissionStep, 1000);
             return;
         }
@@ -243,7 +245,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, "All permissions handled!", Toast.LENGTH_SHORT).show();
+        // Shows toast only once when all permissions are handled
+        if (!allPermissionsHandledToastShown) {
+            allPermissionsHandledToastShown = true;
+            Toast.makeText(this, "All permissions handled!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Forces reload of medication list via ViewModel

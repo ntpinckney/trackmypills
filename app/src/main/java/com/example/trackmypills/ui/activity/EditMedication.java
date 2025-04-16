@@ -50,14 +50,14 @@ public class EditMedication extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_medication);
 
-        nameInput = findViewById(R.id.edit_med_name);
-        medQuantityInput = findViewById(R.id.edit_quantity_per_dose);
-        maxAmtInput = findViewById(R.id.edit_max_amt_number);
-        totalMedInput = findViewById(R.id.edit_total_meds_number);
+        nameInput = findViewById(R.id.enter_med_name);
+        medQuantityInput = findViewById(R.id.quantity_per_dose);
+        maxAmtInput = findViewById(R.id.max_amt_number);
+        totalMedInput = findViewById(R.id.total_meds_number);
 
-        adminSpinner = findViewById(R.id.edit_admin_spinner);
-        frequencySpinner = findViewById(R.id.edit_freq_spinner);
-        timeTextView = findViewById(R.id.edit_med_time);
+        adminSpinner = findViewById(R.id.admin_spinner);
+        frequencySpinner = findViewById(R.id.freq_spinner);
+        timeTextView = findViewById(R.id.med_time);
         saveButton = findViewById(R.id.save_btn);
         cancelButton = findViewById(R.id.cancel_btn);
 
@@ -110,11 +110,14 @@ public class EditMedication extends AppCompatActivity {
                             LocalTime newTime = LocalTime.parse(timeString, formatter);
                             Log.d("EditMedication", "Parsed LocalTime: " + newTime);
 
-                            // Ensures that the new time is different before updating
-                            LocalDateTime updatedTime = LocalDateTime.of(LocalDate.now(), newTime);
-                            Log.d("EditMedication", "Updating time to: " + updatedTime);
+                            // Updates the start time
+                            medication.setStartTime(newTime);
 
-                            medication.setNextDosageTime(updatedTime); // Ensure update happens
+                            // Recalculates the next dosage time based on new start time
+                            LocalDateTime newNextDosageTime = medication.getNextDosageTime();
+                            medication.setNextDosageTime(newNextDosageTime);
+
+                            Log.d("EditMedication", "Recalculated next dosage time: " + newNextDosageTime);
                         } else {
                             Log.e("EditMedication", "Time string was unexpectedly empty! Using existing time.");
                         }
@@ -132,9 +135,9 @@ public class EditMedication extends AppCompatActivity {
                     boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
                             medication.getMaxAmt() > medication.getTotalMeds();
 
-                    if(exceedsMaxAmount || exceedsTotalMeds) {
+                    if (exceedsMaxAmount || exceedsTotalMeds) {
                         InvalidDialogUtil.showInvalidDosageDialog(this);
-                        } else {
+                    } else {
                         Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
 
                         viewModel.update(medication);
@@ -152,10 +155,10 @@ public class EditMedication extends AppCompatActivity {
             });
 
             cancelButton.setOnClickListener(v -> {
-                                Intent intent = new Intent(EditMedication.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                });
+                Intent intent = new Intent(EditMedication.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            });
 
             timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
 

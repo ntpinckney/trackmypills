@@ -50,12 +50,12 @@ public class SplashScreen extends AppCompatActivity {
                         "any medical concerns.",
                 HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        // Length of splash screen (4 seconds)
+        // Length of splash screen
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashScreen.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }, 4000);
+        }, 4000); // 4 seconds
 
     }
 }

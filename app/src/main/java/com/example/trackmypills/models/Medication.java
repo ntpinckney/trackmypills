@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity(tableName = "medications") // Establishes RoomDB table
-@TypeConverters(Converters.class) // Establishes Converters for ReminderTime, AdminType, and DateTime formats
+@TypeConverters(Converters.class)
+// Establishes Converters for ReminderTime, AdminType, and DateTime formats
 public class Medication {
     @PrimaryKey(autoGenerate = true) // Generates a new key for each entry
     private int id;
@@ -146,6 +147,8 @@ public class Medication {
     }
 
     public LocalDateTime getNextDosageTime() {
+
+        // If nextDosageTime is already set, return it
         if (nextDosageTime != null) {
             return nextDosageTime;
         }
@@ -157,12 +160,14 @@ public class Medication {
         // Converts fractional hours into minutes
         long intervalMinutes = (long) (intervalHours * 60);
 
+
         while (startDateTime.isBefore(now)) {
             startDateTime = startDateTime.plusHours(intervalMinutes);
         }
 
         return startDateTime;
     }
+
     public void setNextDosageTime(LocalDateTime nextDosageTime) {
         this.nextDosageTime = nextDosageTime;
     }

@@ -9,4 +9,8 @@
             android:fontStyle="normal"
             android:fontWeight="600"
             android:font="@font/lexend_semibold" />
+        <font
+            android:fontStyle="normal"
+            android:fontWeight="700"
+            android:font="@font/lexend_bold" />
     </font-family>

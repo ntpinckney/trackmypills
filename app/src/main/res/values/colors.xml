@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="text">#463239</color>
+    <color name="text_transparent">#80463239</color>
     <color name="add_button">#C677FF</color>
     <color name="medication_block">#E6FFAD77</color>
     <color name="green">#4CAF50</color>

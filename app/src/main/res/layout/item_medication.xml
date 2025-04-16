@@ -44,7 +44,7 @@
             android:fontFamily="@font/lexend"
             android:text="Time"
             android:textColor="@color/text"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/med_dosage"
@@ -53,7 +53,7 @@
             android:fontFamily="@font/lexend"
             android:text="Dosage"
             android:textColor="@color/text"
-            android:textSize="20dp" />
+            android:textSize="16dp" />
 
 
         <TextView
@@ -63,8 +63,7 @@
             android:fontFamily="@font/lexend"
             android:text="Total"
             android:textColor="@color/text"
-            android:textSize="20dp"
-            />
+            android:textSize="16dp" />
 
         <ImageButton
             android:id="@+id/expand_button"
