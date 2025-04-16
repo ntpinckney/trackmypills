@@ -82,12 +82,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     }
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
-        TextView medNameTextView, medTimeTextView, medDosageTextView, totalMedsTextView;
+        TextView medNameTextView, medTimeTextView, missedTimesView, medDosageTextView, totalMedsTextView;
         ImageButton expandButton, takeButton, undoButton, editButton,
                 deleteButton;
         LinearLayout expandableView;
 
-        boolean isExpanded;
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +96,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
             totalMedsTextView = itemView.findViewById(R.id.total_meds);
+            missedTimesView = itemView.findViewById(R.id.missed_time);
             expandButton = itemView.findViewById(R.id.expand_button);
 
             // Expandable view interface display
@@ -112,7 +112,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medNameTextView.setText(medication.getName());
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime nextDosageTime = medication.getNextDosageTime();
+
+            boolean isExpanded = medication.isExpanded();
             expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            expandButton.setRotation(isExpanded ? 90 : 0);
 
             // Animations
             final Animation rotateClockwise = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.rotate_clockwise);
@@ -121,13 +124,15 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             final Animation expand = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.expand_animation);
 
             expandButton.setOnClickListener(v -> {
-                isExpanded = !isExpanded;
-                if (isExpanded) {
+                boolean currentlyExpanded = medication.isExpanded();
+                if (!currentlyExpanded) {
+                    // Expanding
                     expandableView.setVisibility(View.VISIBLE);
                     expandableView.startAnimation(expand);
                     expandButton.startAnimation(rotateClockwise);
                     expandButton.setRotation(90);
                 } else {
+                    // Collapsing
                     expandableView.startAnimation(collapse);
                     collapse.setAnimationListener(new Animation.AnimationListener() {
                         @Override
@@ -192,6 +197,25 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                     // Updates doses taken and total meds with the new values
                     medication.setDosesTaken(newDosesTaken);
                     medication.setTotalMeds(updatedTotalMeds);
+
+                    // Undoes the last taken time
+                    List<LocalDateTime> takenTimes = new ArrayList<>(medication.getTakenTimes());
+                    if(!takenTimes.isEmpty()){
+                        LocalDateTime lastTakenTime = takenTimes.get(takenTimes.size() - 1);
+                        takenTimes.remove(lastTakenTime); // Removes it from list
+
+                        // Updates the medicaiton's takenTimes
+                        medication.setTakenTimes(takenTimes);
+
+                        // Handles the missed dosages if the dose that was undone was marked as missed
+                        List<LocalDateTime> missedDosages = new ArrayList<>(medication.getMissedDosages());
+                        if(missedDosages.contains(lastTakenTime)){
+                            missedDosages.remove(lastTakenTime); // Removes the undone dose from missedDosages
+                            medication.setMissedDosages(missedDosages); // Updates the missed dosages
+
+                        }
+                    }
+
 
                     // Updates the medication in ViewModel
                     viewModel.update(medication);
@@ -296,6 +320,24 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 medTimeTextView.setText(timeDisplay);
             }
 
+            checkMissedDosages(medication);
+
+            List<LocalDateTime> missedTimes = medication.getMissedDosages();
+            List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
+
+            if(!recentMisses.isEmpty()){
+                StringBuilder builder = new StringBuilder("Missed doses:\n");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d,h:mm a");
+                for(LocalDateTime missedTime : recentMisses){
+                    builder.append("- ").append(missedTime.format(formatter)).append("\n");
+                }
+                missedTimesView.setText(builder.toString().trim());
+                missedTimesView.setVisibility(View.VISIBLE);
+            } else {
+                missedTimesView.setVisibility(View.GONE);
+            }
+
+
             // Informs users how many doses have been taken
             medDosageTextView.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
                     medication.getAdminType().getLabel()));
@@ -312,6 +354,9 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             is selected, medQuantity increases dosesTaken */
             if (totalMedsGreaterThanZero && (dosesTakenLessThanMaxAmt || dontShowAgain)) {
                 medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
+                medication.addTakenTimes(LocalDateTime.now());
+                medication.getMissedDosages().clear(); // Clears missed doses after pill is taken
+
                 // Ensures totalMedsTextView never goes negative
                 if (medication.getTotalMeds() >= medication.getMedQuantity()) {
                     medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
@@ -336,6 +381,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                             // Allows exceeding max dosage, but only if there are meds left
                             if (totalMedsGreaterThanZero) {
                                 medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
+                                medication.getMissedDosages().clear();
+
 
                                 if (medication.getTotalMeds() >= medication.getMedQuantity()) {
                                     medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
@@ -362,7 +409,26 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         }
     }
 
-    // ALWAYS USE GLOBAL maxTimes FOR LOCAL maxTimes OR VALUES MAY NOT DISPLAY CORRECTLY IN APP
+    private void checkMissedDosages(Medication medication) {
+        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
+        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
+        LocalDateTime now = LocalDateTime.now();
+
+        for(LocalDateTime time : upcomingTimes){
+            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
+            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
+            boolean alreadyMissed = missed.contains(time);
+
+            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
+                missed.add(time); // Adds missed times to list
+            }
+        }
+
+        // Saves changes
+        medication.setMissedDosages(missed);
+        viewModel.update(medication);
+    }
+
     private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
         List<LocalDateTime> upcomingTimes = new ArrayList<>();
 

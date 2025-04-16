@@ -10,6 +10,7 @@ import com.example.trackmypills.util.Converters;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity(tableName = "medications") // Establishes RoomDB table
 @TypeConverters(Converters.class)
@@ -40,6 +41,13 @@ public class Medication {
     private boolean notificationsEnabled; // Boolean to check if notifications are enabled
     @ColumnInfo(defaultValue = "next_dosage_time")
     private LocalDateTime nextDosageTime; // Tracks next dosage time
+    @ColumnInfo(defaultValue = "missed_dosages")
+    private List<LocalDateTime> missedDosages; // Shows users the times they missed their dosages
+    @ColumnInfo(defaultValue = "taken_times")
+    private List<LocalDateTime> takenTimes; // Shows users the times they took their dosages
+    @ColumnInfo(defaultValue = "is_exanded")
+    private boolean isExpanded; // Boolean to check if the expanded view is expanded
+
 
     // Empty constructor
     public Medication() {
@@ -170,5 +178,38 @@ public class Medication {
 
     public void setNextDosageTime(LocalDateTime nextDosageTime) {
         this.nextDosageTime = nextDosageTime;
+    }
+
+    public List<LocalDateTime> getMissedDosages() {
+        return missedDosages;
+    }
+
+    public void setMissedDosages(List<LocalDateTime> missedDosages) {
+        this.missedDosages = missedDosages;
+    }
+
+    public void addMissedDosages(LocalDateTime time) {
+        missedDosages.add(time);
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public List<LocalDateTime> getTakenTimes() {
+        return takenTimes;
+    }
+
+    public void setTakenTimes(List<LocalDateTime> takenTimes) {
+        this.takenTimes = takenTimes;
+    }
+
+    // Adds taken times
+    public void addTakenTimes(LocalDateTime takenTime) {
+        takenTimes.add(takenTime);
+    }
+
+    public void setExpanded(boolean isExpanded) {
+        this.isExpanded = isExpanded;
     }
 }

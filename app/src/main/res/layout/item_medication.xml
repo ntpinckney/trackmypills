@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lexend"
-            android:text="Time"
+            android:text="Reminders"
             android:textColor="@color/text"
             android:textSize="16sp" />
 
@@ -64,6 +65,17 @@
             android:text="Total"
             android:textColor="@color/text"
             android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/missed_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lexend"
+            android:text="Missed Times"
+            android:visibility="gone"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            tools:fontFamily="@font/lexend" />
 
         <ImageButton
             android:id="@+id/expand_button"

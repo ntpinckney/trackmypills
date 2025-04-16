@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Converters {
 
@@ -81,5 +84,30 @@ public class Converters {
     @TypeConverter
     public static LocalDate fromStringDate(String value){
         return value == null ? null : LocalDate.parse(value);
+    }
+
+    // Converts List<LocalDateTime> to JSON/comma-separated string
+    @TypeConverter
+    public static String fromLocalDateTimeList(List<LocalDateTime> dateTimeList) {
+        if (dateTimeList == null) {
+            return null;
+        }
+        return dateTimeList.stream()
+                .map(dateTime -> dateTime.format(timeFormatter))
+                .collect(Collectors.joining(","));
+    }
+
+    // Converts String back to List<LocalDateTime>
+    @TypeConverter
+    public static List<LocalDateTime> toLocalDateTimeList(String dateTimeString) {
+        if(dateTimeString == null || dateTimeString.isEmpty()){
+            return new ArrayList<>();
+        }
+        String[] dateTimeStrings = dateTimeString.split(",");
+        List<LocalDateTime> dateTimeList = new ArrayList<>();
+        for (String dateTimeStr : dateTimeStrings) {
+            dateTimeList.add(LocalDateTime.parse(dateTimeStr, timeFormatter));
+        }
+        return dateTimeList;
     }
 }
