@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">TrackMyPills</string>
+
+    <string name="new_medication_title">New Medication</string>
+    <string name="med_name_label">Enter medication name</string>
+    <string name="quantity_label">Quantity per dose</string>
+    <string name="max_amt_label">Max quantity per day</string>
+    <string name="total_meds_label">Total amount of meds</string>
+
+    <string name="admin_label">Administration method</string>
+    <string name="freq_label">Frequency</string>
+    <string name="dose_label">Time of first dosage</string>
+    <string name="med_time_label">Select time</string>
+    <string name="save_btn">Save</string>
+    <string name="cancel_btn">Cancel</string>
+
+    <string name="med_name_hint">Medication name</string>
+    <string name="quantity_hint">E.g., 2</string>
+    <string name="max_amt_hint">E.g., 8</string>
+    <string name="total_meds_hint">E.g., 28</string>
+
+
 </resources>
