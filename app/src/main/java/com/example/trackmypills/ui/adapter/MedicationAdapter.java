@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,11 +93,13 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             super(itemView);
 
             // Main interface display
+
+            // TODO: missedTimes is interfering with exandableView's function. Fix this.
             medNameTextView = itemView.findViewById(R.id.med_name);
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
             totalMedsTextView = itemView.findViewById(R.id.total_meds);
-            missedTimesView = itemView.findViewById(R.id.missed_time);
+//            missedTimesView = itemView.findViewById(R.id.missed_time);
             expandButton = itemView.findViewById(R.id.expand_button);
 
             // Expandable view interface display
@@ -124,32 +127,36 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             final Animation expand = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.expand_animation);
 
             expandButton.setOnClickListener(v -> {
-                boolean currentlyExpanded = medication.isExpanded();
-                if (!currentlyExpanded) {
-                    // Expanding
-                    expandableView.setVisibility(View.VISIBLE);
-                    expandableView.startAnimation(expand);
-                    expandButton.startAnimation(rotateClockwise);
-                    expandButton.setRotation(90);
-                } else {
-                    // Collapsing
-                    expandableView.startAnimation(collapse);
-                    collapse.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                        }
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    boolean currentlyExpanded = medication.isExpanded();
 
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            expandableView.setVisibility(View.GONE);
-                        }
+                    if (currentlyExpanded) {
+                        // Collapse
+                        expandableView.startAnimation(collapse);
+                        collapse.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {}
 
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-                        }
-                    });
-                    expandButton.startAnimation(rotateCounterclockwise);
-                    expandButton.setRotation(0);
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                expandableView.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {}
+                        });
+                        expandButton.startAnimation(rotateCounterclockwise);
+                        expandButton.setRotation(0);
+                    } else {
+                        // Expand
+                        expandableView.setVisibility(View.VISIBLE);
+                        expandableView.startAnimation(expand);
+                        expandButton.startAnimation(rotateClockwise);
+                        expandButton.setRotation(90);
+                    }
+
+                    medication.setExpanded(!currentlyExpanded);
                 }
             });
 
@@ -319,23 +326,23 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 // Tells user when the next reminders are
                 medTimeTextView.setText(timeDisplay);
             }
-
-            checkMissedDosages(medication);
-
-            List<LocalDateTime> missedTimes = medication.getMissedDosages();
-            List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
-
-            if(!recentMisses.isEmpty()){
-                StringBuilder builder = new StringBuilder("Missed doses:\n");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d,h:mm a");
-                for(LocalDateTime missedTime : recentMisses){
-                    builder.append("- ").append(missedTime.format(formatter)).append("\n");
-                }
-                missedTimesView.setText(builder.toString().trim());
-                missedTimesView.setVisibility(View.VISIBLE);
-            } else {
-                missedTimesView.setVisibility(View.GONE);
-            }
+//
+//            checkMissedDosages(medication);
+//
+//            List<LocalDateTime> missedTimes = medication.getMissedDosages();
+//            List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
+//
+//            if(!recentMisses.isEmpty()){
+//                StringBuilder builder = new StringBuilder("Missed doses:\n");
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+//                for(LocalDateTime missedTime : recentMisses){
+//                    builder.append(", ").append(missedTime.format(formatter));
+//                }
+//                missedTimesView.setText(builder.toString().trim());
+//                missedTimesView.setVisibility(View.VISIBLE);
+//            } else {
+//                missedTimesView.setVisibility(View.INVISIBLE);
+//            }
 
 
             // Informs users how many doses have been taken
@@ -409,25 +416,25 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         }
     }
 
-    private void checkMissedDosages(Medication medication) {
-        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
-        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
-        LocalDateTime now = LocalDateTime.now();
-
-        for(LocalDateTime time : upcomingTimes){
-            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
-            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
-            boolean alreadyMissed = missed.contains(time);
-
-            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
-                missed.add(time); // Adds missed times to list
-            }
-        }
-
-        // Saves changes
-        medication.setMissedDosages(missed);
-        viewModel.update(medication);
-    }
+//    private void checkMissedDosages(Medication medication) {
+//        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
+//        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        for(LocalDateTime time : upcomingTimes){
+//            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
+//            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
+//            boolean alreadyMissed = missed.contains(time);
+//
+//            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
+//                missed.add(time); // Adds missed times to list
+//            }
+//        }
+//
+//        // Saves changes
+//        medication.setMissedDosages(missed);
+//        viewModel.update(medication);
+//    }
 
     private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
         List<LocalDateTime> upcomingTimes = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.example.trackmypills.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -45,7 +46,7 @@ public class Medication {
     private List<LocalDateTime> missedDosages; // Shows users the times they missed their dosages
     @ColumnInfo(defaultValue = "taken_times")
     private List<LocalDateTime> takenTimes; // Shows users the times they took their dosages
-    @ColumnInfo(defaultValue = "is_exanded")
+    @ColumnInfo(defaultValue = "is_expanded")
     private boolean isExpanded; // Boolean to check if the expanded view is expanded
 
 
@@ -195,6 +196,9 @@ public class Medication {
     public boolean isExpanded() {
         return isExpanded;
     }
+    public void setExpanded(boolean isExpanded) {
+        this.isExpanded = isExpanded;
+    }
 
     public List<LocalDateTime> getTakenTimes() {
         return takenTimes;
@@ -209,7 +213,4 @@ public class Medication {
         takenTimes.add(takenTime);
     }
 
-    public void setExpanded(boolean isExpanded) {
-        this.isExpanded = isExpanded;
-    }
 }

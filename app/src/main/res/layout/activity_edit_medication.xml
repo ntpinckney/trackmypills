@@ -13,50 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/frequency_text_view"
-        app:layout_constraintTop_toTopOf="@+id/frequency_text_view"
         tools:context=".ui.activity.EditMedication">
 
-
-        <TextView
-            android:id="@+id/total_meds_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="244dp"
-            android:fontFamily="@font/lexend"
-            android:text="@string/total_meds_label"
-            android:textColor="@color/text"
-            app:layout_constraintBottom_toTopOf="@+id/total_meds_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/max_amt_number" />
-
-        <TextView
-            android:id="@+id/max_amt_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="246dp"
-            android:fontFamily="@font/lexend"
-            android:text="@string/max_amt_label"
-            android:textColor="@color/text"
-            app:layout_constraintBottom_toTopOf="@+id/max_amt_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/quantity_per_dose" />
-
-        <TextView
-            android:id="@+id/quantity_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:layout_marginEnd="270dp"
-            android:fontFamily="@font/lexend"
-            android:text="@string/quantity_label"
-            android:textColor="@color/text"
-            app:layout_constraintBottom_toTopOf="@+id/quantity_per_dose"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/enter_med_name" />
-
+        <!-- Title -->
         <TextView
             android:id="@+id/new_medication_title"
             android:layout_width="wrap_content"
@@ -66,29 +25,58 @@
             android:layout_marginEnd="155dp"
             android:layout_marginBottom="69dp"
             android:fontFamily="@font/poppins"
-            android:text="New Medication"
+            android:text="@string/med_name_hint"
             android:textSize="32sp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/med_name_label"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Medication Name -->
+
+        <TextView
+            android:id="@+id/med_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="216dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/lexend"
+            android:text="@string/med_name_label"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toTopOf="@+id/enter_med_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/enter_med_name"
             android:layout_width="251dp"
             android:layout_height="43dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="144dp"
-            android:ems="10"
-            android:hint="Medication name"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="128dp"
+            android:hint="@string/med_name_hint"
             android:inputType="textCapWords"
             android:textColor="@color/text"
             android:textSize="18sp"
-            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/med_name_label" />
+
+        <TextView
+            android:id="@+id/quantity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="270dp"
+            android:fontFamily="@font/lexend"
+            android:text="@string/quantity_label"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toTopOf="@+id/quantity_per_dose"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/enter_med_name" />
 
         <EditText
             android:id="@+id/quantity_per_dose"
@@ -96,46 +84,74 @@
             android:layout_height="42dp"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="18dp"
-            android:ems="10"
             android:hint="@string/quantity_hint"
             android:inputType="numberDecimal"
             android:textColor="@color/text"
             android:textSize="18sp"
-            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quantity_label" />
+
+
+        <TextView
+            android:id="@+id/max_amt_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="270dp"
+            android:fontFamily="@font/lexend"
+            android:text="@string/max_amt_label"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toTopOf="@+id/max_amt_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quantity_per_dose" />
 
         <EditText
             android:id="@+id/max_amt_number"
             android:layout_width="254dp"
             android:layout_height="42dp"
             android:layout_marginStart="18dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="18dp"
-            android:ems="10"
             android:hint="@string/max_amt_hint"
             android:inputType="numberDecimal"
             android:textColor="@color/text"
             android:textSize="18sp"
-            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/max_amt_label" />
 
+        <TextView
+            android:id="@+id/total_meds_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="270dp"
+            android:fontFamily="@font/lexend"
+            android:text="@string/total_meds_label"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toTopOf="@+id/total_meds_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/max_amt_number" />
+
         <EditText
             android:id="@+id/total_meds_number"
-            android:layout_width="273dp"
-            android:layout_height="39dp"
+            android:layout_width="266dp"
+            android:layout_height="44dp"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="18dp"
-            android:ems="10"
             android:hint="@string/total_meds_hint"
             android:inputType="numberDecimal"
             android:textColor="@color/text"
             android:textSize="18sp"
-            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -145,14 +161,16 @@
             android:id="@+id/admin_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="13dp"
-            android:layout_marginEnd="238dp"
+            android:layout_marginEnd="200dp"
             android:fontFamily="@font/lexend"
             android:text="@string/admin_label"
             android:textColor="@color/text"
-            android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/admin_spinner"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/total_meds_number" />
 
         <Spinner
@@ -161,22 +179,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@+id/admin_text_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_text_view" />
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Frequency -->
 
         <TextView
             android:id="@+id/frequency_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="19dp"
             android:layout_marginTop="17dp"
+            android:layout_marginEnd="320dp"
             android:fontFamily="@font/lexend"
             android:text="@string/freq_label"
             android:textColor="@color/text"
-            android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/freq_spinner"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/admin_spinner" />
 
@@ -186,11 +206,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="19dp"
             android:layout_marginEnd="19dp"
+            android:layout_marginBottom="14dp"
             android:textColor="@color/text"
             android:textSize="18sp"
-            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/dose_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/frequency_text_view" />
 
@@ -198,14 +218,16 @@
             android:id="@+id/dose_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
             android:layout_marginTop="13dp"
-            android:layout_marginEnd="255dp"
+            android:layout_marginEnd="270dp"
             android:fontFamily="@font/lexend"
             android:text="@string/dose_label"
             android:textColor="@color/text"
-            android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/med_time"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/freq_spinner" />
 
         <TextView
@@ -213,7 +235,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="299dp"
+            android:layout_marginEnd="310dp"
             android:layout_marginBottom="45dp"
             android:background="@android:drawable/editbox_background"
             android:clickable="true"
@@ -222,18 +244,18 @@
             android:padding="10dp"
             android:text="Select time"
             android:textColor="@color/text"
-            android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/save_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dose_text" />
 
         <Button
             android:id="@+id/save_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="32dp"
             android:backgroundTint="@color/add_button"
             android:elevation="6dp"
             android:fontFamily="@font/lexend"
@@ -242,16 +264,16 @@
             android:textColor="@color/text"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/cancel_btn"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/med_time" />
 
         <Button
             android:id="@+id/cancel_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="116dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@color/red"
             android:elevation="6dp"
@@ -261,20 +283,10 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/save_btn"
-            app:layout_constraintTop_toBottomOf="@+id/freq_spinner" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/med_time" />
 
-        <TextView
-            android:id="@+id/med_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="236dp"
-            android:fontFamily="@font/lexend"
-            android:text="@string/med_name_label"
-            android:textColor="@color/text"
-            app:layout_constraintBottom_toTopOf="@+id/enter_med_name"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
