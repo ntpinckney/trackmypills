@@ -69,8 +69,10 @@ public class NewMedication extends AppCompatActivity {
         SpinnerUtil.setUpSpinner(this, adminSpinner, AdminType.values());
         SpinnerUtil.setUpSpinner(this, frequencySpinner, Frequency.values());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+        timeTextView.setText(formatter.format(LocalTime.now()));
         // Shows TimePicker when clicking the EditText
-        timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
+        timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView, LocalTime.now()));
 
         // Handles save button click
        saveBtn.setOnClickListener(v -> saveMedication());
@@ -97,11 +99,51 @@ public class NewMedication extends AppCompatActivity {
         String totalMedsStr = totalMedsInput.getText().toString();
         String medTimeStr = timeTextView.getText().toString();
 
-        // Checks if input is valid
-        if (medNameStr.isEmpty() || maxAmtStr.isEmpty() || medTimeStr.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+        boolean hasError = false;
+
+
+        // Checks if all values are empty
+        if(medNameStr.isEmpty()){
+            medNameInput.setError("Please enter a medication name.");
+            hasError = true;
+        }
+
+        if(medQuantityStr.isEmpty()){
+            medQuantityInput.setError("Please enter a medication quantity.");
+            hasError = true;
+        }
+
+        if(maxAmtStr.isEmpty()){
+            maxAmtInput.setError("Please enter a maximum amount.");
+            hasError = true;
+        }
+
+        if(totalMedsStr.isEmpty()){
+            totalMedsInput.setError("Please enter a total amount of medication.");
+            hasError = true;
+        }
+
+        if(medTimeStr.isEmpty()){
+            timeTextView.setError("Please enter a time.");
+            hasError = true;
+        }
+
+        if(adminSpinner.getSelectedItemPosition() == 0){
+            Toast.makeText(this, "Please select an admin type.", Toast.LENGTH_SHORT).show();
+            hasError = true;
+        }
+
+        if(frequencySpinner.getSelectedItemPosition() == 0){
+            Toast.makeText(this, "Please select a frequency.", Toast.LENGTH_SHORT).show();
+            hasError = true;
+        }
+
+        // Stops further execution if any field has an error
+        if(hasError){
             return;
         }
+
+
 
         // Sets the values based on user input
         double medQuantity = Double.parseDouble(medQuantityStr);

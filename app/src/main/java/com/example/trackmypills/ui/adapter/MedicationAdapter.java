@@ -84,8 +84,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medNameTextView, medTimeTextView, missedTimesView, medDosageTextView, totalMedsTextView;
-        ImageButton expandButton, takeButton, undoButton, editButton,
-                deleteButton;
+        ImageButton expandButton, takeButton, undoButton, editButton, deleteButton;
         LinearLayout expandableView;
 
 
@@ -99,7 +98,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
             totalMedsTextView = itemView.findViewById(R.id.total_meds);
-//            missedTimesView = itemView.findViewById(R.id.missed_time);
+            missedTimesView = itemView.findViewById(R.id.missed_time);
             expandButton = itemView.findViewById(R.id.expand_button);
 
             // Expandable view interface display
@@ -174,6 +173,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 boolean dontShowAgain = prefs.getBoolean("don't_show_exceed_dialog", false);
                 boolean dosesTakenLessThanMaxAmt = medication.getDosesTaken() < medication.getMaxAmt();
                 boolean totalMedsGreaterThanZero = medication.getTotalMeds() > 0;
+
 
                 takeDose(medication, v, totalMedsGreaterThanZero, dosesTakenLessThanMaxAmt, dontShowAgain, prefs);
             });
@@ -326,24 +326,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 // Tells user when the next reminders are
                 medTimeTextView.setText(timeDisplay);
             }
-//
-//            checkMissedDosages(medication);
-//
-//            List<LocalDateTime> missedTimes = medication.getMissedDosages();
-//            List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
-//
-//            if(!recentMisses.isEmpty()){
-//                StringBuilder builder = new StringBuilder("Missed doses:\n");
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-//                for(LocalDateTime missedTime : recentMisses){
-//                    builder.append(", ").append(missedTime.format(formatter));
-//                }
-//                missedTimesView.setText(builder.toString().trim());
-//                missedTimesView.setVisibility(View.VISIBLE);
-//            } else {
-//                missedTimesView.setVisibility(View.INVISIBLE);
-//            }
-
 
             // Informs users how many doses have been taken
             medDosageTextView.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),
@@ -355,11 +337,17 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
         }
 
-        private void takeDose(Medication medication, View v, boolean totalMedsGreaterThanZero, boolean dosesTakenLessThanMaxAmt, boolean dontShowAgain, SharedPreferences prefs) {
+        private void takeDose(Medication medication, View v, boolean totalMedsGreaterThanZero,
+                              boolean dosesTakenLessThanMaxAmt, boolean dontShowAgain,
+                              SharedPreferences prefs) {
+
+             // Updates the missed times view
+
 
             /* If the doses taken is lower than the maximum amount, totalMedsTextView isn't 0, or "Don't Show Again"
             is selected, medQuantity increases dosesTaken */
             if (totalMedsGreaterThanZero && (dosesTakenLessThanMaxAmt || dontShowAgain)) {
+                checkMissedDosages(medication); // Checks if there are any missed dosages
                 medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
                 medication.addTakenTimes(LocalDateTime.now());
                 medication.getMissedDosages().clear(); // Clears missed doses after pill is taken
@@ -367,6 +355,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 // Ensures totalMedsTextView never goes negative
                 if (medication.getTotalMeds() >= medication.getMedQuantity()) {
                     medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
+
                 } else {
                     medication.setTotalMeds(0);
                     Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
@@ -374,6 +363,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
                 viewModel.update(medication);
                 notifyItemChanged(getAdapterPosition());
+                updateMissedTimesView(medication, missedTimesView); // Updates after changes
 
             } else if (medication.getTotalMeds() == 0) {
                 // Blocks further dosage increments if there are no more meds left
@@ -416,25 +406,47 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
         }
     }
 
-//    private void checkMissedDosages(Medication medication) {
-//        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
-//        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        for(LocalDateTime time : upcomingTimes){
-//            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
-//            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
-//            boolean alreadyMissed = missed.contains(time);
-//
-//            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
-//                missed.add(time); // Adds missed times to list
-//            }
-//        }
-//
-//        // Saves changes
-//        medication.setMissedDosages(missed);
-//        viewModel.update(medication);
-//    }
+    private void checkMissedDosages(Medication medication) {
+        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
+        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
+        LocalDateTime now = LocalDateTime.now();
+
+        for(LocalDateTime time : upcomingTimes){
+            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
+            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
+            boolean alreadyMissed = missed.contains(time);
+
+            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
+                missed.add(time); // Adds missed times to list
+            }
+        }
+
+
+        // Saves changes
+        medication.setMissedDosages(missed);
+        viewModel.update(medication);
+    }
+
+    // Updates missed times view if there are missed dosages
+    private void updateMissedTimesView(Medication medication, TextView missedTimesView) {
+        List<LocalDateTime> missedTimes = medication.getMissedDosages();
+        List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
+
+        missedTimesView.post(() -> {
+            if (!recentMisses.isEmpty()) {
+                StringBuilder builder = new StringBuilder("Missed doses:\n");
+                for (int i = 0; i < recentMisses.size(); i++) {
+                    builder.append(recentMisses.get(i).format(DateTimeFormatter.ofPattern("hh:mm a")));
+                    if (i < recentMisses.size() - 1) builder.append(", ");
+                }
+                missedTimesView.setText(builder.toString());
+                missedTimesView.setVisibility(View.VISIBLE);
+            } else {
+                missedTimesView.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
         List<LocalDateTime> upcomingTimes = new ArrayList<>();

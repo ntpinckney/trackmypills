@@ -4,14 +4,16 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.widget.TextView;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 
 public class TimePickerUtil {
 
-    public static void showTimePickerDialog(Context context, TextView textView) {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+    public static void showTimePickerDialog(Context context, TextView textView,
+                                            LocalTime prefillTime) {
+
+        int hour = prefillTime.getHour();
+        int minute = prefillTime.getMinute();
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(context,
                 (view, selectedHour, selectedMinute) -> {

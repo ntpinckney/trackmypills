@@ -58,6 +58,7 @@
             android:textSize="16dp" />
 
 
+
         <TextView
             android:id="@+id/total_meds"
             android:layout_width="wrap_content"
@@ -67,6 +68,16 @@
             android:textColor="@color/text"
             android:textSize="16dp" />
 
+        <TextView
+            android:id="@+id/missed_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lexend"
+            android:text="Missed Times"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="gone"
+            />
 
         <ImageButton
             android:id="@+id/expand_button"
@@ -124,6 +135,7 @@
                 android:contentDescription="Delete medication"
                 android:src="@drawable/ic_delete"
                 android:scaleType="fitCenter"/>
+
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

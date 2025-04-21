@@ -160,7 +160,15 @@ public class EditMedication extends AppCompatActivity {
                 finish();
             });
 
-            timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView));
+            timeTextView.setOnClickListener(v -> {
+                if (medication != null && medication.getNextDosageTime() != null) {
+                    TimePickerUtil.showTimePickerDialog(this, timeTextView, medication.getNextDosageTime().toLocalTime());
+                } else {
+                    // Current time fallback
+                    TimePickerUtil.showTimePickerDialog(this, timeTextView, LocalTime.now());
+                }
+            });
+
 
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
