@@ -57,8 +57,6 @@
             android:textColor="@color/text"
             android:textSize="16dp" />
 
-
-
         <TextView
             android:id="@+id/total_meds"
             android:layout_width="wrap_content"
@@ -76,7 +74,7 @@
             android:text="Missed Times"
             android:textColor="@color/red"
             android:textSize="16sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             />
 
         <ImageButton
@@ -105,6 +103,8 @@
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="@drawable/ic_green_btn"
+                android:layout_marginEnd="@dimen/icon_margins"
+                android:padding="@dimen/icon_padding"
                 android:contentDescription="Increase doses taken"
                 android:src="@drawable/ic_pill"
                 android:scaleType="fitCenter" />
@@ -114,6 +114,8 @@
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="@drawable/ic_lt_blue_btn"
+                android:layout_marginEnd="@dimen/icon_margins"
+                android:padding="@dimen/icon_padding"
                 android:contentDescription="Refill medication"
                 android:src="@drawable/ic_refill"
                 android:scaleType="fitCenter"/>
@@ -123,6 +125,8 @@
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="@drawable/ic_red_btn"
+                android:layout_marginEnd="@dimen/icon_margins"
+                android:padding="@dimen/icon_padding"
                 android:contentDescription="Decrease doses taken"
                 android:src="@drawable/ic_undo"
                 android:scaleType="fitCenter"/>
@@ -132,6 +136,8 @@
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="@drawable/ic_blue_btn"
+                android:layout_marginEnd="@dimen/icon_margins"
+                android:padding="@dimen/icon_padding"
                 android:contentDescription="Edit medication"
                 android:src="@drawable/ic_edit"
                 android:scaleType="fitCenter"/>
@@ -141,6 +147,7 @@
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="@drawable/ic_dk_red_btn"
+                android:padding="@dimen/icon_padding"
                 android:contentDescription="Delete medication"
                 android:src="@drawable/ic_delete"
                 android:scaleType="fitCenter"/>

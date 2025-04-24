@@ -77,7 +77,7 @@ public class NewMedication extends AppCompatActivity {
                 timeTextView,
                 LocalTime.now(),
                 selectedTime -> {
-                    timeTextView.setText(selectedTime.toString());
+                    timeTextView.setText(formatter.format(selectedTime));
                 })
         );
 

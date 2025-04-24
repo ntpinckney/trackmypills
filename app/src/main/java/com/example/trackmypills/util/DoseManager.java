@@ -126,7 +126,7 @@ public class DoseManager {
                 != null ? new ArrayList<>(medication.getMissedDosages()) : new ArrayList<>();
 
         for (LocalDateTime expected : expectedTimes) {
-            final long ALLOWED_DELAY_MINUTES = 5;
+            final long ALLOWED_DELAY_MINUTES = 15; // Maximum delay in minutes
             boolean takenClose = taken.stream()
                     .anyMatch(t ->Math.abs(Duration.between(expected, t).toMinutes()) < ALLOWED_DELAY_MINUTES);
 

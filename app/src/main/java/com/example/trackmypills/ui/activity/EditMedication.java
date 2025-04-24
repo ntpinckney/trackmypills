@@ -161,6 +161,7 @@ public class EditMedication extends AppCompatActivity {
                 finish();
             });
 
+
             timeTextView.setOnClickListener(v -> {
                 LocalTime prefill = (medication != null && medication.getNextDosageTime() != null)
                         ? medication.getNextDosageTime().toLocalTime()
@@ -172,6 +173,8 @@ public class EditMedication extends AppCompatActivity {
                         medication.setNextDosageTime(null); // Clears and recalculates
                         medication.setNextDosageTime(medication.getNextDosageTime());
                     }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+                    timeTextView.setText(formatter.format(selectedTime));
                 });
             });
 

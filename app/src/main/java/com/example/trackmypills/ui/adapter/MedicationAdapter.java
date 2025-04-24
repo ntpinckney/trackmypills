@@ -12,6 +12,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
@@ -23,6 +24,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.ChangeBounds;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import com.example.trackmypills.util.DoseManager;
 import com.example.trackmypills.models.Frequency;
@@ -45,6 +50,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
     private Context context;
     private int maxTimes; // Maximum number of scheduled times to display
     private int expandedPosition = -1; // Tracks which item is expanded
+    private int previousExpandedPosition = -1; // Tracks previous expanded item
+
 
 
     public interface OnMedicationClickListener {
@@ -118,54 +125,54 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             // Checks if item is expanded based on global position
             boolean isExpanded = getAdapterPosition() == expandedPosition;
             expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-            expandButton.setRotation(isExpanded ? 90 : 0);
+            expandableView.clearAnimation(); // Removes leftover animation
 
+            expandButton.setRotation(isExpanded ? 90f : 0f);
+            expandButton.clearAnimation(); // Removes leftover animation
 
-            // Animations
-            final Animation rotateClockwise = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.rotate_clockwise);
-            final Animation rotateCounterclockwise = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.rotate_counterclockwise);
-            final Animation collapse = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.collapse_animation);
-            final Animation expand = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.expand_animation);
 
             expandButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    // If item is already expanded, collapse it
-                    if (expandedPosition == position) {
-                        expandedPosition = -1; // Resets to -1 collapse
+                if (position == RecyclerView.NO_POSITION) return;
 
-                        // Starts the collapse animation
-                        expandableView.startAnimation(collapse);
-                        collapse.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-                            }
+                if (expandedPosition == position) {
+                    // Collapses current item
+                    previousExpandedPosition = expandedPosition;
+                    expandedPosition = -1;
 
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                expandableView.setVisibility(View.GONE);
-                            }
+                    // Smooth collapse transition
+                    TransitionManager.beginDelayedTransition((ViewGroup) itemView, new AutoTransition());
 
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-                            }
-                        });
 
-                        // Rotates the button counterclockwise
-                        expandButton.startAnimation(rotateCounterclockwise);
-                        expandButton.setRotation(0);
-                    } else {
-                        // Expands the clicked item and collapses the others
-                        expandedPosition = position;
+                    // Hides expandable content
+                    expandableView.setVisibility(View.GONE);
 
-                        // Starts the expand animation
-                        expandableView.setVisibility(View.VISIBLE);
-                        expandableView.startAnimation(expand);
-                        expandButton.startAnimation(rotateClockwise);
-                        expandButton.setRotation(90);
+                    // Animates rotation button to position zero
+                    expandButton.animate()
+                            .rotation(0f)
+                            .setDuration(200)
+                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                            .start();
+
+                } else {
+                    previousExpandedPosition = expandedPosition;
+                    expandedPosition = position;
+
+                    // Collapses previous item
+                    if (previousExpandedPosition >= 0) {
+                        notifyItemChanged(previousExpandedPosition);
                     }
-                    // Notifies the adapter to update the view
-                    notifyItemChanged(position); // Refreshes UI
+
+                    // Smooth expand transition
+                    TransitionManager.beginDelayedTransition((ViewGroup) itemView, new AutoTransition());
+
+                    // Makes the expandableView trigger and rotates button to 90
+                    expandableView.setVisibility(View.VISIBLE);
+                    expandButton.animate()
+                            .rotation(90f)
+                            .setDuration(200)
+                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                            .start();
                 }
             });
 
@@ -396,7 +403,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 missedTimesView.setText(String.format("Missed reminders: %s", String.join(", ", displayTimes)));
                 missedTimesView.setVisibility(View.VISIBLE);
             } else {
-                missedTimesView.setVisibility(View.GONE);
+                missedTimesView.setVisibility(View.INVISIBLE);
             }
 
             // Informs users how many doses have been taken
