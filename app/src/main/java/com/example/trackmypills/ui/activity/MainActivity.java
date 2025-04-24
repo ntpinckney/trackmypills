@@ -42,6 +42,7 @@ import com.example.trackmypills.R;
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.adapter.MedicationAdapter;
 import com.example.trackmypills.data.database.MedicationDatabase;
+import com.example.trackmypills.util.DoseManager;
 import com.example.trackmypills.util.NotifUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -127,6 +128,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, EditMedication.class);
             intent.putExtra("medication_id", medication.getId());
             editMedicationLauncher.launch(intent);
+        });
+
+        viewModel.getAllMedication().observe(this, medications -> {
+            viewModel.refreshMissedDoses(new DoseManager(viewModel));
+            adapter.setMedications(medications);
         });
 
         recyclerView.setAdapter(adapter);

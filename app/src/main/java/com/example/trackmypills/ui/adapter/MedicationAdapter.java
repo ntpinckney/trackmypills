@@ -36,15 +36,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.MedicationViewHolder> {
     private List<Medication> medications;
     private final OnMedicationClickListener listener; // Callback for item clicks
-
     private final MedicationViewModel viewModel;
-
     private Context context;
     private int maxTimes; // Maximum number of scheduled times to display
+    private int expandedPosition = -1; // Tracks which item is expanded
 
 
     public interface OnMedicationClickListener {
@@ -93,7 +93,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             super(itemView);
 
             // Main interface display
-
             medNameTextView = itemView.findViewById(R.id.med_name);
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
@@ -116,7 +115,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime nextDosageTime = medication.getNextDosageTime();
 
-            boolean isExpanded = medication.isExpanded();
+            // Checks if item is expanded based on global position
+            boolean isExpanded = getAdapterPosition() == expandedPosition;
             expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             expandButton.setRotation(isExpanded ? 90 : 0);
 
@@ -130,10 +130,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             expandButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    boolean currentlyExpanded = medication.isExpanded();
+                    // If item is already expanded, collapse it
+                    if (expandedPosition == position) {
+                        expandedPosition = -1; // Resets to -1 collapse
 
-                    if (currentlyExpanded) {
-                        // Collapse
+                        // Starts the collapse animation
                         expandableView.startAnimation(collapse);
                         collapse.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -149,17 +150,22 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                             public void onAnimationRepeat(Animation animation) {
                             }
                         });
+
+                        // Rotates the button counterclockwise
                         expandButton.startAnimation(rotateCounterclockwise);
                         expandButton.setRotation(0);
                     } else {
-                        // Expand
+                        // Expands the clicked item and collapses the others
+                        expandedPosition = position;
+
+                        // Starts the expand animation
                         expandableView.setVisibility(View.VISIBLE);
                         expandableView.startAnimation(expand);
                         expandButton.startAnimation(rotateClockwise);
                         expandButton.setRotation(90);
                     }
-
-                    medication.setExpanded(!currentlyExpanded);
+                    // Notifies the adapter to update the view
+                    notifyItemChanged(position); // Refreshes UI
                 }
             });
 
@@ -375,6 +381,22 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
                 // Tells user when the next reminders are
                 medTimeTextView.setText(timeDisplay);
+            }
+
+            List<LocalDateTime> missed = medication.getMissedDosages();
+
+            if(missed != null && !missed.isEmpty()){
+                // Shows only the first three missed times
+                List<String> displayTimes = missed.stream()
+                        .sorted()
+                        .limit(3)
+                        .map(time -> time.format(DateTimeFormatter.ofPattern("h:mm a")))
+                        .collect(Collectors.toList());
+
+                missedTimesView.setText(String.format("Missed reminders: %s", String.join(", ", displayTimes)));
+                missedTimesView.setVisibility(View.VISIBLE);
+            } else {
+                missedTimesView.setVisibility(View.GONE);
             }
 
             // Informs users how many doses have been taken

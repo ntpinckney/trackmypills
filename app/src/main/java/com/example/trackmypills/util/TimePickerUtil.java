@@ -6,17 +6,21 @@ import android.widget.TextView;
 
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.function.Consumer;
 
 public class TimePickerUtil {
 
     public static void showTimePickerDialog(Context context, TextView textView,
-                                            LocalTime prefillTime) {
+                                            LocalTime prefillTime,
+                                            Consumer<LocalTime> onTimeSelected) {
 
         int hour = prefillTime.getHour();
         int minute = prefillTime.getMinute();
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(context,
                 (view, selectedHour, selectedMinute) -> {
+
+                    LocalTime selectedTime = LocalTime.of(selectedHour, selectedMinute);
 
                     // Converts to 12-hour format and switches to AM or PM, depending on the hour
                     String amPm = (selectedHour >= 12) ? "PM" : "AM";
@@ -26,6 +30,7 @@ public class TimePickerUtil {
                             selectedMinute, amPm);
 
                     textView.setText(formattedTime); // Updates UI
+                    onTimeSelected.accept(selectedTime); // Passes back selected time
                 },
                 hour, minute, false); // False for 12-hour format
         timePickerDialog.show();

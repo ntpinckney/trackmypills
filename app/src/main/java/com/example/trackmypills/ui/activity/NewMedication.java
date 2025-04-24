@@ -72,12 +72,19 @@ public class NewMedication extends AppCompatActivity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
         timeTextView.setText(formatter.format(LocalTime.now()));
         // Shows TimePicker when clicking the EditText
-        timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(this, timeTextView, LocalTime.now()));
+        timeTextView.setOnClickListener(v -> TimePickerUtil.showTimePickerDialog(
+                this,
+                timeTextView,
+                LocalTime.now(),
+                selectedTime -> {
+                    timeTextView.setText(selectedTime.toString());
+                })
+        );
 
         // Handles save button click
-       saveBtn.setOnClickListener(v -> saveMedication());
+        saveBtn.setOnClickListener(v -> saveMedication());
 
-       // Handles cancel button click. Returns to MainActivity and makes no changes
+        // Handles cancel button click. Returns to MainActivity and makes no changes
         cancelBtn.setOnClickListener(v -> {
             Intent intent = new Intent(NewMedication.this, MainActivity.class);
             startActivity(intent);
@@ -103,37 +110,36 @@ public class NewMedication extends AppCompatActivity {
 
 
         // Checks if all values are empty
-        if(medNameStr.isEmpty()){
+        if (medNameStr.isEmpty()) {
             medNameInput.setError("Please enter a medication name.");
             hasError = true;
         }
 
-        if(medQuantityStr.isEmpty()){
+        if (medQuantityStr.isEmpty()) {
             medQuantityInput.setError("Please enter a medication quantity.");
             hasError = true;
         }
 
-        if(maxAmtStr.isEmpty()){
+        if (maxAmtStr.isEmpty()) {
             maxAmtInput.setError("Please enter a maximum amount.");
             hasError = true;
         }
 
-        if(totalMedsStr.isEmpty()){
+        if (totalMedsStr.isEmpty()) {
             totalMedsInput.setError("Please enter a total amount of medication.");
             hasError = true;
         }
 
-        if(medTimeStr.isEmpty()){
+        if (medTimeStr.isEmpty()) {
             timeTextView.setError("Please enter a time.");
             hasError = true;
         }
 
 
         // Stops further execution if any field has an error
-        if(hasError){
+        if (hasError) {
             return;
         }
-
 
 
         // Sets the values based on user input
@@ -155,7 +161,7 @@ public class NewMedication extends AppCompatActivity {
             LocalDateTime scheduledDateTime = LocalDateTime.of(today, parsedTime);
 
             // If the time has already passed, schedules time to the next day
-            if(scheduledDateTime.isBefore(now)){
+            if (scheduledDateTime.isBefore(now)) {
                 scheduledDateTime = scheduledDateTime.plusDays(1);
             }
 
@@ -169,7 +175,7 @@ public class NewMedication extends AppCompatActivity {
                     medication.getMaxAmt() > medication.getTotalMeds();
 
             // Prevents medQuantity from exceeding maxAmt/totalMeds
-            if(exceedsMaxAmount || exceedsTotalMeds){
+            if (exceedsMaxAmount || exceedsTotalMeds) {
                 InvalidDialogUtil.showInvalidDosageDialog(this);
             } else {
                 // Uses ViewModel to insert medication into database
@@ -184,9 +190,9 @@ public class NewMedication extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             Log.e("NewMedication", "Invalid time format: " + timeString, e);
-            Toast.makeText(this,"Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();
         }
     }
 }

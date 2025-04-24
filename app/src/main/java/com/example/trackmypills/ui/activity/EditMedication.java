@@ -113,11 +113,11 @@ public class EditMedication extends AppCompatActivity {
                             // Updates the start time
                             medication.setStartTime(newTime);
 
-                            // Recalculates the next dosage time based on new start time
-                            LocalDateTime newNextDosageTime = medication.getNextDosageTime();
-                            medication.setNextDosageTime(newNextDosageTime);
 
-                            Log.d("EditMedication", "Recalculated next dosage time: " + newNextDosageTime);
+                            // Recalculates the next dosage time based on new start time
+                            medication.setNextDosageTime(null); // Clears the previous value
+                            medication.setNextDosageTime(medication.getNextDosageTime()); // Recalculates the next dosage time
+
                         } else {
                             Log.e("EditMedication", "Time string was unexpectedly empty! Using existing time.");
                         }
@@ -144,7 +144,8 @@ public class EditMedication extends AppCompatActivity {
 
                         Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();
 
-                        NotifUtil.scheduleNotification(this, medication);
+                        NotifUtil.cancelNotification(this, medication); // Cancels old alarm
+                        NotifUtil.scheduleNotification(this, medication); // Schedules new alarm with updated time
 
                         Intent intent = new Intent(EditMedication.this, MainActivity.class);
                         startActivity(intent);
@@ -161,12 +162,17 @@ public class EditMedication extends AppCompatActivity {
             });
 
             timeTextView.setOnClickListener(v -> {
-                if (medication != null && medication.getNextDosageTime() != null) {
-                    TimePickerUtil.showTimePickerDialog(this, timeTextView, medication.getNextDosageTime().toLocalTime());
-                } else {
-                    // Current time fallback
-                    TimePickerUtil.showTimePickerDialog(this, timeTextView, LocalTime.now());
-                }
+                LocalTime prefill = (medication != null && medication.getNextDosageTime() != null)
+                        ? medication.getNextDosageTime().toLocalTime()
+                        : LocalTime.now();
+
+                TimePickerUtil.showTimePickerDialog(this, timeTextView, prefill, selectedTime -> {
+                    if (medication != null) {
+                        medication.setStartTime(selectedTime);
+                        medication.setNextDosageTime(null); // Clears and recalculates
+                        medication.setNextDosageTime(medication.getNextDosageTime());
+                    }
+                });
             });
 
 

@@ -46,9 +46,6 @@ public class Medication {
     private List<LocalDateTime> missedDosages; // Shows users the times they missed their dosages
     @ColumnInfo(defaultValue = "taken_times")
     private List<LocalDateTime> takenTimes; // Shows users the times they took their dosages
-    @ColumnInfo(defaultValue = "is_expanded")
-    private boolean isExpanded; // Boolean to check if the expanded view is expanded
-
 
     // Empty constructor
     public Medication() {
@@ -191,13 +188,6 @@ public class Medication {
 
     public void addMissedDosages(LocalDateTime time) {
         missedDosages.add(time);
-    }
-
-    public boolean isExpanded() {
-        return isExpanded;
-    }
-    public void setExpanded(boolean isExpanded) {
-        this.isExpanded = isExpanded;
     }
 
     public List<LocalDateTime> getTakenTimes() {

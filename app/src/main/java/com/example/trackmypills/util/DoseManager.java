@@ -107,7 +107,7 @@ public class DoseManager {
         List<LocalDateTime> expected = new ArrayList<>();
         LocalDateTime startDateTime = LocalDateTime.of(date, medication.getStartTime());
 
-        double intervalHours = medication.getFrequency().getIntervalHours();;
+        double intervalHours = medication.getFrequency().getIntervalHours();
         long intervalMinutes = (long) (intervalHours * 60);
 
         // Fills up expected times based on max dose per day
@@ -126,8 +126,9 @@ public class DoseManager {
                 != null ? new ArrayList<>(medication.getMissedDosages()) : new ArrayList<>();
 
         for (LocalDateTime expected : expectedTimes) {
+            final long ALLOWED_DELAY_MINUTES = 5;
             boolean takenClose = taken.stream()
-                    .anyMatch(t ->Math.abs(Duration.between(expected, t).toMinutes()) < 5);
+                    .anyMatch(t ->Math.abs(Duration.between(expected, t).toMinutes()) < ALLOWED_DELAY_MINUTES);
 
             if(!takenClose && !missed.contains(expected) && expected.isBefore(LocalDateTime.now())){
                 missed.add(expected);
