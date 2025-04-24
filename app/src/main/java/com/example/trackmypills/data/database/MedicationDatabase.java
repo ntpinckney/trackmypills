@@ -1,6 +1,9 @@
 package com.example.trackmypills.data.database;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.util.Log;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -28,43 +31,11 @@ public abstract class MedicationDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             MedicationDatabase.class,
                             "medication_database")
-                            .addMigrations(MIGRATION_9_10)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
         }
         return INSTANCE;
     }
-    public static Migration MIGRATION_9_10 = new Migration(9, 10) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Creates a new table with the updated schema
-            database.execSQL("CREATE TABLE IF NOT EXISTS `medications_new` (" +
-                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                    "`name` TEXT, " +
-                    "`medQuantity` REAL, " +
-                    "`maxAmt` REAL, " +
-                    "`totalMeds` REAL, " +
-                    "`dosesTaken` REAL, " +
-                    "`adminType` TEXT, " +
-                    "`startTime` TEXT, " +
-                    "`frequency` TEXT, " +
-                    "`lastResetDate` TEXT, " +
-                    "`notificationsEnabled` INTEGER, " +
-                    "`nextDosageTime` TEXT, " +
-                    "`missedDosages` TEXT, " +
-                    "`takenTimes` TEXT);");
-
-            database.execSQL("INSERT INTO `medications_new` (id, name, medQuantity, maxAmt, totalMeds, dosesTaken, adminType, startTime, frequency, lastResetDate, notificationsEnabled, nextDosageTime, missedDosages, takenTimes) " +
-                    "SELECT id, name, medQuantity, maxAmt, totalMeds, dosesTaken, adminType, startTime, frequency, lastResetDate, notificationsEnabled, nextDosageTime, missedDosages, takenTimes FROM `Medication`;");
-
-            // Drops the old table
-            database.execSQL("DROP TABLE `medications`;");
-
-            // Renames the new table to the original name
-            database.execSQL("ALTER TABLE `medications_new` RENAME TO `medications`;");
-        }
-    };
-
-
 }
