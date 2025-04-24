@@ -9,12 +9,12 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.trackmypills.util.DoseManager;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.activity.EditMedication;
@@ -84,7 +85,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
     class MedicationViewHolder extends RecyclerView.ViewHolder {
         TextView medNameTextView, medTimeTextView, missedTimesView, medDosageTextView, totalMedsTextView;
-        ImageButton expandButton, takeButton, undoButton, editButton, deleteButton;
+        ImageButton expandButton, takeButton, refillButton, undoButton, editButton, deleteButton;
         LinearLayout expandableView;
 
 
@@ -93,7 +94,6 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
             // Main interface display
 
-            // TODO: missedTimes is interfering with exandableView's function. Fix this.
             medNameTextView = itemView.findViewById(R.id.med_name);
             medTimeTextView = itemView.findViewById(R.id.med_time);
             medDosageTextView = itemView.findViewById(R.id.med_dosage);
@@ -104,6 +104,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             // Expandable view interface display
             expandableView = itemView.findViewById(R.id.expandable_view);
             takeButton = itemView.findViewById(R.id.take_button);
+            refillButton = itemView.findViewById(R.id.refill_button);
             undoButton = itemView.findViewById(R.id.undo_button);
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
@@ -118,6 +119,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             boolean isExpanded = medication.isExpanded();
             expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             expandButton.setRotation(isExpanded ? 90 : 0);
+
 
             // Animations
             final Animation rotateClockwise = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.rotate_clockwise);
@@ -135,7 +137,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                         expandableView.startAnimation(collapse);
                         collapse.setAnimationListener(new Animation.AnimationListener() {
                             @Override
-                            public void onAnimationStart(Animation animation) {}
+                            public void onAnimationStart(Animation animation) {
+                            }
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
@@ -143,7 +146,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                             }
 
                             @Override
-                            public void onAnimationRepeat(Animation animation) {}
+                            public void onAnimationRepeat(Animation animation) {
+                            }
                         });
                         expandButton.startAnimation(rotateCounterclockwise);
                         expandButton.setRotation(0);
@@ -168,67 +172,113 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 medication.setMaxAmt(0.01); // Automatically sets it to 0.01 if number is less than 0.01
             }
 
+            DoseManager doseManager = new DoseManager(viewModel);
+
             takeButton.setOnClickListener(v -> {
                 SharedPreferences prefs = v.getContext().getSharedPreferences("ExceedPrefs", Context.MODE_PRIVATE);
                 boolean dontShowAgain = prefs.getBoolean("don't_show_exceed_dialog", false);
                 boolean dosesTakenLessThanMaxAmt = medication.getDosesTaken() < medication.getMaxAmt();
                 boolean totalMedsGreaterThanZero = medication.getTotalMeds() > 0;
 
+                boolean allowExceedMax = !dontShowAgain && medication.getDosesTaken() < medication.getMaxAmt();
 
-                takeDose(medication, v, totalMedsGreaterThanZero, dosesTakenLessThanMaxAmt, dontShowAgain, prefs);
+
+                DoseManager.DoseResult result = doseManager.takeDose(
+                        medication,
+                        totalMedsGreaterThanZero,
+                        dosesTakenLessThanMaxAmt,
+                        dontShowAgain,
+                        prefs,
+                        allowExceedMax
+                );
+
+                // Handles the results of taking doses
+                switch (result) {
+                    case SUCCESS:
+                        // Updates the medication data and notifies the adadpter
+                        viewModel.update(medication);
+                        notifyItemChanged(getAdapterPosition());
+                        break;
+
+                        case OUT_OF_MEDICATION:
+                            Toast.makeText(v.getContext(), "No more medication left!", Toast.LENGTH_SHORT).show();
+                            break;
+
+                    case MAX_DOSE_REACHED:
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("Max Dose Reached")
+                                .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    // Allows exceeding the max dose
+                                    doseManager.takeDose(medication, totalMedsGreaterThanZero, dosesTakenLessThanMaxAmt, dontShowAgain, prefs, true);
+                                    viewModel.update(medication);
+                                    notifyItemChanged(getAdapterPosition());
+                                })
+                                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                                .setNeutralButton("Don't Show Again", (dialog, which) -> {
+                                    // Prevents future pop-ups for exceeding dosage
+                                    doseManager.suppressMaxDoseDialog(prefs);
+                                    dialog.dismiss();
+                                })
+                                .show();
+                        break;
+
+                    case MAX_DOSE_CONFIRMED:
+                        viewModel.update(medication);
+                        notifyItemChanged(getAdapterPosition());
+                        break;
+                }
             });
+
+
+            refillButton.setOnClickListener(v -> {
+
+                Context context = v.getContext();
+
+                EditText input = new EditText(context);
+                input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                input.setHint("Enter refill amount");
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Refill Medication")
+                        .setMessage("Enter the amount of medication to refill:")
+                        .setView(input)
+                        .setPositiveButton("Refill", (dialog, which) -> {
+                            String entered = input.getText().toString().trim();
+                            if (!entered.isEmpty()) {
+                                try {
+                                    double refillAmount = Double.parseDouble(entered);
+                                    if(refillAmount > 0 ) {
+                                        if(refillAmount >= 1000 ) {
+                                            Toast.makeText(context, "Refill amount too large", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        doseManager.refillTotalMeds(medication, refillAmount);
+                                        Toast.makeText(context, "Refill successful", Toast.LENGTH_SHORT).show();
+                                        notifyItemChanged(getAdapterPosition());
+                                    } else {
+                                        Toast.makeText(context, "Enter a positive number", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(context, "Invalid input", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                        .show();
+            });
+
 
             double initialTotalMeds = medication.getTotalMeds(); // Establishes what the totalMeds are before listener
 
             // Undoes medication taken in case of mistakes
             undoButton.setOnClickListener(v -> {
-                double dosesTaken = medication.getDosesTaken();
+                DoseManager.DoseResult result = doseManager.undoDose(medication);
 
-                // Ensures there is at least one dose taken
-                if (dosesTaken > 0) {
-                    // Decrements dosesTaken by medQuantity
-                    double newDosesTaken = dosesTaken - medication.getMedQuantity();
-
-                    // Ensures dosesTaken does not go below zero
-                    if (newDosesTaken < 0) {
-                        newDosesTaken = 0;
-                    }
-
-                    // Adds the amount back to totalMedsTextView per does undone
-                    double amountToAddBack = medication.getMedQuantity();
-
-                    // Ensures that adding back does not exceed the initial totalMedsTextView
-                    double updatedTotalMeds = medication.getTotalMeds() + amountToAddBack;
-                    medication.setTotalMeds(Math.min(updatedTotalMeds, initialTotalMeds));
-
-                    // Updates doses taken and total meds with the new values
-                    medication.setDosesTaken(newDosesTaken);
-                    medication.setTotalMeds(updatedTotalMeds);
-
-                    // Undoes the last taken time
-                    List<LocalDateTime> takenTimes = new ArrayList<>(medication.getTakenTimes());
-                    if(!takenTimes.isEmpty()){
-                        LocalDateTime lastTakenTime = takenTimes.get(takenTimes.size() - 1);
-                        takenTimes.remove(lastTakenTime); // Removes it from list
-
-                        // Updates the medicaiton's takenTimes
-                        medication.setTakenTimes(takenTimes);
-
-                        // Handles the missed dosages if the dose that was undone was marked as missed
-                        List<LocalDateTime> missedDosages = new ArrayList<>(medication.getMissedDosages());
-                        if(missedDosages.contains(lastTakenTime)){
-                            missedDosages.remove(lastTakenTime); // Removes the undone dose from missedDosages
-                            medication.setMissedDosages(missedDosages); // Updates the missed dosages
-
-                        }
-                    }
-
-
-                    // Updates the medication in ViewModel
-                    viewModel.update(medication);
-                    notifyItemChanged(getAdapterPosition()); // Refreshes UI
+                if (result == DoseManager.DoseResult.UNDO_SUCCESS) {
+                    notifyItemChanged(getAdapterPosition());
                 } else {
-                    Toast.makeText(v.getContext(), "No doses taken to undo!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "No doses to undo", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -266,14 +316,14 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             // Determines which times to show
             boolean canShowFourTimes =
                     Frequency.THIRTY_MINUTES.getIntervalHours() == intervalHours ||
-                    Frequency.ONE_HOUR.getIntervalHours() == intervalHours ||
-                    Frequency.TWO_HOURS.getIntervalHours() == intervalHours ||
-                    Frequency.FOUR_HOURS.getIntervalHours() == intervalHours ||
-                    Frequency.SIX_HOURS.getIntervalHours() == intervalHours;
+                            Frequency.ONE_HOUR.getIntervalHours() == intervalHours ||
+                            Frequency.TWO_HOURS.getIntervalHours() == intervalHours ||
+                            Frequency.FOUR_HOURS.getIntervalHours() == intervalHours ||
+                            Frequency.SIX_HOURS.getIntervalHours() == intervalHours;
 
             boolean canShowThreeTimes =
                     Frequency.EIGHT_HOURS.getIntervalHours() == intervalHours ||
-                    Frequency.TEN_HOURS.getIntervalHours() == intervalHours;
+                            Frequency.TEN_HOURS.getIntervalHours() == intervalHours;
 
             boolean canShowTwoTimes =
                     Frequency.TWELVE_HOURS.getIntervalHours() == intervalHours;
@@ -337,141 +387,30 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
         }
 
-        private void takeDose(Medication medication, View v, boolean totalMedsGreaterThanZero,
-                              boolean dosesTakenLessThanMaxAmt, boolean dontShowAgain,
-                              SharedPreferences prefs) {
+        private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
+            List<LocalDateTime> upcomingTimes = new ArrayList<>();
 
-             // Updates the missed times view
+            double maxDoses = medication.getMaxAmt();
+            double dosesTaken = medication.getDosesTaken();
+            double intervalHours = medication.getFrequency().getIntervalHours();
 
+            // Gets the current date and time
+            LocalDateTime now = LocalDateTime.now();
 
-            /* If the doses taken is lower than the maximum amount, totalMedsTextView isn't 0, or "Don't Show Again"
-            is selected, medQuantity increases dosesTaken */
-            if (totalMedsGreaterThanZero && (dosesTakenLessThanMaxAmt || dontShowAgain)) {
-                checkMissedDosages(medication); // Checks if there are any missed dosages
-                medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
-                medication.addTakenTimes(LocalDateTime.now());
-                medication.getMissedDosages().clear(); // Clears missed doses after pill is taken
+            // Gets the next time based on start time
+            LocalDateTime nextTime = LocalDateTime.of(now.toLocalDate(), medication.getStartTime());
 
-                // Ensures totalMedsTextView never goes negative
-                if (medication.getTotalMeds() >= medication.getMedQuantity()) {
-                    medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
-
-                } else {
-                    medication.setTotalMeds(0);
-                    Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
-                }
-
-                viewModel.update(medication);
-                notifyItemChanged(getAdapterPosition());
-                updateMissedTimesView(medication, missedTimesView); // Updates after changes
-
-            } else if (medication.getTotalMeds() == 0) {
-                // Blocks further dosage increments if there are no more meds left
-                Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
-
-            } else {
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Max Dose Reached")
-                        .setMessage("You have already taken the maximum dosage. Do you want to exceed it?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-
-                            // Allows exceeding max dosage, but only if there are meds left
-                            if (totalMedsGreaterThanZero) {
-                                medication.setDosesTaken(medication.getDosesTaken() + medication.getMedQuantity());
-                                medication.getMissedDosages().clear();
-
-
-                                if (medication.getTotalMeds() >= medication.getMedQuantity()) {
-                                    medication.setTotalMeds(medication.getTotalMeds() - medication.getMedQuantity());
-                                } else {
-                                    medication.setTotalMeds(0);
-                                    Toast.makeText(v.getContext(), "You are out of medication!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                            getUpcomingTimes(medication, maxTimes);
-                            viewModel.update(medication);
-                            notifyDataSetChanged();
-                        })
-                        .setNegativeButton("No", (dialog, which) -> {
-                            // "No" does nothing
-                            dialog.dismiss();
-                        })
-                        .setNeutralButton("Don't Show Again", ((dialog, which) -> {
-                            // "Don't Show Again" prevents future pop-ups when exceeding dosage
-                            prefs.edit().putBoolean("don't_show_exceed_dialog", true).apply();
-                            dialog.dismiss();
-                        }))
-                        .show();
+            // Skips to the next valid time
+            while (!nextTime.isAfter(now)) {
+                nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
             }
-        }
-    }
 
-    private void checkMissedDosages(Medication medication) {
-        List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
-        List<LocalDateTime> missed = new ArrayList<>(medication.getMissedDosages());
-        LocalDateTime now = LocalDateTime.now();
-
-        for(LocalDateTime time : upcomingTimes){
-            boolean isMissed = time.isBefore(now.minusMinutes(30)); // 30-minute grace period
-            boolean wasAlreadyTaken = medication.getTakenTimes().contains(time);
-            boolean alreadyMissed = missed.contains(time);
-
-            if(isMissed && !wasAlreadyTaken && !alreadyMissed){
-                missed.add(time); // Adds missed times to list
+            // Adds upcoming times while not exceeding max doses or max times
+            while (upcomingTimes.size() < maxTimes && dosesTaken < maxDoses) {
+                upcomingTimes.add(nextTime);
+                nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
             }
+            return upcomingTimes;
         }
-
-
-        // Saves changes
-        medication.setMissedDosages(missed);
-        viewModel.update(medication);
-    }
-
-    // Updates missed times view if there are missed dosages
-    private void updateMissedTimesView(Medication medication, TextView missedTimesView) {
-        List<LocalDateTime> missedTimes = medication.getMissedDosages();
-        List<LocalDateTime> recentMisses = missedTimes.subList(Math.max(0, missedTimes.size() - 3), missedTimes.size());
-
-        missedTimesView.post(() -> {
-            if (!recentMisses.isEmpty()) {
-                StringBuilder builder = new StringBuilder("Missed doses:\n");
-                for (int i = 0; i < recentMisses.size(); i++) {
-                    builder.append(recentMisses.get(i).format(DateTimeFormatter.ofPattern("hh:mm a")));
-                    if (i < recentMisses.size() - 1) builder.append(", ");
-                }
-                missedTimesView.setText(builder.toString());
-                missedTimesView.setVisibility(View.VISIBLE);
-            } else {
-                missedTimesView.setVisibility(View.GONE);
-            }
-        });
-    }
-
-
-    private List<LocalDateTime> getUpcomingTimes(Medication medication, int maxTimes) {
-        List<LocalDateTime> upcomingTimes = new ArrayList<>();
-
-
-        double maxDoses = medication.getMaxAmt();
-        double dosesTaken = medication.getDosesTaken();
-        double intervalHours = medication.getFrequency().getIntervalHours();
-
-        // Gets the current date and time
-        LocalDateTime now = LocalDateTime.now();
-
-        // Gets the next time based on start time
-        LocalDateTime nextTime = LocalDateTime.of(now.toLocalDate(), medication.getStartTime());
-
-        // Skips to the next valid time
-        while (!nextTime.isAfter(now)) {
-            nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
-        }
-
-        // Adds upcoming times while not exceeding max doses or max times
-        while (upcomingTimes.size() < maxTimes && dosesTaken < maxDoses) {
-            upcomingTimes.add(nextTime);
-            nextTime = nextTime.plusMinutes((long) (intervalHours * 60));
-        }
-        return upcomingTimes;
     }
 }

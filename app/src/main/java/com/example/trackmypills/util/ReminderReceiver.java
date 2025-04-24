@@ -29,7 +29,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        int uniqueId = (int) System.currentTimeMillis();
+        int uniqueId = medName.hashCode();
 
         if(ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED) {

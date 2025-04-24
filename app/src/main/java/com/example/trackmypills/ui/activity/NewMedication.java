@@ -128,15 +128,6 @@ public class NewMedication extends AppCompatActivity {
             hasError = true;
         }
 
-        if(adminSpinner.getSelectedItemPosition() == 0){
-            Toast.makeText(this, "Please select an admin type.", Toast.LENGTH_SHORT).show();
-            hasError = true;
-        }
-
-        if(frequencySpinner.getSelectedItemPosition() == 0){
-            Toast.makeText(this, "Please select a frequency.", Toast.LENGTH_SHORT).show();
-            hasError = true;
-        }
 
         // Stops further execution if any field has an error
         if(hasError){

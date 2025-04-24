@@ -110,6 +110,15 @@
                 android:scaleType="fitCenter"/>
 
             <ImageButton
+                android:id="@+id/refill_button"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="@color/refill_button"
+                android:contentDescription="Refill medication"
+                android:src="@drawable/ic_refill"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
                 android:id="@+id/undo_button"
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"

@@ -48,6 +48,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         // Initializes ViewModel
         viewModel = new ViewModelProvider(this).get(MedicationViewModel.class);
 
+
         // Initializes adapter
         adapter = new MedicationAdapter(new ArrayList<>(), viewModel, medication -> {
             Intent intent = new Intent(MainActivity.this, EditMedication.class);
@@ -128,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         recyclerView.setAdapter(adapter);
+
+
 
         // Sets spacing between medication entries
         int spacing = getResources().getDimensionPixelSize(R.dimen.medication_item_spacing);
@@ -280,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
     // Creates notification channel
     public void createNotificationChannel() {
         // Android 8+ permissions and notification channel
+        // TODO: Make louder and more prominent notifications
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "MedicationReminders";
             String description = "Medication reminders based on time.";

@@ -25,12 +25,12 @@
             android:layout_marginEnd="155dp"
             android:layout_marginBottom="69dp"
             android:fontFamily="@font/poppins"
-            android:text="@string/med_name_hint"
+            android:text="@string/new_medication_title"
             android:textSize="32sp"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/med_name_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Medication Name -->
 
@@ -179,9 +179,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/admin_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/admin_text_view" />
 
         <!-- Frequency -->
 
@@ -283,8 +283,8 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/save_btn"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/save_btn"
             app:layout_constraintTop_toBottomOf="@+id/med_time" />
 
 

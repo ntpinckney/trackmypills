@@ -22,31 +22,31 @@ public class Converters {
 
     //Converts AdminType to String
     @TypeConverter
-    public static String fromAdminType(AdminType adminType){
-        return adminType == null ? null: adminType.name();
+    public static String fromAdminType(AdminType adminType) {
+        return adminType == null ? null : adminType.name();
     }
 
     // Converts String to AdminType
     @TypeConverter
-    public AdminType toAdminType(String adminType){
-        return adminType == null ? null: AdminType.valueOf(adminType);
+    public AdminType toAdminType(String adminType) {
+        return adminType == null ? null : AdminType.valueOf(adminType);
     }
 
     // Converts Frequency to String
     @TypeConverter
-    public static String fromFrequency(Frequency frequency){
-        return frequency == null ? null: frequency.name();
+    public static String fromFrequency(Frequency frequency) {
+        return frequency == null ? null : frequency.name();
     }
 
     // Converts String to Frequency
     @TypeConverter
-    public static Frequency toFrequency(String frequency){
-        return frequency == null ? null: Frequency.valueOf(frequency);
+    public static Frequency toFrequency(String frequency) {
+        return frequency == null ? null : Frequency.valueOf(frequency);
     }
 
     // Converts DateTime to String
     @TypeConverter
-    public static String toStringDateTime(LocalDateTime dateTime){
+    public static String toStringDateTime(LocalDateTime dateTime) {
         return dateTime == null ? null : dateTime.format(timeFormatter);
     }
 
@@ -63,7 +63,7 @@ public class Converters {
 
     // Converts Time to String
     @TypeConverter
-    public static String toStringTime(LocalTime time){
+    public static String toStringTime(LocalTime time) {
         return time == null ? null : time.format(timeFormatter);
     }
 
@@ -76,13 +76,13 @@ public class Converters {
 
     // Converts Date to String
     @TypeConverter
-    public static String toStringDate(LocalDate date){
+    public static String toStringDate(LocalDate date) {
         return date == null ? null : date.format(dateFormatter);
     }
 
     // Converts String to Date
     @TypeConverter
-    public static LocalDate fromStringDate(String value){
+    public static LocalDate fromStringDate(String value) {
         return value == null ? null : LocalDate.parse(value);
     }
 
@@ -100,13 +100,14 @@ public class Converters {
     // Converts String back to List<LocalDateTime>
     @TypeConverter
     public static List<LocalDateTime> toLocalDateTimeList(String dateTimeString) {
-        if(dateTimeString == null || dateTimeString.isEmpty()){
+        if (dateTimeString == null || dateTimeString.isEmpty()) {
             return new ArrayList<>();
         }
         String[] dateTimeStrings = dateTimeString.split(",");
         List<LocalDateTime> dateTimeList = new ArrayList<>();
         for (String dateTimeStr : dateTimeStrings) {
-            dateTimeList.add(LocalDateTime.parse(dateTimeStr, timeFormatter));
+            LocalTime time = LocalTime.parse(dateTimeStr, timeFormatter);
+            dateTimeList.add(LocalDateTime.of(LocalDate.now(), time));
         }
         return dateTimeList;
     }
