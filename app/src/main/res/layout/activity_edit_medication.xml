@@ -17,7 +17,7 @@
 
         <!-- Title -->
         <TextView
-            android:id="@+id/new_medication_title"
+            android:id="@+id/edit_medication_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="155dp"
@@ -25,7 +25,7 @@
             android:layout_marginEnd="155dp"
             android:layout_marginBottom="69dp"
             android:fontFamily="@font/poppins"
-            android:text="@string/med_name_hint"
+            android:text="@string/edit_medication_title"
             android:textSize="32sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/med_name_label"

@@ -2,6 +2,7 @@
     <string name="app_name">TrackMyPills</string>
 
     <string name="new_medication_title">New Medication</string>
+    <string name="edit_medication_title">Edit Medication</string>
     <string name="med_name_label">Enter medication name</string>
     <string name="quantity_label">Quantity per dose</string>
     <string name="max_amt_label">Max quantity per day</string>
