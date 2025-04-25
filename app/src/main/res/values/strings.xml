@@ -16,7 +16,7 @@
     <string name="cancel_btn">Cancel</string>
 
     <string name="med_name_hint">Medication name</string>
-    <string name="quantity_hint">E.g., 2</string>
+    <string name="quantity_hint">E.g., 2.5</string>
     <string name="max_amt_hint">E.g., 8</string>
     <string name="total_meds_hint">E.g., 28</string>
 

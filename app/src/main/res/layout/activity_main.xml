@@ -8,61 +8,42 @@
     android:background="@drawable/gradient"
     tools:context=".ui.activity.MainActivity">
 
-    <TextView
-        android:id="@+id/app_title"
-        android:layout_width="264dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="73dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginBottom="5dp"
-        android:fontFamily="@font/poppins"
-        android:text="TrackMyPills"
-        android:textAlignment="center"
-        android:textSize="32sp"
-        android:textColor="@color/dark_purple"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/scrollView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_med_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="33dp"
-        android:layout_marginBottom="35dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="4dp"
         android:clickable="true"
-        app:backgroundTint="@color/add_button"
         android:contentDescription="Add new medication button"
+        app:backgroundTint="@color/add_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/med_list"
+        app:maxImageSize="32dp"
         app:srcCompat="@drawable/ic_add"
-        app:tint="@color/white"
-        app:maxImageSize="32dp" />
-
+        app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/med_list"
-        android:layout_width="0dp"
-        android:layout_height="569dp"
-        android:layout_marginTop="74dp"
+        android:layout_width="411dp"
+        android:layout_height="634dp"
         android:contentDescription="List of medication"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
+        tools:layout_editor_absoluteY="26dp" />
 
     <Switch
         android:id="@+id/ld_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="105dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/lexend"
         android:text="Light/Dark Mode"
         android:textColor="@color/text"

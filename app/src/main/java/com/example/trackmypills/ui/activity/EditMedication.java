@@ -113,7 +113,6 @@ public class EditMedication extends AppCompatActivity {
                             // Updates the start time
                             medication.setStartTime(newTime);
 
-
                             // Recalculates the next dosage time based on new start time
                             medication.setNextDosageTime(null); // Clears the previous value
                             medication.setNextDosageTime(medication.getNextDosageTime()); // Recalculates the next dosage time

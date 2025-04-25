@@ -37,6 +37,7 @@ import com.example.trackmypills.util.NotifUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.example.trackmypills.R;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -121,6 +122,23 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             medNameTextView.setText(medication.getName());
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime nextDosageTime = medication.getNextDosageTime();
+
+
+            List<LocalDateTime> missed = medication.getMissedDosages();
+            if(missed != null && !missed.isEmpty()){
+                // Shows only the first three missed times
+                List<String> displayTimes = missed.stream()
+                        .sorted()
+                        .limit(3)
+                        .map(time -> time.format(DateTimeFormatter.ofPattern("h:mm a")))
+                        .collect(Collectors.toList());
+
+                missedTimesView.setText(String.format("Missed reminders: %s", String.join(", ", displayTimes)));
+                missedTimesView.setVisibility(View.VISIBLE);
+            } else {
+                missedTimesView.setVisibility(View.INVISIBLE);
+            }
+
 
             // Checks if item is expanded based on global position
             boolean isExpanded = getAdapterPosition() == expandedPosition;
@@ -358,15 +376,24 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
             // Gets up to maxTimes upcoming times
             List<LocalDateTime> upcomingTimes = getUpcomingTimes(medication, maxTimes);
 
+
+
             // Formats time
             if (upcomingTimes.isEmpty()) {
                 medTimeTextView.setText("No more reminders today.");
             } else {
                 SpannableStringBuilder timeDisplay = new SpannableStringBuilder("Upcoming reminder(s):\n");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+                LocalDate today = LocalDate.now(); // For day-to-day comparison
+
                 for (int i = 0; i < upcomingTimes.size(); i++) {
                     String formattedTime = upcomingTimes.get(i).toLocalTime().format(formatter);
                     int start = timeDisplay.length();
+
+                    // Checks if the upcoming time is for the next day
+                    if (upcomingTimes.get(i).toLocalDate().isAfter(today)) {
+                        formattedTime += " (Next day)";
+                    }
                     timeDisplay.append(formattedTime);
                     int end = timeDisplay.length();
 
@@ -390,21 +417,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                 medTimeTextView.setText(timeDisplay);
             }
 
-            List<LocalDateTime> missed = medication.getMissedDosages();
 
-            if(missed != null && !missed.isEmpty()){
-                // Shows only the first three missed times
-                List<String> displayTimes = missed.stream()
-                        .sorted()
-                        .limit(3)
-                        .map(time -> time.format(DateTimeFormatter.ofPattern("h:mm a")))
-                        .collect(Collectors.toList());
-
-                missedTimesView.setText(String.format("Missed reminders: %s", String.join(", ", displayTimes)));
-                missedTimesView.setVisibility(View.VISIBLE);
-            } else {
-                missedTimesView.setVisibility(View.INVISIBLE);
-            }
 
             // Informs users how many doses have been taken
             medDosageTextView.setText(String.format("%.2f/%.2f %s taken", medication.getDosesTaken(), medication.getMaxAmt(),

@@ -1,6 +1,7 @@
 package com.example.trackmypills.util;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
@@ -125,15 +126,22 @@ public class DoseManager {
         List<LocalDateTime> missed = medication.getMissedDosages()
                 != null ? new ArrayList<>(medication.getMissedDosages()) : new ArrayList<>();
 
+        Log.d("MissedCheck", "Checking for missed doses for: " + medication.getName());
+        Log.d("MissedCheck", "Expected times: " + expectedTimes);
+        Log.d("MissedCheck", "Taken times: " + taken);
+        Log.d("MissedCheck", "Already missed: " + missed);
+
         for (LocalDateTime expected : expectedTimes) {
-            final long ALLOWED_DELAY_MINUTES = 15; // Maximum delay in minutes
+            final long ALLOWED_DELAY_MINUTES = 10; // Maximum delay in minutes
             boolean takenClose = taken.stream()
                     .anyMatch(t ->Math.abs(Duration.between(expected, t).toMinutes()) < ALLOWED_DELAY_MINUTES);
 
-            if(!takenClose && !missed.contains(expected) && expected.isBefore(LocalDateTime.now())){
+            // Only adds missed doses if time is passed ALLOW_DELAY_MINUTES value
+            if (!takenClose && !missed.contains(expected) && expected.isBefore(LocalDateTime.now().minusMinutes(ALLOWED_DELAY_MINUTES))) {
                 missed.add(expected);
             }
         }
+
         medication.setMissedDosages(missed);
         viewModel.update(medication);
     }

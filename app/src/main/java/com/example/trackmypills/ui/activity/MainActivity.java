@@ -130,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
             editMedicationLauncher.launch(intent);
         });
 
-        viewModel.getAllMedication().observe(this, medications -> {
-            viewModel.refreshMissedDoses(new DoseManager(viewModel));
-            adapter.setMedications(medications);
-        });
 
         recyclerView.setAdapter(adapter);
 
@@ -190,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        viewModel.refreshMissedDoses(new DoseManager(viewModel));
+
     }
 
     private boolean requestingNotification = false;
