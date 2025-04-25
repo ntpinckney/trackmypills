@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         viewModel.refreshMissedDoses(new DoseManager(viewModel));
-
     }
 
     private boolean requestingNotification = false;
@@ -296,6 +295,14 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel("med_channel", name, importance);
             channel.setDescription(description);
             channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+            // Uses the default notification sound
+            channel.setSound(null, null);
+
+            // Sets vibration pattern
+            long[] vibrationPattern = {0, 500, 1000};
+            channel.enableVibration(true);
+            channel.setVibrationPattern(vibrationPattern);
 
             // Retrieves NotificationManager and creates the channel
             NotificationManager manager = getSystemService(NotificationManager.class);

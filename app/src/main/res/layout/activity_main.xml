@@ -8,14 +8,24 @@
     android:background="@drawable/gradient"
     tools:context=".ui.activity.MainActivity">
 
+    <!-- RecyclerView for Medication List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/med_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+    android:layout_marginTop="26dp"
+    android:contentDescription="List of medication"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/add_med_fab" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_med_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
         android:clickable="true"
         android:contentDescription="Add new medication button"
         app:backgroundTint="@color/add_button"
@@ -26,30 +36,20 @@
         app:srcCompat="@drawable/ic_add"
         app:tint="@color/white" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/med_list"
-        android:layout_width="411dp"
-        android:layout_height="634dp"
-        android:contentDescription="List of medication"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="26dp" />
-
     <Switch
         android:id="@+id/ld_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="128dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="130dp"
+        android:layout_marginBottom="37dp"
         android:fontFamily="@font/lexend"
         android:text="Light/Dark Mode"
         android:textColor="@color/text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_med_fab"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/med_list" />
-
+        app:layout_constraintTop_toBottomOf="@+id/med_list"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
