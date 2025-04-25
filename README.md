@@ -12,14 +12,12 @@ TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether
 - Supports fractional doses (e.g., 0.5 or 1.5 pills)
 - Choose from various administration methods (e.g., pills, capsules, mL, patches, etc.)
 - Add/undo buttons to quickly correct dose mistakes
+- Allows users to refill medications with a single tap, supporting custom amounts to account for partial refills
 - Expandable/collapsible medication cards to reduce UI clutter
 - Light and dark theme support, automatically matching system settings or manually toggled
-- Timely reminders sent at custom intervals (e.g., every four hours)
-
-## 🎥 Demo Video
-
-[See it in action](#)! (Embed the video)
-
+- Timely reminders sent at custom intervals (e.g., every 4 hours)
+- Displays missed doses to help users stay on track
+  
 ## 📥 Manual Installation (APK)
 
 Since TrackMyPills is not on Google's Play Store, you'll need to install it manually if you want to use it. Here's how:
@@ -49,9 +47,11 @@ This is where I'll add screenshots once the app is done!
 - 🐙 **Git/GitHub** – Version control and project hosting
 - 📱 **Android Emulator** – Device testing during development
 
+## ℹ️ Credits
+- SVG icons from [SVG Repo](https://www.svgrepo.com/) under the [SVG Repo License](https://www.svgrepo.com/page/licensing/).
+  
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
-
 
 ‼️ **Note:** This project is open-source and can be cloned for learning or inspiration. If you use or modify the code in other projects, please credit the original author.
