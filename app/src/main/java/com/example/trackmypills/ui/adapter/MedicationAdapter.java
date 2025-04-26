@@ -133,7 +133,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
                         .map(time -> time.format(DateTimeFormatter.ofPattern("h:mm a")))
                         .collect(Collectors.toList());
 
-                missedTimesView.setText(String.format("Missed reminders: %s", String.join(", ", displayTimes)));
+                missedTimesView.setText(String.format("Missed reminder(s): %s", String.join(", ", displayTimes)));
                 missedTimesView.setVisibility(View.VISIBLE);
             } else {
                 missedTimesView.setVisibility(View.INVISIBLE);

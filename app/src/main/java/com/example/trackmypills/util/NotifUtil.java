@@ -77,9 +77,6 @@ public class NotifUtil {
 
             if (alarmManager != null) {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-                Log.d("NotifUtil", "Notification scheduled for " + medication.getName() + " at " + nextDoseTime);
-            } else {
-                Log.e("NotifUtil", "AlarmManager is null!");
             }
         }
     }
@@ -99,9 +96,6 @@ public class NotifUtil {
 
             if (alarmManager != null) {
                 alarmManager.cancel(pendingIntent);
-                Log.d("NotifUtil", "Notification canceled for " + medication.getName());
-            } else {
-                Log.e("NotifUtil", "AlarmManager is null!");
             }
         }
     }

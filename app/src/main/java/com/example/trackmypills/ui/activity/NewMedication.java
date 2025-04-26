@@ -167,8 +167,6 @@ public class NewMedication extends AppCompatActivity {
 
             LocalTime adjustedDateTime = LocalTime.from(scheduledDateTime);
 
-            Log.d("MedicationTime", "Parsed Time: " + parsedTime + ", Adjusted Time: " + adjustedDateTime);
-
             Medication medication = new Medication(medNameStr, medQuantity, maxAmount, totalOfMeds, adminType, adjustedDateTime, frequency);
             boolean exceedsMaxAmount = medication.getMedQuantity() > medication.getMaxAmt();
             boolean exceedsTotalMeds = medication.getMedQuantity() > medication.getTotalMeds() ||
@@ -191,7 +189,6 @@ public class NewMedication extends AppCompatActivity {
                 finish();
             }
         } catch (DateTimeParseException e) {
-            Log.e("NewMedication", "Invalid time format: " + timeString, e);
             Toast.makeText(this, "Invalid time format! Please use h:mm AM/PM.", Toast.LENGTH_SHORT).show();
         }
     }

@@ -75,7 +75,6 @@ public class EditMedication extends AppCompatActivity {
         if (medicationId != -1) {
             viewModel.getMedicationById(medicationId).observe(this, fetchedMedication -> {
                 if (fetchedMedication != null) {
-                    Log.d("EditMedication", "Fetched time from DB: " + fetchedMedication.getNextDosageTime());
                     medication = fetchedMedication;
                     nameInput.setText(medication.getName());
                     medQuantityInput.setText(String.valueOf(medication.getMedQuantity()));
@@ -98,18 +97,14 @@ public class EditMedication extends AppCompatActivity {
                     medication.setMaxAmt(Double.parseDouble(maxAmtInput.getText().toString()));
                     medication.setTotalMeds(Double.parseDouble(totalMedInput.getText().toString()));
 
-                    // Logs the current time in the TextView
+                    // Places the current time in the TextView
                     String timeString = timeTextView.getText().toString().trim();
 
-                    // If you know, you know
-                    Log.d("EditMedication", "rAw TiMe from TextView: [" + timeString + "]");
 
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
                     try {
                         if (!timeString.isEmpty()) {
                             LocalTime newTime = LocalTime.parse(timeString, formatter);
-                            Log.d("EditMedication", "Parsed LocalTime: " + newTime);
-
                             // Updates the start time
                             medication.setStartTime(newTime);
 
@@ -117,11 +112,8 @@ public class EditMedication extends AppCompatActivity {
                             medication.setNextDosageTime(null); // Clears the previous value
                             medication.setNextDosageTime(medication.getNextDosageTime()); // Recalculates the next dosage time
 
-                        } else {
-                            Log.e("EditMedication", "Time string was unexpectedly empty! Using existing time.");
                         }
                     } catch (DateTimeParseException e) {
-                        Log.e("EditMedication", "Error parsing time: " + timeString, e);
                         Toast.makeText(EditMedication.this, "Invalid or missing time. Please try again.", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -137,8 +129,6 @@ public class EditMedication extends AppCompatActivity {
                     if (exceedsMaxAmount || exceedsTotalMeds) {
                         InvalidDialogUtil.showInvalidDosageDialog(this);
                     } else {
-                        Log.d("EditMedication", "Final medication object before update: " + medication.getNextDosageTime());
-
                         viewModel.update(medication);
 
                         Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();

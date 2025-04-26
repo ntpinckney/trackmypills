@@ -18,7 +18,6 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String medName = intent.getStringExtra("med_name");
-        Log.d("ReminderReceiver", "Received broadcast for medication: " + medName);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "med_channel")
                 .setSmallIcon(R.drawable.ic_notif_on)

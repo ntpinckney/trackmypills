@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean allPermissionsHandledToastShown = false;
+    private final boolean allPermissionsHandledToastShown = false;
 
     private void proceedToNextPermissionStep() {
         // Checks for notification permission
@@ -300,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
-                Log.d("NotifUtil", "Notification channel created");
             }
         }
     }

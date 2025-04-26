@@ -126,13 +126,8 @@ public class DoseManager {
         List<LocalDateTime> missed = medication.getMissedDosages()
                 != null ? new ArrayList<>(medication.getMissedDosages()) : new ArrayList<>();
 
-        Log.d("MissedCheck", "Checking for missed doses for: " + medication.getName());
-        Log.d("MissedCheck", "Expected times: " + expectedTimes);
-        Log.d("MissedCheck", "Taken times: " + taken);
-        Log.d("MissedCheck", "Already missed: " + missed);
-
         for (LocalDateTime expected : expectedTimes) {
-            final long ALLOWED_DELAY_MINUTES = 10; // Maximum delay in minutes
+            final long ALLOWED_DELAY_MINUTES = 15; // Maximum delay in minutes
             boolean takenClose = taken.stream()
                     .anyMatch(t ->Math.abs(Duration.between(expected, t).toMinutes()) < ALLOWED_DELAY_MINUTES);
 
