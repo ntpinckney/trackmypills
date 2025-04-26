@@ -42,7 +42,6 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
   <img src="/screenshots/new_medication_menu.png" width="150" alt="New medication menu"/>
   <img src="/screenshots/edit_medication_menu.png" width="150" alt="Edit medication menu"/>
   <img src="/screenshots/refill_dialog.png" width="150" alt="Refill dialog"/>
-  <img src="/screenshots/delete_dialog.png" width="150" alt="Delete dialog"/>
 </p>
 
 ## 🛠️ Tools of the Trade
