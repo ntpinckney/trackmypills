@@ -287,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
     // Creates notification channel
     public void createNotificationChannel() {
         // Android 8+ permissions and notification channel
-        // TODO: Make louder and more prominent notifications
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "MedicationReminders";
             String description = "Medication reminders based on time.";
