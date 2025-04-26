@@ -37,7 +37,7 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 <p float="left">
   <img src="https://i.imgur.com/BhoNx03.jpeg" width="100" alt="Main menu in light mode"/>
-<img src="https://i.imgur.com/BhoNx03.jpeg" width="100" alt="New medication in light mode"/>
+<img src="https://i.imgur.com/KlLALkv.jpeg" width="100" alt="New medication in light mode"/>
 </p>
 
 ## 🛠️ Tools of the Trade
