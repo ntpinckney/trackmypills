@@ -35,7 +35,9 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 ## 📷 Screenshots
 
-<img src="https://i.imgur.com/BhoNx03.jpeg" alt="Main view of app">
+<p float="left">
+  <img src="/https://i.imgur.com/BhoNx03.jpeg" alt="TrackMyPills main activity in light mode" width="100" />
+</p>
 
 ## 🛠️ Tools of the Trade
 
