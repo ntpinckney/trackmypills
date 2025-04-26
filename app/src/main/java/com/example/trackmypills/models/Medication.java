@@ -163,12 +163,17 @@ public class Medication {
         double intervalHours = frequency.getIntervalHours();
         LocalDateTime now = LocalDateTime.now();
 
+        // If the time already passed, schedule dosage times for the next day
+        if (startDateTime.isBefore(now)) {
+            startDateTime = startDateTime.plusDays(1);
+        }
+
         // Converts fractional hours into minutes
         long intervalMinutes = (long) (intervalHours * 60);
 
 
         while (startDateTime.isBefore(now)) {
-            startDateTime = startDateTime.plusHours(intervalMinutes);
+            startDateTime = startDateTime.plusMinutes(intervalMinutes);
         }
 
         return startDateTime;

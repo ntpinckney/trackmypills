@@ -1,3 +1,6 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -25,6 +28,16 @@ android {
             )
         }
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val date = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
+            val appName = "TrackMyPills"
+            outputImpl.outputFileName = "${appName}_v${versionName}_${date}.apk"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
