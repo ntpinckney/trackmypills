@@ -37,12 +37,12 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 ## 📷 Screenshots
 
 <p float="left">
-  <img src="/screenshots/expanded_view_lightmode.png" width="170" alt="Main menu in light mode"/>
-  <img src="/screenshots/expanded_view_darkmode.png" width="170" alt="Main menu in dark mode"/>
-  <img src="/screenshots/new_medication_menu.png" width="170" alt="New medication menu"/>
-  <img src="/screenshots/edit_medication_menu.png" width="170" alt="Edit medication menu"/>
-  <img src="/screenshots/refill_dialog.png" width="170" alt="Refill dialog"/>
-  <img src="/screenshots/delete_dialog.png" width="170" alt="Delete dialog"/>
+  <img src="/screenshots/expanded_view_lightmode.png" width="160" alt="Main menu in light mode"/>
+  <img src="/screenshots/expanded_view_darkmode.png" width="160" alt="Main menu in dark mode"/>
+  <img src="/screenshots/new_medication_menu.png" width="160" alt="New medication menu"/>
+  <img src="/screenshots/edit_medication_menu.png" width="160" alt="Edit medication menu"/>
+  <img src="/screenshots/refill_dialog.png" width="160" alt="Refill dialog"/>
+  <img src="/screenshots/delete_dialog.png" width="160" alt="Delete dialog"/>
 </p>
 
 ## 🛠️ Tools of the Trade
