@@ -15,31 +15,29 @@
         android:paddingBottom="32dp"
         tools:context=".ui.activity.EditMedication">
 
-        <!-- Title -->
         <TextView
             android:id="@+id/edit_medication_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="155dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="56dp"
             android:layout_marginEnd="155dp"
-            android:layout_marginBottom="69dp"
+            android:layout_marginBottom="29dp"
             android:fontFamily="@font/poppins"
             android:text="@string/edit_medication_title"
             android:textSize="32sp"
             app:layout_constraintBottom_toTopOf="@+id/med_name_label"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Medication Name -->
 
         <TextView
             android:id="@+id/med_name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="69dp"
+            android:layout_marginTop="29dp"
             android:fontFamily="@font/lexend"
             android:text="@string/med_name_label"
             android:textColor="@color/text"
@@ -158,8 +156,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/admin_text_view" />
-
-        <!-- Frequency -->
 
         <TextView
             android:id="@+id/frequency_text_view"
