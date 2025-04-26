@@ -20,7 +20,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         String medName = intent.getStringExtra("med_name");
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "med_channel")
-                .setSmallIcon(R.drawable.ic_notif_on)
+                .setSmallIcon(R.drawable.ic_pill)
                 .setContentTitle("Medication Reminder")
                 .setContentText("Time to take " + medName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
