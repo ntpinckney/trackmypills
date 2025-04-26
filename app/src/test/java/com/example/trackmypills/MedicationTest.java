@@ -76,5 +76,4 @@ public class MedicationTest {
         LocalDateTime expected = LocalDateTime.of(LocalDate.now(), startTime);
         assert nextDosageTime.equals(expected);
     }
-    
 }
