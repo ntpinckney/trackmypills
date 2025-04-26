@@ -37,7 +37,7 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 <p float="left">
   <img src="https://i.imgur.com/poVHGUt.jpeg" width="100" alt="Main menu in light mode"/>
-<img src="https://i.imgur.com/NPA8It4.jpeg" width="100" alt="Main menu dark mode mode"/>
+  <img src="https://i.imgur.com/NPA8It4.jpeg" width="100" alt="Main menu in dark mode"/>
 </p>
 
 ## 🛠️ Tools of the Trade
