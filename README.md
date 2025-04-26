@@ -22,7 +22,7 @@ TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether
 
 Since TrackMyPills is not on Google's Play Store, you'll need to install it manually if you want to use it. Here's how:
 
-1. Download the latest APK [here](#).
+1. Download the latest APK [here](https://drive.google.com/drive/u/1/folders/1YRz7syjMbrJcQyeKrBAC7rZQYJJay2RS).
 2. Enable "Install from unknown sources" in your device settings.
 3. Open the APK and install.
 
