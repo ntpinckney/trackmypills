@@ -35,7 +35,7 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 ## 📷 Screenshots
 
-This is where I'll add screenshots once the app is done!
+<img src="https://i.imgur.com/BhoNx03.jpeg" alt="Main view of app">
 
 ## 🛠️ Tools of the Trade
 
