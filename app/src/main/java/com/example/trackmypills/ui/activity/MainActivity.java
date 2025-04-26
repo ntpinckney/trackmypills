@@ -249,13 +249,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
             new Handler().postDelayed(this::proceedToNextPermissionStep, 1000);
-            return;
-        }
-
-        // Shows toast only once when all permissions are handled
-        if (!allPermissionsHandledToastShown) {
-            allPermissionsHandledToastShown = true;
-            Toast.makeText(this, "All permissions handled!", Toast.LENGTH_SHORT).show();
         }
     }
 
