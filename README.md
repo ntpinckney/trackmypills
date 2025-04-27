@@ -36,12 +36,18 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 ## 🎥 Demo Video
 
-[![TrackMyPills Demo Vide](https://img.youtube.com/vi/CuIwnZWcfW4/0.jpg)](https://www.youtube.com/shorts/CuIwnZWcfW4)
+[[![TrackMyPills Demo](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4)](https://www.youtube.com/shorts/CuIwnZWcfW4)
 
 
 ## 📷 Screenshots
 
-[![](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4)](https://www.youtube.com/shorts/CuIwnZWcfW4)
+<p float="left">
+   <img src="/screenshots/expanded_view_lightmode.png" width="150" alt="Main menu in light mode"/>
+   <img src="/screenshots/expanded_view_darkmode.png" width="150" alt="Main menu in dark mode"/>
+   <img src="/screenshots/new_medication_menu.png" width="150" alt="New medication menu"/>
+   <img src="/screenshots/edit_medication_menu.png" width="150" alt="Edit medication menu"/>
+   <img src="/screenshots/refill_dialog.png" width="150" alt="Refill dialog"/>
+ </p>
 
 ## 🛠️ Tools of the Trade
 
