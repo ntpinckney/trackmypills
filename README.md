@@ -36,7 +36,7 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 ## 🎥 Demo Video
 
-[[![TrackMyPills Demo](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4)](https://www.youtube.com/shorts/CuIwnZWcfW4)
+[![TrackMyPills Demo](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4)](https://www.youtube.com/shorts/CuIwnZWcfW4)
 
 
 ## 📷 Screenshots
