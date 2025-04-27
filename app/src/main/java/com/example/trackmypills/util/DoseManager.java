@@ -108,6 +108,11 @@ public class DoseManager {
         List<LocalDateTime> expected = new ArrayList<>();
         LocalDateTime startDateTime = LocalDateTime.of(date, medication.getStartTime());
 
+        // If the time has already passed, sets it to the next day
+        if (startDateTime.isBefore(LocalDateTime.now())) {
+            startDateTime = startDateTime.plusDays(1);
+        }
+
         double intervalHours = medication.getFrequency().getIntervalHours();
         long intervalMinutes = (long) (intervalHours * 60);
 
