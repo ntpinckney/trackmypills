@@ -29,15 +29,24 @@ Since TrackMyPills is not on Google's Play Store, you'll need to install it manu
 Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for detailed instructions.
 
 ## 🧬 Cloning the Repository
+
 ```bash
-#git clone https://github.com/yourusername/trackmypills.git
+#git clone https://github.com/ntpinckney/trackmypills.git
 ```
+
+## 🎥 Demo Video
+
+See it in action!
+[TrackMyPills Demo Video](https://youtube.com/shorts/CuIwnZWcfW4?si=ZNpPlIBFh_LiFdKX)
 
 ## 📷 Screenshots
 
 <p float="left">
-  <img src="https://i.imgur.com/poVHGUt.jpeg" width="100" alt="Main menu in light mode"/>
-  <img src="https://i.imgur.com/NPA8It4.jpeg" width="100" alt="Main menu in dark mode"/>
+  <img src="/screenshots/expanded_view_lightmode.png" width="150" alt="Main menu in light mode"/>
+  <img src="/screenshots/expanded_view_darkmode.png" width="150" alt="Main menu in dark mode"/>
+  <img src="/screenshots/new_medication_menu.png" width="150" alt="New medication menu"/>
+  <img src="/screenshots/edit_medication_menu.png" width="150" alt="Edit medication menu"/>
+  <img src="/screenshots/refill_dialog.png" width="150" alt="Refill dialog"/>
 </p>
 
 ## 🛠️ Tools of the Trade
