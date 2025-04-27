@@ -36,7 +36,17 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 
 ## 🎥 Demo Video
 
-[![](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4?si=ZNpPlIBFh_LiFdKX})](https://youtu.be/{CuIwnZWcfW4?si=ZNpPlIBFh_LiFdKX})
+<iframe
+-  width="560"
++  width="315"
+-  height="315"
++  height="560"
+  src="https://www.youtube.com/embed/CuIwnZWcfW4"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
 
 ## 📷 Screenshots
 
