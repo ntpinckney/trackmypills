@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -25,8 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
-import androidx.transition.ChangeBounds;
-import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
 
 import com.example.trackmypills.util.DoseManager;
@@ -380,7 +376,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Me
 
             // Formats time
             if (upcomingTimes.isEmpty()) {
-                medTimeTextView.setText("No more reminders today.");
+                String formatted = medication.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a"));
+                medTimeTextView.setText(String.format("No more reminders until %s", formatted));
             } else {
                 SpannableStringBuilder timeDisplay = new SpannableStringBuilder("Upcoming reminder(s):\n");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");

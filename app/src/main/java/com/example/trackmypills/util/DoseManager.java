@@ -1,7 +1,6 @@
 package com.example.trackmypills.util;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
@@ -9,6 +8,7 @@ import com.example.trackmypills.viewmodel.MedicationViewModel;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,6 +146,26 @@ public class DoseManager {
         viewModel.update(medication);
     }
 
+    // Resets medication for new day
+    public static void resetMedicationForNewDay(Medication medication, MedicationViewModel viewModel) {
+        LocalDate today = LocalDate.now();
+        LocalTime startTime = medication.getStartTime();
+        LocalDateTime scheduledResetTime = LocalDateTime.of(today, startTime);
+        LocalDateTime now = LocalDateTime.now();
+
+        // Checks if last reset date is null or before today and if it's past the scheduled reset time
+        if (medication.getLastResetDate() == null || medication.getLastResetDate().isBefore(today)
+        &&  now.isAfter(scheduledResetTime)) {
+            medication.setDosesTaken(0);
+            medication.setTakenTimes(new ArrayList<>());
+            medication.setMissedDosages(new ArrayList<>());
+            medication.setLastResetDate(today);
+            medication.setNextDosageTime(LocalDateTime.of(today, medication.getStartTime()));
+
+            // Updates medication in ViewModel
+            viewModel.update(medication);
+        }
+    }
     // Suppresses the "don't show exceed dialog" flag
     public void suppressMaxDoseDialog(SharedPreferences prefs) {
         prefs.edit().putBoolean("don't_show_exceed_dialog", true).apply();

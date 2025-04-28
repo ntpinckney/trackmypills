@@ -1,7 +1,6 @@
 package com.example.trackmypills.ui.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -18,7 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -43,13 +41,11 @@ import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.adapter.MedicationAdapter;
 import com.example.trackmypills.data.database.MedicationDatabase;
 import com.example.trackmypills.util.DoseManager;
-import com.example.trackmypills.util.NotifUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -142,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
         // Observes medication list
         viewModel.getAllMedication().observe(this, medications -> {
             if (medications != null) {
+                for(Medication medication : medications){
+                    DoseManager.resetMedicationForNewDay(medication, viewModel);
+                }
                 adapter.setMedications(medications);
                 adapter.notifyDataSetChanged();
             }

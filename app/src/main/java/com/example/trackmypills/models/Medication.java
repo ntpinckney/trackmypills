@@ -191,9 +191,6 @@ public class Medication {
         this.missedDosages = missedDosages;
     }
 
-    public void addMissedDosages(LocalDateTime time) {
-        missedDosages.add(time);
-    }
 
     public List<LocalDateTime> getTakenTimes() {
         return takenTimes;
