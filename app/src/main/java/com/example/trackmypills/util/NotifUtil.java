@@ -22,6 +22,8 @@ import java.time.ZoneId;
 public class NotifUtil {
 
     public static void scheduleNotification(Context context, Medication medication) {
+        cancelNotification(context, medication); // Cancels existing notifications
+
         // Checks if the app has permissions to send notifications
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {

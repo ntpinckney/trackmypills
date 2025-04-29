@@ -55,7 +55,6 @@ public class DoseManager {
         }
     }
 
-
     // Undoes doses taken
     public DoseResult undoDose(Medication medication) {
         double dosesTaken = medication.getDosesTaken();
@@ -147,7 +146,7 @@ public class DoseManager {
     }
 
     // Resets medication for new day
-    public static void resetMedicationForNewDay(Medication medication, MedicationViewModel viewModel) {
+    public void resetMedicationForNewDay(Medication medication) {
         LocalDate today = LocalDate.now();
         LocalTime startTime = medication.getStartTime();
         LocalDateTime scheduledResetTime = LocalDateTime.of(today, startTime);

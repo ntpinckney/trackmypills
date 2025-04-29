@@ -41,9 +41,11 @@ import com.example.trackmypills.models.Medication;
 import com.example.trackmypills.ui.adapter.MedicationAdapter;
 import com.example.trackmypills.data.database.MedicationDatabase;
 import com.example.trackmypills.util.DoseManager;
+import com.example.trackmypills.util.NotifUtil;
 import com.example.trackmypills.viewmodel.MedicationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -135,11 +137,15 @@ public class MainActivity extends AppCompatActivity {
         int spacing = getResources().getDimensionPixelSize(R.dimen.medication_item_spacing);
         recyclerView.addItemDecoration(new MedicationItemDecoration(spacing));
 
+
         // Observes medication list
         viewModel.getAllMedication().observe(this, medications -> {
+            DoseManager doseManager = new DoseManager(viewModel);
             if (medications != null) {
                 for(Medication medication : medications){
-                    DoseManager.resetMedicationForNewDay(medication, viewModel);
+                    doseManager.resetMedicationForNewDay(medication); // Resets medication for new day
+                    doseManager.checkMissedDoses(medication, LocalDate.now()); // Checks for missed doses
+                    NotifUtil.scheduleNotification(this, medication);
                 }
                 adapter.setMedications(medications);
                 adapter.notifyDataSetChanged();

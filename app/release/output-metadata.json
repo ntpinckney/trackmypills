@@ -12,8 +12,8 @@
       "filters": [],
       "attributes": [],
       "versionCode": 1,
-      "versionName": "1.0",
-      "outputFile": "TrackMyPills_v1.0_20250428_1037.apk"
+      "versionName": "1.0.2",
+      "outputFile": "TrackMyPills_v1.0.2_20250429_0949.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/TrackMyPills_v1.0_20250428_1037.dm"
+        "baselineProfiles/1/TrackMyPills_v1.0.2_20250429_0949.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/TrackMyPills_v1.0_20250428_1037.dm"
+        "baselineProfiles/0/TrackMyPills_v1.0.2_20250429_0949.dm"
       ]
     }
   ],
