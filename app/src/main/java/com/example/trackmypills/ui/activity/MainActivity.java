@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 for(Medication medication : medications){
                     doseManager.resetMedicationForNewDay(medication); // Resets medication for new day
                     doseManager.checkMissedDoses(medication, LocalDate.now()); // Checks for missed doses
-                    NotifUtil.scheduleNotification(this, medication);
+                    NotifUtil.scheduleNotification(this, medication); // Schedules notifications
                 }
                 adapter.setMedications(medications);
                 adapter.notifyDataSetChanged();
