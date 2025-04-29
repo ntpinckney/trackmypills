@@ -1,10 +1,8 @@
 # 💊 TrackMyPills
-
 A no-frills medication tracking app for Android that helps users stay on schedule with their dosages.
 
 ## 📱 Overview
-
-TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether you're managing a complex medication schedule or just need reminders to take a daily vitamin, this app makes it simple. With features like dosage tracking, reminders based on custom intervals, and quantity monitoring users can stay on top of their health without any unnecessary clutter.
+TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether you're managing a complex medication schedule or just need reminders to take a daily vitamin, this app makes it simple. With features like dosage tracking and reminders based on custom intervals, users can stay on top of their health without any unnecessary clutter.
 
 ## ✨ Features
 - Add, edit, or delete medications
@@ -19,7 +17,6 @@ TrackMyPills is designed to be lightweight, reliable, and user-friendly. Whether
 - Displays missed doses to help users stay on track
   
 ## 📥 Manual Installation (APK)
-
 Since TrackMyPills is not on Google's Play Store, you'll need to install it manually if you want to use it. Here's how:
 
 1. Download the latest APK from the [Releases page](https://github.com/ntpinckney/trackmypills/releases).
@@ -29,18 +26,15 @@ Since TrackMyPills is not on Google's Play Store, you'll need to install it manu
 Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for detailed instructions.
 
 ## 🧬 Cloning the Repository
-
 ```bash
 #git clone https://github.com/ntpinckney/trackmypills.git
 ```
 
 ## 🎥 Demo Video
-
 [![TrackMyPills Demo](https://markdown-videos-api.jorgenkh.no/youtube/CuIwnZWcfW4)](https://www.youtube.com/shorts/CuIwnZWcfW4)
 
 
 ## 📷 Screenshots
-
 <p float="left">
    <img src="/screenshots/expanded_view_lightmode.png" width="150" alt="Main menu in light mode"/>
    <img src="/screenshots/expanded_view_darkmode.png" width="150" alt="Main menu in dark mode"/>
@@ -50,7 +44,6 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
  </p>
 
 ## 🛠️ Tools of the Trade
-
 - 🤖 **Android Studio** – Primary IDE for Android development
 - ☕ **Java** – Main programming language used
 - 📝 **XML** – For defining UI layouts and resources
@@ -63,7 +56,6 @@ Click [here](https://www.androidauthority.com/how-to-install-apks-31494/) for de
 - SVG icons from [SVG Repo](https://www.svgrepo.com/) under the [SVG Repo License](https://www.svgrepo.com/page/licensing/).
   
 ## 📄 License
-
 This project is licensed under the [MIT License](LICENSE).
 
 ‼️ **Note:** This project is open-source and can be cloned for learning or inspiration. If you use or modify the code in other projects, please credit the original author.
