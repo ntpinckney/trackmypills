@@ -31,6 +31,11 @@
             android:enabled="true"
             android:exported="true" />
 
+        <receiver
+            android:name=".util.DailyResetReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".ui.activity.EditMedication"
             android:exported="false" />

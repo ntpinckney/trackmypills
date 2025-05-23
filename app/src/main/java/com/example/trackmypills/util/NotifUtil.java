@@ -1,6 +1,5 @@
 package com.example.trackmypills.util;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import androidx.core.content.ContextCompat;
@@ -12,11 +11,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
 import com.example.trackmypills.models.Medication;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 
 public class NotifUtil {
@@ -81,6 +81,8 @@ public class NotifUtil {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
             }
         }
+        // After scheduling notifications, schedules a daily reset
+        scheduleDailyReset(context, medication);
     }
 
     public static void cancelNotification(Context context, Medication medication) {
@@ -100,5 +102,31 @@ public class NotifUtil {
                 alarmManager.cancel(pendingIntent);
             }
         }
+    }
+
+    public static void scheduleDailyReset(Context context, Medication medication) {
+        LocalTime startTime = medication.getStartTime();
+
+        LocalDateTime nextResetTime = LocalDateTime.of(LocalDate.now().plusDays(1), startTime);
+
+        long triggerTime = nextResetTime
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+
+        Intent intent = new Intent (context, DailyResetReceiver.class);
+        intent.putExtra("med_id", medication.getId());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                medication.getId() + 1000,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+        }
+
     }
 }

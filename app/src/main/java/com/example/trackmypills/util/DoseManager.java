@@ -149,6 +149,9 @@ public class DoseManager {
     public void resetMedicationForNewDay(Medication medication) {
         LocalDate today = LocalDate.now();
         LocalTime startTime = medication.getStartTime();
+        if(startTime == null) return; // If startTime is null, don't proceed
+
+
         LocalDateTime scheduledResetTime = LocalDateTime.of(today, startTime);
         LocalDateTime now = LocalDateTime.now();
 

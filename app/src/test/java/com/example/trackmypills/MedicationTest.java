@@ -1,10 +1,12 @@
 package com.example.trackmypills;
 
-import org.junit.Test;
 
 import com.example.trackmypills.models.AdminType;
 import com.example.trackmypills.models.Frequency;
 import com.example.trackmypills.models.Medication;
+import com.example.trackmypills.viewmodel.MedicationViewModel;
+
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +18,12 @@ import java.time.LocalTime;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class MedicationTest {
+
+
+    MedicationViewModel viewModel;
+
+    Medication medication;
+
     @Test
     public void testAddNewMedication() {
         Medication medication = new Medication("Aspirin",
@@ -48,7 +56,7 @@ public class MedicationTest {
     }
 
     @Test
-    public void testNextDosageTimeTomorrow(){
+    public void testNextDosageTimeTomorrow() {
         LocalTime startTime = LocalTime.of(8, 0); // 8:00 AM
         Frequency frequency = Frequency.TWENTY_FOUR_HOURS; // Every 24 hours
         AdminType adminType = AdminType.PILLS; // Pills
@@ -58,12 +66,12 @@ public class MedicationTest {
         LocalDateTime nextDosageTime = medication.getNextDosageTime();
 
         // Check if the next dosage time is tomorrow
-       LocalDateTime expected = LocalDateTime.of(LocalDate.now().plusDays(1), startTime);
-       assert nextDosageTime.equals(expected);
+        LocalDateTime expected = LocalDateTime.of(LocalDate.now().plusDays(1), startTime);
+        assert nextDosageTime.equals(expected);
     }
 
     @Test
-    public void testNextDosageTimeToday(){
+    public void testNextDosageTimeToday() {
         LocalTime startTime = LocalTime.of(11, 0); // 11:00 AM
         Frequency frequency = Frequency.FOUR_HOURS; // Every 4 hours
         AdminType adminType = AdminType.CAPSULES; // Capsules

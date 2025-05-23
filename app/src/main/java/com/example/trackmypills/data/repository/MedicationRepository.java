@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MedicationRepository {
-    private final MedicationDao medicationDao;
-    private final ExecutorService executorService;
+    private MedicationDao medicationDao;
+    private ExecutorService executorService;
 
     public MedicationRepository(Application application){
         MedicationDatabase db = MedicationDatabase.getInstance(application);
@@ -41,6 +41,4 @@ public class MedicationRepository {
     public void delete(Medication medication) {
         executorService.execute(() -> medicationDao.delete(medication));
     }
-
-
 }

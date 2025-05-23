@@ -44,6 +44,8 @@ android {
     }
 }
 
+
+
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -51,9 +53,22 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.room.runtime)
     implementation(libs.firebase.messaging)
+    implementation(libs.work.runtime)
     annotationProcessor(libs.room.complier)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+
+    // JUnit Dependencies
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.engine)
+    androidTestImplementation(libs.junit.v115)
+    androidTestImplementation(libs.espresso.core.v351)
+
+    // Mockito Dependencies
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.junit.jupiter)
+
     implementation(libs.core.ktx)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

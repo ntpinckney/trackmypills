@@ -140,16 +140,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Observes medication list
         viewModel.getAllMedication().observe(this, medications -> {
-            DoseManager doseManager = new DoseManager(viewModel);
-            if (medications != null) {
-                for(Medication medication : medications){
-                    doseManager.resetMedicationForNewDay(medication); // Resets medication for new day
-                    doseManager.checkMissedDoses(medication, LocalDate.now()); // Checks for missed doses
-                    NotifUtil.scheduleNotification(this, medication); // Schedules notifications
-                }
                 adapter.setMedications(medications);
                 adapter.notifyDataSetChanged();
-            }
         });
 
         FloatingActionButton fab = findViewById(R.id.add_med_fab);
@@ -191,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        viewModel.refreshMissedDoses(new DoseManager(viewModel));
     }
 
     private boolean requestingNotification = false;
